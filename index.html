@@ -3,28 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Fleet App - Neumorphism UI</title>
+    <title>Digital Fleet Management - Interactive Prototype</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --secondary: #10b981;
-            --background: #eef2f7;
-            --surface: #f8fafc;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --neumorphism-light: #ffffff;
-            --neumorphism-dark: #d1d9e6;
-            --success: #059669;
-            --warning: #f59e0b;
-            --error: #dc2626;
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --secondary: #00a86b;
+            --accent: #ff6b00;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --warning: #d69e2e;
+            --error: #e53e3e;
+            --info: #3182ce;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
         }
 
         body {
@@ -34,164 +48,386 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: var(--text-primary);
         }
 
-        .app-container {
-            width: 375px;
-            height: 812px;
+        .prototype-container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: white;
+            color: var(--primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text .dae {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text .tagline {
+            font-size: 11px;
+            opacity: 0.9;
+            letter-spacing: 0.3px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .user-info i {
+            font-size: 18px;
+        }
+
+        .app-preview {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
             background: var(--background);
+        }
+
+        .phone-mockup {
+            width: 375px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
             border-radius: 40px;
-            box-shadow: 
-                20px 20px 60px var(--neumorphism-dark),
-                -20px -20px 60px var(--neumorphism-light);
+            margin: 20px;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            border-radius: 28px;
             overflow: hidden;
             position: relative;
-            padding: 20px;
         }
 
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Status Bar */
         .status-bar {
             height: 44px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             color: var(--text-secondary);
             font-size: 14px;
-        }
-
-        .screen {
-            display: none;
-            height: calc(100% - 44px);
-            flex-direction: column;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* Neumorphic Components */
-        .neumorphic-card {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 
-                8px 8px 16px var(--neumorphism-dark),
-                -8px -8px 16px var(--neumorphism-light);
-            margin-bottom: 16px;
-        }
-
-        .neumorphic-button {
-            background: var(--surface);
-            border: none;
-            border-radius: 50px;
-            padding: 16px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 
-                4px 4px 8px var(--neumorphism-dark),
-                -4px -4px 8px var(--neumorphism-light);
-        }
-
-        .neumorphic-button:active {
-            box-shadow: 
-                inset 4px 4px 8px var(--neumorphism-dark),
-                inset -4px -4px 8px var(--neumorphism-light);
-        }
-
-        .neumorphic-button.primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 
-                4px 4px 8px var(--neumorphism-dark),
-                -4px -4px 8px var(--neumorphism-light);
-        }
-
-        .neumorphic-input {
-            background: var(--surface);
-            border: none;
-            border-radius: 15px;
-            padding: 16px;
-            font-size: 16px;
-            width: 100%;
-            margin-bottom: 16px;
-            box-shadow: 
-                inset 4px 4px 8px var(--neumorphism-dark),
-                inset -4px -4px 8px var(--neumorphism-light);
-        }
-
-        /* Navigation */
-        .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--surface);
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 
-                0 -4px 20px rgba(0,0,0,0.1);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-            background: var(--surface);
-            box-shadow: 
-                inset 2px 2px 5px var(--neumorphism-dark),
-                inset -2px -2px 5px var(--neumorphism-light);
-        }
-
-        .nav-icon {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .nav-label {
-            font-size: 12px;
             font-weight: 500;
         }
 
-        /* Screen 1: PIN Entry */
+        /* ========== HOME SCREEN ========== */
+        .home-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .home-header {
+            padding: 24px 20px 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .motivation {
+            font-style: italic;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+        }
+
+        .vehicle-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .vehicle-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .vehicle-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .vehicle-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .stations-section {
+            padding: 24px 20px;
+            flex: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .station-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .station-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .station-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .station-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #00cc88 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .station-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .station-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .distance {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 20px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .action-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .action-btn i {
+            font-size: 24px;
+        }
+
+        .action-btn span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ========== PIN SCREEN ========== */
         .pin-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .pin-title {
+        .pin-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            color: white;
         }
 
-        .pin-title h1 {
-            color: var(--text-primary);
+        .pin-header h1 {
             font-size: 28px;
+            font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .pin-title p {
-            color: var(--text-secondary);
-            font-size: 14px;
+        .pin-header p {
+            font-size: 16px;
+            opacity: 0.9;
         }
 
         .pin-display {
@@ -201,20 +437,17 @@
         }
 
         .pin-dot {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: var(--surface);
-            box-shadow: 
-                inset 3px 3px 6px var(--neumorphism-dark),
-                inset -3px -3px 6px var(--neumorphism-light);
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
         .pin-dot.filled {
-            background: var(--primary);
-            box-shadow: 
-                3px 3px 6px var(--neumorphism-dark),
-                -3px -3px 6px var(--neumorphism-light);
+            background: white;
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .pin-keypad {
@@ -223,135 +456,155 @@
             gap: 20px;
             width: 100%;
             max-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .pin-key {
             aspect-ratio: 1;
-            background: var(--surface);
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--primary);
             cursor: pointer;
-            box-shadow: 
-                4px 4px 8px var(--neumorphism-dark),
-                -4px -4px 8px var(--neumorphism-light);
+            border: none;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
         }
 
         .pin-key:active {
-            box-shadow: 
-                inset 4px 4px 8px var(--neumorphism-dark),
-                inset -4px -4px 8px var(--neumorphism-light);
+            transform: scale(0.95);
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Screen 2: NFC Tap */
-        .nfc-container {
+        .pin-key.action {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* ========== FUEL SCREEN ========== */
+        .fuel-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
             padding: 20px;
         }
 
-        .nfc-animation {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
+        .fuel-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius-lg);
+            color: white;
+        }
+
+        .fuel-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .fuel-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 20px;
             background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin: 20px 0;
+        }
+
+        .qr-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            background: white;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background: #1a202c;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: 
-                8px 8px 16px var(--neumorphism-dark),
-                -8px -8px 16px var(--neumorphism-light);
         }
 
-        .nfc-icon {
-            font-size: 80px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .nfc-instruction {
-            text-align: center;
-        }
-
-        .nfc-instruction h2 {
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 22px;
-        }
-
-        .nfc-instruction p {
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Screen 3: QR Display */
-        .qr-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            padding: 20px;
-        }
-
-        .qr-header {
-            text-align: center;
-            width: 100%;
-        }
-
-        .qr-header h2 {
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            font-size: 24px;
-        }
-
-        .qr-header p {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .qr-code {
-            width: 250px;
-            height: 250px;
+        .qr-logo {
+            position: absolute;
+            width: 40px;
+            height: 40px;
             background: white;
-            border-radius: 20px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 
-                8px 8px 16px var(--neumorphism-dark),
-                -8px -8px 16px var(--neumorphism-light);
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 14px;
         }
 
-        .qr-code-placeholder {
+        .qr-info {
+            position: absolute;
+            bottom: -30px;
             text-align: center;
+            font-size: 12px;
             color: var(--text-secondary);
-            padding: 20px;
+        }
+
+        .transaction-timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(214, 158, 46, 0.1);
+            color: var(--warning);
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 14px;
+            margin: 10px 0;
         }
 
         .transaction-details {
             width: 100%;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             padding: 20px;
+            box-shadow: var(--shadow-sm);
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
         }
 
         .detail-label {
@@ -362,378 +615,1297 @@
         .detail-value {
             color: var(--text-primary);
             font-weight: 600;
+            font-size: 14px;
         }
 
-        .timer {
-            color: var(--warning);
-            font-weight: 600;
-            text-align: center;
-            margin-top: 10px;
+        .fuel-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
         }
 
-        /* Screen 4: Transaction Progress */
+        /* ========== PROGRESS SCREEN ========== */
         .progress-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
             padding: 20px;
         }
 
-        .progress-circle {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: conic-gradient(var(--primary) 75%, var(--background) 0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 
-                8px 8px 16px var(--neumorphism-dark),
-                -8px -8px 16px var(--neumorphism-light);
+        .progress-header {
+            text-align: center;
+            margin-bottom: 24px;
         }
 
-        .progress-inner {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: var(--surface);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .progress-header h1 {
             font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .progress-details {
-            text-align: center;
-            width: 100%;
-        }
-
-        .progress-details h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-
-        .status-message {
-            color: var(--success);
-            font-weight: 600;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            background: var(--surface);
-            box-shadow: 
-                inset 2px 2px 5px var(--neumorphism-dark),
-                inset -2px -2px 5px var(--neumorphism-light);
-        }
-
-        /* Screen 5: E-Receipt */
-        .receipt-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .receipt-header {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .receipt-header h2 {
-            color: var(--success);
-            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 8px;
+            color: var(--text-primary);
         }
 
-        .receipt-header p {
-            color: var(--text-secondary);
-        }
-
-        .receipt-card {
-            flex: 1;
-            padding: 30px;
-        }
-
-        .receipt-logo {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary);
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .receipt-detail {
-            margin-bottom: 20px;
-        }
-
-        .receipt-detail .label {
+        .progress-header p {
             color: var(--text-secondary);
             font-size: 14px;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step.completed {
+            border-left-color: var(--success);
+            background: rgba(56, 161, 105, 0.05);
+        }
+
+        .step.active {
+            border-left-color: var(--primary);
+            background: rgba(0, 102, 204, 0.05);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .step.completed .step-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .step.active .step-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            font-size: 16px;
+            font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .receipt-detail .value {
-            color: var(--text-primary);
+        .step-content p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .step-time {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .fueling-details {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .fueling-details h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .fueling-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .fueling-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fueling-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .fueling-value {
+            font-size: 20px;
             font-weight: 600;
         }
 
-        .receipt-divider {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin: 30px 0;
+        /* ========== HISTORY SCREEN ========== */
+        .history-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .total-amount {
-            text-align: center;
+        .history-header {
             padding: 20px;
-            font-size: 32px;
-            font-weight: bold;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .history-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .receipts-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .receipt-item {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .receipt-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .receipt-id {
+            font-weight: 600;
             color: var(--primary);
+            font-size: 14px;
+        }
+
+        .receipt-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .receipt-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .receipt-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receipt-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .receipt-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .receipt-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+        }
+
+        /* ========== SETTINGS SCREEN ========== */
+        .settings-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-header {
+            padding: 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .settings-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .settings-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .settings-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-section h3 i {
+            color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .language-select {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .avatar-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-option {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-primary);
+            background: var(--background);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ========== NAVIGATION ========== */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(0, 102, 204, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .nav-item.home-btn {
+            position: relative;
+            top: -20px;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius-full);
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .nav-item.home-btn.active {
+            background: var(--primary-dark);
+            transform: translateY(-4px) scale(1.05);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .nav-item.active .nav-label {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        /* ========== CONTROLS PANEL ========== */
+        .controls-panel {
+            flex: 1;
+            padding: 30px;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .controls-title {
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .flow-steps {
+            display: flex;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            min-width: 100px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: var(--radius-md);
+        }
+
+        .flow-step:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--background);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .flow-step.active .step-number {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .flow-step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <span>9:41</span>
-            <span>📶 🔋</span>
+    <div class="prototype-container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">DAE</div>
+                <div class="logo-text">
+                    <div class="dae">Digital Assistant for Energy</div>
+                    <div class="tagline">Fleet Management System</div>
+                </div>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Driver: Ahmad Rahim</span>
+            </div>
         </div>
 
-        <!-- Screen 1: PIN Entry -->
-        <div class="screen active" id="pin-screen">
-            <div class="pin-container">
-                <div class="pin-title">
-                    <h1>Digital Fleet</h1>
-                    <p>Enter your 4-digit PIN</p>
+        <div class="app-preview">
+            <!-- Phone Mockup -->
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <!-- Screen 1: Home -->
+                    <div class="screen active" id="screen-home">
+                        <div class="home-container">
+                            <div class="home-header">
+                                <div class="welcome-section">
+                                    <div class="avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="welcome-text">
+                                        <h1>Welcome, Ahmad!</h1>
+                                        <p>Ready for today's journey?</p>
+                                        <div class="motivation">
+                                            "Safety first, efficiency always"
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="vehicle-card">
+                                    <div class="vehicle-info">
+                                        <div class="vehicle-icon">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                        <div class="vehicle-details">
+                                            <h3>Mercedes-Benz Actros</h3>
+                                            <p>Vehicle: ABC-1234 • Diesel • 40T</p>
+                                            <p>Daily Limit: 250L • Available: 180L</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stations-section">
+                                <div class="section-header">
+                                    <h3 class="section-title">Nearby Fuel Stations</h3>
+                                    <a href="#" class="view-all">View All</a>
+                                </div>
+
+                                <div class="station-list">
+                                    <div class="station-card" onclick="startFuelProcess()">
+                                        <div class="station-icon">
+                                            <i class="fas fa-gas-pump"></i>
+                                        </div>
+                                        <div class="station-info">
+                                            <h4>PETRONAS Damansara</h4>
+                                            <p>Open 24/7 • RON95, Diesel, RON97</p>
+                                            <div class="distance">
+                                                <i class="fas fa-location-dot"></i>
+                                                2.3 km • 8 min
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="station-card">
+                                        <div class="station-icon" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                                            <i class="fas fa-gas-pump"></i>
+                                        </div>
+                                        <div class="station-info">
+                                            <h4>SHELL TTDI</h4>
+                                            <p>Open 24/7 • Diesel, RON95</p>
+                                            <div class="distance">
+                                                <i class="fas fa-location-dot"></i>
+                                                3.5 km • 12 min
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="station-card">
+                                        <div class="station-icon" style="background: linear-gradient(135deg, #ff6b00 0%, #ff8c42 100%);">
+                                            <i class="fas fa-gas-pump"></i>
+                                        </div>
+                                        <div class="station-info">
+                                            <h4>BHPetrol PJ</h4>
+                                            <p>Open 6AM-12AM • Diesel, RON95</p>
+                                            <div class="distance">
+                                                <i class="fas fa-location-dot"></i>
+                                                4.2 km • 15 min
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quick-actions">
+                                <div class="action-btn" onclick="showScreen('screen-history')">
+                                    <i class="fas fa-history"></i>
+                                    <span>History</span>
+                                </div>
+                                <div class="action-btn" onclick="showScreen('screen-settings')">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Settings</span>
+                                </div>
+                                <div class="action-btn" onclick="showScreen('screen-pin')">
+                                    <i class="fas fa-qrcode"></i>
+                                    <span>Quick Fuel</span>
+                                </div>
+                                <div class="action-btn">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Live Route</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 2: PIN -->
+                    <div class="screen" id="screen-pin">
+                        <div class="pin-container">
+                            <div class="pin-header">
+                                <h1>Secure Login</h1>
+                                <p>Enter your 4-digit PIN to continue</p>
+                            </div>
+
+                            <div class="pin-display">
+                                <div class="pin-dot" id="pin-dot-1"></div>
+                                <div class="pin-dot" id="pin-dot-2"></div>
+                                <div class="pin-dot" id="pin-dot-3"></div>
+                                <div class="pin-dot" id="pin-dot-4"></div>
+                            </div>
+
+                            <div class="pin-keypad">
+                                <button class="pin-key" data-pin="1">1</button>
+                                <button class="pin-key" data-pin="2">2</button>
+                                <button class="pin-key" data-pin="3">3</button>
+                                <button class="pin-key" data-pin="4">4</button>
+                                <button class="pin-key" data-pin="5">5</button>
+                                <button class="pin-key" data-pin="6">6</button>
+                                <button class="pin-key" data-pin="7">7</button>
+                                <button class="pin-key" data-pin="8">8</button>
+                                <button class="pin-key" data-pin="9">9</button>
+                                <button class="pin-key action" id="btn-clear">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <button class="pin-key" data-pin="0">0</button>
+                                <button class="pin-key action" id="btn-delete">
+                                    <i class="fas fa-backspace"></i>
+                                </button>
+                            </div>
+
+                            <div style="margin-top: 30px;">
+                                <button class="btn btn-primary" id="btn-login" style="width: 200px; padding: 16px;">
+                                    <i class="fas fa-sign-in-alt"></i> Authenticate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 3: Fuel -->
+                    <div class="screen" id="screen-fuel">
+                        <div class="fuel-container">
+                            <div class="fuel-header">
+                                <h1>Fuel Transaction</h1>
+                                <p>Show QR code to cashier</p>
+                            </div>
+
+                            <div class="qr-section">
+                                <div class="transaction-timer">
+                                    <i class="fas fa-clock"></i> Valid for: <span id="timer">04:58</span>
+                                </div>
+                                
+                                <div class="qr-container">
+                                    <div class="qr-code">
+                                        <!-- QR Code with DAE Logo -->
+                                        <div class="qr-logo">DAE</div>
+                                    </div>
+                                    <div class="qr-info">TXN-789012-DAE</div>
+                                </div>
+                                
+                                <div class="transaction-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Transaction ID</span>
+                                        <span class="detail-value">TXN-789012</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Max Amount</span>
+                                        <span class="detail-value">RM 500.00</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Fuel Type</span>
+                                        <span class="detail-value">Diesel</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Valid Until</span>
+                                        <span class="detail-value">10:13 AM</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Vehicle</span>
+                                        <span class="detail-value">ABC-1234</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fuel-actions">
+                                <button class="btn btn-primary" onclick="simulateNFCTap()">
+                                    <i class="fas fa-hand-point-up"></i> Simulate NFC Tap
+                                </button>
+                                <button class="btn btn-secondary" onclick="showScreen('screen-home')">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 4: Progress -->
+                    <div class="screen" id="screen-progress">
+                        <div class="progress-container">
+                            <div class="progress-header">
+                                <h1>Fueling in Progress</h1>
+                                <p>Transaction is being processed</p>
+                            </div>
+
+                            <div class="progress-steps">
+                                <div class="step completed">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h4>PIN Verified</h4>
+                                        <p>Driver authentication complete</p>
+                                    </div>
+                                    <div class="step-time">09:41 AM</div>
+                                </div>
+                                
+                                <div class="step completed">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h4>Vehicle Verified</h4>
+                                        <p>NFC tap successful</p>
+                                    </div>
+                                    <div class="step-time">09:42 AM</div>
+                                </div>
+                                
+                                <div class="step completed">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h4>QR Code Scanned</h4>
+                                        <p>Cashier approved transaction</p>
+                                    </div>
+                                    <div class="step-time">09:44 AM</div>
+                                </div>
+                                
+                                <div class="step active">
+                                    <div class="step-icon">
+                                        <i class="fas fa-gas-pump"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h4>Fueling in Progress</h4>
+                                        <p>Pump #3 • 45.2L / 250L</p>
+                                    </div>
+                                    <div class="step-time">09:45 AM</div>
+                                </div>
+                                
+                                <div class="step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+                                    <div class="step-content">
+                                        <h4>Receipt Generation</h4>
+                                        <p>Awaiting completion</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fueling-details">
+                                <h3><i class="fas fa-gas-pump"></i> Current Fueling</h3>
+                                <div class="fueling-grid">
+                                    <div class="fueling-item">
+                                        <div class="fueling-label">PUMP NUMBER</div>
+                                        <div class="fueling-value">#3</div>
+                                    </div>
+                                    <div class="fueling-item">
+                                        <div class="fueling-label">VOLUME</div>
+                                        <div class="fueling-value">45.2 L</div>
+                                    </div>
+                                    <div class="fueling-item">
+                                        <div class="fueling-label">AMOUNT</div>
+                                        <div class="fueling-value">RM 98.50</div>
+                                    </div>
+                                    <div class="fueling-item">
+                                        <div class="fueling-label">TIME ELAPSED</div>
+                                        <div class="fueling-value">02:45</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-success" onclick="completeFueling()" style="width: 100%; margin-top: 20px; padding: 16px;">
+                                <i class="fas fa-check-circle"></i> Complete Fueling
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 5: History -->
+                    <div class="screen" id="screen-history">
+                        <div class="history-container">
+                            <div class="history-header">
+                                <h1>Transaction History</h1>
+                                <p>View your past fueling records</p>
+                                
+                                <div class="filters">
+                                    <button class="filter-btn active" onclick="filterHistory('all')">All</button>
+                                    <button class="filter-btn" onclick="filterHistory('today')">Today</button>
+                                    <button class="filter-btn" onclick="filterHistory('week')">This Week</button>
+                                    <button class="filter-btn" onclick="filterHistory('month')">This Month</button>
+                                    <button class="filter-btn" onclick="filterHistory('diesel')">Diesel</button>
+                                    <button class="filter-btn" onclick="filterHistory('ron95')">RON95</button>
+                                </div>
+                            </div>
+
+                            <div class="receipts-list" id="receipts-list">
+                                <!-- Receipt items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 6: Settings -->
+                    <div class="screen" id="screen-settings">
+                        <div class="settings-container">
+                            <div class="settings-header">
+                                <h1>Settings</h1>
+                                <p>Manage your app preferences</p>
+                            </div>
+
+                            <div class="settings-content">
+                                <div class="settings-section">
+                                    <h3><i class="fas fa-user"></i> Profile Settings</h3>
+                                    
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Full Name</div>
+                                            <div class="setting-desc">Ahmad bin Rahim</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <button class="btn btn-secondary" style="padding: 8px 16px;">
+                                                Edit
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Profile Picture</div>
+                                            <div class="setting-desc">Choose your avatar</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <div class="avatar-selector">
+                                                <div class="avatar-option selected">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                <div class="avatar-option">
+                                                    <i class="fas fa-user-tie"></i>
+                                                </div>
+                                                <div class="avatar-option">
+                                                    <i class="fas fa-user-circle"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Team/Group</div>
+                                            <div class="setting-desc">Logistics Team A</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <button class="btn btn-secondary" style="padding: 8px 16px;">
+                                                Change
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-section">
+                                    <h3><i class="fas fa-language"></i> Language & Region</h3>
+                                    
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">App Language</div>
+                                            <div class="setting-desc">Choose your preferred language</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <select class="language-select">
+                                                <option value="en">English</option>
+                                                <option value="ms">Bahasa Malaysia</option>
+                                                <option value="zh">中文 (Chinese)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Currency</div>
+                                            <div class="setting-desc">Malaysian Ringgit (MYR)</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <span style="color: var(--text-secondary);">MYR</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-section">
+                                    <h3><i class="fas fa-bell"></i> Notifications</h3>
+                                    
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Transaction Alerts</div>
+                                            <div class="setting-desc">Get notified for all transactions</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Low Fuel Alerts</div>
+                                            <div class="setting-desc">Get notified when fuel is low</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-section">
+                                    <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                                    
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Change PIN</div>
+                                            <div class="setting-desc">Update your 4-digit security PIN</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <button class="btn btn-secondary" style="padding: 8px 16px;">
+                                                Change
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <div class="setting-info">
+                                            <div class="setting-label">Biometric Login</div>
+                                            <div class="setting-desc">Use fingerprint or face ID</div>
+                                        </div>
+                                        <div class="setting-control">
+                                            <label class="switch">
+                                                <input type="checkbox">
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Bottom Navigation -->
+                <div class="bottom-nav">
+                    <div class="nav-item" onclick="showScreen('screen-fuel')" id="nav-fuel">
+                        <div class="nav-icon"><i class="fas fa-gas-pump"></i></div>
+                        <div class="nav-label">Fuel</div>
+                    </div>
+                    <div class="nav-item" onclick="showScreen('screen-history')" id="nav-history">
+                        <div class="nav-icon"><i class="fas fa-history"></i></div>
+                        <div class="nav-label">History</div>
+                    </div>
+                    <div class="nav-item home-btn" onclick="showScreen('screen-home')" id="nav-home">
+                        <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    </div>
+                    <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
+                        <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="nav-label">Activity</div>
+                    </div>
+                    <div class="nav-item" onclick="showScreen('screen-settings')" id="nav-settings">
+                        <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                        <div class="nav-label">Settings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h2 class="controls-title">Interactive Prototype v2.0</h2>
                 
-                <div class="pin-display">
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
-                </div>
+                <p class="controls-description">
+                    Updated based on feedback! New features include:
+                </p>
+                <ul style="color: var(--text-secondary); margin-bottom: 30px; padding-left: 20px; line-height: 1.6;">
+                    <li>✅ New Home screen with welcome message and vehicle info</li>
+                    <li>✅ Nearby fuel stations with distance</li>
+                    <li>✅ Professional QR code with DAE logo</li>
+                    <li>✅ History screen with filtering</li>
+                    <li>✅ Settings screen with language, profile, and preferences</li>
+                    <li>✅ Updated navigation with Home button in center</li>
+                </ul>
 
-                <div class="pin-keypad">
-                    <div class="pin-key">1</div>
-                    <div class="pin-key">2</div>
-                    <div class="pin-key">3</div>
-                    <div class="pin-key">4</div>
-                    <div class="pin-key">5</div>
-                    <div class="pin-key">6</div>
-                    <div class="pin-key">7</div>
-                    <div class="pin-key">8</div>
-                    <div class="pin-key">9</div>
-                    <div class="pin-key"></div>
-                    <div class="pin-key">0</div>
-                    <div class="pin-key">⌫</div>
-                </div>
-
-                <button class="neumorphic-button primary" onclick="navigateTo('nfc-screen')">
-                    Authenticate
-                </button>
-            </div>
-        </div>
-
-        <!-- Screen 2: NFC Tap -->
-        <div class="screen" id="nfc-screen">
-            <div class="nfc-container">
-                <div class="nfc-animation">
-                    <div class="nfc-icon">📱</div>
-                </div>
-                
-                <div class="nfc-instruction">
-                    <h2>Tap NFC on Vehicle</h2>
-                    <p>Hold your phone near the NFC sticker<br>on your assigned vehicle</p>
-                </div>
-
-                <div class="neumorphic-card">
-                    <div class="detail-row">
-                        <span class="detail-label">Location Verified</span>
-                        <span class="detail-value" style="color: var(--success);">✓</span>
+                <div class="flow-steps">
+                    <div class="flow-step active" data-screen="screen-home">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Home</div>
                     </div>
-                    <div class="detail-row">
-                        <span class="detail-label">GPS Locked</span>
-                        <span class="detail-value" style="color: var(--success);">✓</span>
+                    <div class="flow-step" data-screen="screen-pin">
+                        <div class="step-number">2</div>
+                        <div class="step-label">PIN</div>
+                    </div>
+                    <div class="flow-step" data-screen="screen-fuel">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Fuel</div>
+                    </div>
+                    <div class="flow-step" data-screen="screen-progress">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Progress</div>
+                    </div>
+                    <div class="flow-step" data-screen="screen-history">
+                        <div class="step-number">5</div>
+                        <div class="step-label">History</div>
+                    </div>
+                    <div class="flow-step" data-screen="screen-settings">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Settings</div>
                     </div>
                 </div>
 
-                <button class="neumorphic-button" onclick="navigateTo('pin-screen')">
-                    Cancel
-                </button>
-            </div>
-        </div>
-
-        <!-- Screen 3: QR Display -->
-        <div class="screen" id="qr-screen">
-            <div class="qr-container">
-                <div class="qr-header">
-                    <h2>Show QR to Cashier</h2>
-                    <p>Transaction approved • Valid for 5 minutes</p>
-                </div>
-
-                <div class="qr-code">
-                    <div class="qr-code-placeholder">
-                        [QR Code Display]<br>
-                        <small>TXN-12345</small>
-                    </div>
-                </div>
-
-                <div class="timer">⏱ 4:32 remaining</div>
-
-                <div class="neumorphic-card transaction-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Transaction ID</span>
-                        <span class="detail-value">TXN-12345</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Max Amount</span>
-                        <span class="detail-value">250L</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Fuel Product</span>
-                        <span class="detail-value">Diesel</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Valid Until</span>
-                        <span class="detail-value">14:35</span>
-                    </div>
-                </div>
-
-                <button class="neumorphic-button" onclick="navigateTo('progress-screen')">
-                    Cancel Transaction
-                </button>
-            </div>
-        </div>
-
-        <!-- Screen 4: Transaction Progress -->
-        <div class="screen" id="progress-screen">
-            <div class="progress-container">
-                <div class="progress-circle">
-                    <div class="progress-inner">75%</div>
-                </div>
-
-                <div class="progress-details">
-                    <h3>Transaction in Progress</h3>
-                    
-                    <div class="neumorphic-card">
-                        <div class="detail-row">
-                            <span class="detail-label">Status</span>
-                            <span class="detail-value" style="color: var(--success);">QR Scanned</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Vehicle</span>
-                            <span class="detail-value">ABC-1234</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Pump</span>
-                            <span class="detail-value">#3</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Preset Amount</span>
-                            <span class="detail-value">MYR 500</span>
+                <div class="interactive-controls">
+                    <div class="control-group">
+                        <h3 class="control-title"><i class="fas fa-sliders-h"></i> Quick Actions</h3>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="startFuelProcess()">
+                                <i class="fas fa-play-circle"></i> Start Fuel Process
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetPrototype()">
+                                <i class="fas fa-redo"></i> Reset Prototype
+                            </button>
                         </div>
                     </div>
 
-                    <div class="status-message">
-                        ✓ Fueling in progress...
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Screen 5: E-Receipt -->
-        <div class="screen" id="receipt-screen">
-            <div class="receipt-container">
-                <div class="receipt-header">
-                    <h2>Transaction Complete</h2>
-                    <p>Your fueling receipt</p>
-                </div>
-
-                <div class="neumorphic-card receipt-card">
-                    <div class="receipt-logo">
-                        DIGITAL FLEET
-                    </div>
-
-                    <div class="receipt-detail">
-                        <div class="label">Transaction ID</div>
-                        <div class="value">TXN-12345</div>
-                    </div>
-
-                    <div class="receipt-detail">
-                        <div class="label">Date & Time</div>
-                        <div class="value">2026-01-11 14:28</div>
-                    </div>
-
-                    <div class="receipt-detail">
-                        <div class="label">Vehicle</div>
-                        <div class="value">ABC-1234</div>
-                    </div>
-
-                    <div class="receipt-detail">
-                        <div class="label">Product</div>
-                        <div class="value">Diesel</div>
-                    </div>
-
-                    <div class="receipt-detail">
-                        <div class="label">Volume</div>
-                        <div class="value">45.2L</div>
-                    </div>
-
-                    <div class="receipt-divider"></div>
-
-                    <div class="total-amount">
-                        MYR 456.78
-                    </div>
-
-                    <div class="receipt-detail" style="text-align: center; margin-top: 20px;">
-                        <div class="label">Station</div>
-                        <div class="value">Station Damansara</div>
+                    <div class="control-group">
+                        <h3 class="control-title"><i class="fas fa-code"></i> Test Data</h3>
+                        <div class="button-group">
+                            <button class="btn btn-success" onclick="generateTestReceipts()">
+                                <i class="fas fa-database"></i> Load Test Receipts
+                            </button>
+                            <button class="btn btn-warning" onclick="simulateTransaction()">
+                                <i class="fas fa-bolt"></i> Quick Transaction
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <button class="neumorphic-button primary" onclick="navigateTo('pin-screen')">
-                    Done
-                </button>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="navigateTo('pin-screen')">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">Home</div>
-            </div>
-            <div class="nav-item" onclick="navigateTo('qr-screen')">
-                <div class="nav-icon">⛽</div>
-                <div class="nav-label">Fuel</div>
-            </div>
-            <div class="nav-item" onclick="navigateTo('progress-screen')">
-                <div class="nav-icon">📊</div>
-                <div class="nav-label">Activity</div>
-            </div>
-            <div class="nav-item" onclick="navigateTo('receipt-screen')">
-                <div class="nav-icon">📄</div>
-                <div class="nav-label">Receipts</div>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">👤</div>
-                <div class="nav-label">Account</div>
+                <div class="footer">
+                    <p>Digital Fleet Management Prototype v2.0 • Updated with all requested changes</p>
+                    <p style="margin-top: 5px; font-size: 12px;">
+                        Live at: <span style="color: var(--primary); font-weight: 600;">https://digitalfleet.daeit.com.sg</span>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function navigateTo(screenId) {
+        // State management
+        let currentScreen = 'screen-home';
+        let pinCode = '';
+        let timerInterval;
+        let timeLeft = 300;
+        
+        // Mock data for receipts
+        const mockReceipts = [
+            {
+                id: 'TXN-789012',
+                date: '2025-01-15 09:48',
+                vehicle: 'ABC-1234',
+                fuelType: 'Diesel',
+                volume: '45.2L',
+                amount: 'RM 98.50',
+                station: 'PETRONAS Damansara',
+                pump: '#3'
+            },
+            {
+                id: 'TXN-789011',
+                date: '2025-01-14 14:22',
+                vehicle: 'ABC-1234',
+                fuelType: 'Diesel',
+                volume: '38.5L',
+                amount: 'RM 83.95',
+                station: 'SHELL TTDI',
+                pump: '#5'
+            },
+            {
+                id: 'TXN-789010',
+                date: '2025-01-13 11:15',
+                vehicle: 'ABC-1234',
+                fuelType: 'RON95',
+                volume: '25.0L',
+                amount: 'RM 49.75',
+                station: 'BHPetrol PJ',
+                pump: '#2'
+            },
+            {
+                id: 'TXN-789009',
+                date: '2025-01-12 16:45',
+                vehicle: 'ABC-1234',
+                fuelType: 'Diesel',
+                volume: '42.8L',
+                amount: 'RM 93.30',
+                station: 'PETRONAS Kota Damansara',
+                pump: '#1'
+            },
+            {
+                id: 'TXN-789008',
+                date: '2025-01-11 08:30',
+                vehicle: 'ABC-1234',
+                fuelType: 'Diesel',
+                volume: '36.2L',
+                amount: 'RM 78.91',
+                station: 'SHELL Bangsar',
+                pump: '#4'
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize PIN entry
+            document.querySelectorAll('.pin-key[data-pin]').forEach(key => {
+                key.addEventListener('click', function() {
+                    if (pinCode.length < 4) {
+                        pinCode += this.getAttribute('data-pin');
+                        updatePinDots();
+                    }
+                });
+            });
+            
+            // Clear PIN
+            document.getElementById('btn-clear').addEventListener('click', function() {
+                pinCode = '';
+                updatePinDots();
+            });
+            
+            // Delete last PIN digit
+            document.getElementById('btn-delete').addEventListener('click', function() {
+                pinCode = pinCode.slice(0, -1);
+                updatePinDots();
+            });
+            
+            // Login button
+            document.getElementById('btn-login').addEventListener('click', function() {
+                if (pinCode.length === 4) {
+                    showScreen('screen-fuel');
+                    startTimer();
+                } else {
+                    alert('Please enter a 4-digit PIN');
+                }
+            });
+            
+            // Flow step navigation
+            document.querySelectorAll('.flow-step').forEach(step => {
+                step.addEventListener('click', function() {
+                    const screenId = this.getAttribute('data-screen');
+                    showScreen(screenId);
+                });
+            });
+
+            // Initialize navigation
+            updateNavigation();
+            
+            // Load test receipts
+            generateTestReceipts();
+        });
+
+        // Show specific screen
+        function showScreen(screenId) {
             // Hide all screens
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
@@ -741,39 +1913,265 @@
             
             // Show target screen
             document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            
+            // Update flow steps
+            updateFlowSteps();
             
             // Update navigation
+            updateNavigation();
+            
+            // Special screen handling
+            if (screenId === 'screen-home') {
+                pinCode = '';
+                updatePinDots();
+                clearInterval(timerInterval);
+            } else if (screenId === 'screen-fuel') {
+                startTimer();
+            }
+        }
+
+        // Update PIN dots visualization
+        function updatePinDots() {
+            const pinDots = document.querySelectorAll('.pin-dot');
+            pinDots.forEach((dot, index) => {
+                if (index < pinCode.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
+        // Update flow step indicators
+        function updateFlowSteps() {
+            document.querySelectorAll('.flow-step').forEach(step => {
+                const screenId = step.getAttribute('data-screen');
+                step.classList.remove('active');
+                if (screenId === currentScreen) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Update navigation
+        function updateNavigation() {
+            // Remove active from all nav items
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Simulate PIN entry
-            if (screenId === 'nfc-screen') {
-                const dots = document.querySelectorAll('.pin-dot');
-                dots.forEach(dot => {
-                    setTimeout(() => {
-                        dot.classList.add('filled');
-                    }, 100);
-                });
+            // Add active to current screen's nav
+            let navId = '';
+            switch(currentScreen) {
+                case 'screen-home':
+                    navId = 'nav-home';
+                    break;
+                case 'screen-fuel':
+                    navId = 'nav-fuel';
+                    break;
+                case 'screen-history':
+                    navId = 'nav-history';
+                    break;
+                case 'screen-progress':
+                    navId = 'nav-progress';
+                    break;
+                case 'screen-settings':
+                    navId = 'nav-settings';
+                    break;
+            }
+            
+            if (navId) {
+                document.getElementById(navId).classList.add('active');
             }
         }
 
-        // Demo flow simulation
-        setTimeout(() => {
-            navigateTo('nfc-screen');
-        }, 3000);
-        
-        setTimeout(() => {
-            navigateTo('qr-screen');
-        }, 6000);
-        
-        setTimeout(() => {
-            navigateTo('progress-screen');
-        }, 9000);
-        
-        setTimeout(() => {
-            navigateTo('receipt-screen');
-        }, 12000);
+        // Start fuel process from home screen
+        function startFuelProcess() {
+            showScreen('screen-pin');
+        }
+
+        // Simulate NFC tap
+        function simulateNFCTap() {
+            showScreen('screen-progress');
+        }
+
+        // Complete fueling
+        function completeFueling() {
+            // Add receipt to history
+            const newReceipt = {
+                id: 'TXN-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0'),
+                date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                vehicle: 'ABC-1234',
+                fuelType: 'Diesel',
+                volume: (Math.random() * 50 + 20).toFixed(1) + 'L',
+                amount: 'RM ' + (Math.random() * 200 + 50).toFixed(2),
+                station: 'PETRONAS Damansara',
+                pump: '#' + Math.floor(Math.random() * 8 + 1)
+            };
+            
+            mockReceipts.unshift(newReceipt);
+            generateTestReceipts();
+            
+            showScreen('screen-history');
+        }
+
+        // Start QR code timer
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 300;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                const timerElement = document.getElementById('timer');
+                if (timerElement) {
+                    timerElement.textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (timerElement) timerElement.textContent = "00:00";
+                    alert('QR code has expired. Please start a new transaction.');
+                    showScreen('screen-home');
+                }
+            }, 1000);
+        }
+
+        // Generate test receipts for history
+        function generateTestReceipts() {
+            const receiptsList = document.getElementById('receipts-list');
+            if (!receiptsList) return;
+            
+            receiptsList.innerHTML = '';
+            
+            mockReceipts.forEach(receipt => {
+                const receiptElement = document.createElement('div');
+                receiptElement.className = 'receipt-item';
+                receiptElement.innerHTML = `
+                    <div class="receipt-header">
+                        <div class="receipt-id">${receipt.id}</div>
+                        <div class="receipt-date">${receipt.date}</div>
+                    </div>
+                    <div class="receipt-details">
+                        <div class="receipt-detail">
+                            <div class="receipt-label">VEHICLE</div>
+                            <div class="receipt-value">${receipt.vehicle}</div>
+                        </div>
+                        <div class="receipt-detail">
+                            <div class="receipt-label">FUEL TYPE</div>
+                            <div class="receipt-value">${receipt.fuelType}</div>
+                        </div>
+                        <div class="receipt-detail">
+                            <div class="receipt-label">VOLUME</div>
+                            <div class="receipt-value">${receipt.volume}</div>
+                        </div>
+                        <div class="receipt-detail">
+                            <div class="receipt-label">PUMP</div>
+                            <div class="receipt-value">${receipt.pump}</div>
+                        </div>
+                    </div>
+                    <div class="receipt-amount">${receipt.amount}</div>
+                `;
+                
+                receiptElement.addEventListener('click', function() {
+                    alert(`Receipt Details:\n\nID: ${receipt.id}\nDate: ${receipt.date}\nVehicle: ${receipt.vehicle}\nFuel: ${receipt.fuelType}\nVolume: ${receipt.volume}\nAmount: ${receipt.amount}\nStation: ${receipt.station}\nPump: ${receipt.pump}`);
+                });
+                
+                receiptsList.appendChild(receiptElement);
+            });
+        }
+
+        // Filter history
+        function filterHistory(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // In a real app, this would filter the receipts
+            alert(`Filtering receipts by: ${filter}`);
+        }
+
+        // Simulate quick transaction
+        function simulateTransaction() {
+            showScreen('screen-pin');
+            pinCode = '1234';
+            updatePinDots();
+            
+            setTimeout(() => {
+                showScreen('screen-fuel');
+                setTimeout(() => {
+                    showScreen('screen-progress');
+                    setTimeout(() => {
+                        completeFueling();
+                    }, 2000);
+                }, 1000);
+            }, 500);
+        }
+
+        // Reset prototype
+        function resetPrototype() {
+            pinCode = '';
+            updatePinDots();
+            clearInterval(timerInterval);
+            showScreen('screen-home');
+            alert('Prototype reset to home screen.');
+        }
+
+        // Add CSS for toggle switches
+        const style = document.createElement('style');
+        style.textContent = `
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 52px;
+                height: 26px;
+            }
+            
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+                border-radius: 34px;
+            }
+            
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+            
+            input:checked + .slider {
+                background-color: var(--primary);
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
