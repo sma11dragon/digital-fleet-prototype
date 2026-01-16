@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DAE - Digital Assistant for Energy</title>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Leaflet for Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <style>
         /* ========== CSS VARIABLES - DAE BRANDING ========== */
         :root {
@@ -27,19 +29,19 @@
             --dae-success: #10B981;
             --dae-warning: #F59E0B;
             --dae-error: #EF4444;
-            
+
             /* Glassmorphism */
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.3);
             --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             --glass-blur: blur(16px);
-            
+
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
             --gradient-success: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
             --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #F43F5E 100%);
             --gradient-purple: linear-gradient(135deg, #A855F7 0%, #3B82F6 100%);
-            
+
             /* Neutral Colors */
             --gray-50: #F9FAFB;
             --gray-100: #F3F4F6;
@@ -51,7 +53,7 @@
             --gray-700: #374151;
             --gray-800: #1F2937;
             --gray-900: #111827;
-            
+
             /* Typography */
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             --font-size-xs: 12px;
@@ -62,7 +64,7 @@
             --font-size-2xl: 24px;
             --font-size-3xl: 32px;
             --font-size-4xl: 40px;
-            
+
             /* Spacing */
             --space-xs: 4px;
             --space-sm: 8px;
@@ -70,13 +72,13 @@
             --space-lg: 24px;
             --space-xl: 32px;
             --space-2xl: 48px;
-            
+
             /* Shadows */
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            
+
             /* Animations */
             --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -90,7 +92,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             font-family: var(--font-family);
             font-size: var(--font-size-base);
@@ -178,10 +181,21 @@
             border-radius: 1px;
         }
 
-        .status-bar .signal-bar:nth-child(1) { height: 4px; }
-        .status-bar .signal-bar:nth-child(2) { height: 7px; }
-        .status-bar .signal-bar:nth-child(3) { height: 10px; }
-        .status-bar .signal-bar:nth-child(4) { height: 13px; }
+        .status-bar .signal-bar:nth-child(1) {
+            height: 4px;
+        }
+
+        .status-bar .signal-bar:nth-child(2) {
+            height: 7px;
+        }
+
+        .status-bar .signal-bar:nth-child(3) {
+            height: 10px;
+        }
+
+        .status-bar .signal-bar:nth-child(4) {
+            height: 13px;
+        }
 
         .status-bar .wifi-icon {
             font-size: 14px;
@@ -274,16 +288,32 @@
             box-shadow: 0 4px 24px rgba(59, 130, 246, 0.3);
         }
 
-        .home-greeting {
-            font-size: var(--font-size-sm);
-            opacity: 0.9;
-            margin-bottom: 4px;
+        .home-header-top {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
         }
 
-        .home-title {
-            font-size: var(--font-size-2xl);
+        .home-dae-logo {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .home-driver-info {
+            flex: 1;
+        }
+
+        .home-driver-name {
+            font-size: var(--font-size-xl);
             font-weight: 700;
-            margin-bottom: var(--space-xs);
+            letter-spacing: -0.02em;
+        }
+
+        .home-greeting {
+            font-size: var(--font-size-sm);
+            opacity: 0.8;
         }
 
         .home-vehicle-info {
@@ -292,6 +322,9 @@
             gap: var(--space-sm);
             font-size: var(--font-size-sm);
             opacity: 0.95;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 8px;
         }
 
         .home-vehicle-info i {
@@ -324,6 +357,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -406,12 +440,11 @@
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            border: 0.5px solid var(--glass-border);
+            border-radius: var(--radius-xl);
             padding: var(--space-lg);
             box-shadow: var(--glass-shadow);
             margin-bottom: var(--space-lg);
-            animation: slideUpFade 0.6s ease-out 0.1s both;
         }
 
         .section-header {
@@ -422,59 +455,76 @@
         }
 
         .section-title {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            color: var(--gray-900);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.012em;
         }
 
         .see-all-link {
-            color: var(--dae-primary);
+            color: #007AFF;
             font-size: var(--font-size-sm);
             text-decoration: none;
             font-weight: 600;
         }
 
         #map {
-            height: 200px;
-            border-radius: 16px;
+            height: 180px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
             margin-bottom: var(--space-md);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        /* Station List */
+        /* Station List - iOS Pattern */
         .station-item {
             display: flex;
             align-items: center;
-            padding: var(--space-md);
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 16px;
-            margin-bottom: var(--space-sm);
+            padding: var(--space-md) 0;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: opacity 0.2s ease;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
         }
 
-        .station-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateX(4px);
+        .station-item:last-child {
+            border-bottom: none;
         }
 
         .station-item:active {
-            transform: scale(0.98);
+            opacity: 0.6;
         }
 
         .station-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--dae-primary);
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            background: #F2F2F7;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 20px;
+            color: #007AFF;
+            font-size: 18px;
             margin-right: var(--space-md);
+            flex-shrink: 0;
+        }
+
+        .station-logo {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--space-md);
+            flex-shrink: 0;
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            padding: 4px;
+        }
+
+        .station-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .station-details {
@@ -484,35 +534,38 @@
         .station-name {
             font-weight: 600;
             font-size: var(--font-size-base);
-            color: var(--gray-900);
+            color: #000000;
             margin-bottom: 2px;
+            letter-spacing: -0.01em;
         }
 
         .station-distance {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #8E8E93;
         }
 
         .station-arrow {
-            color: var(--gray-400);
-            font-size: 18px;
+            color: #C7C7CC;
+            font-size: 14px;
         }
 
         .station-amenities {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             margin-top: 8px;
             flex-wrap: wrap;
         }
 
         .amenity-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 10px;
+            background: #F2F2F7;
+            color: #8E8E93;
         }
 
         .amenity-restaurant {
@@ -540,9 +593,14 @@
             color: #6366F1;
         }
 
+        .amenity-shower {
+            background: #CFFAFE;
+            color: #0891B2;
+        }
+
         /* ========== NFC TAP SCREEN ========== */
         .nfc-screen {
-            background: white;
+            background: transparent;
             justify-content: center;
             align-items: center;
             padding: var(--space-xl);
@@ -576,7 +634,7 @@
         .nfc-icon {
             width: 100px;
             height: 100px;
-            background: var(--dae-primary);
+            background: var(--gradient-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -588,6 +646,7 @@
             color: white;
             font-size: 48px;
             z-index: 10;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
         }
 
         @keyframes pulse {
@@ -595,6 +654,7 @@
                 transform: scale(0.8);
                 opacity: 1;
             }
+
             100% {
                 transform: scale(1.4);
                 opacity: 0;
@@ -616,10 +676,14 @@
         }
 
         .nfc-illustration {
-            background: var(--gray-50);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: var(--space-lg);
             margin-bottom: var(--space-lg);
+            box-shadow: var(--glass-shadow);
         }
 
         .nfc-illustration img {
@@ -629,16 +693,17 @@
         }
 
         .nfc-tip {
-            background: var(--gray-50);
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
             border-left: 4px solid var(--dae-accent);
             padding: var(--space-md);
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: left;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
         }
 
         .nfc-tip-title {
             font-weight: 600;
-            color: var(--gray-900);
+            color: #92400E;
             margin-bottom: var(--space-xs);
             display: flex;
             align-items: center;
@@ -647,27 +712,34 @@
 
         .nfc-tip-text {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #78350F;
             line-height: 1.5;
         }
 
         /* ========== LOADING SCREEN ========== */
         .loading-screen {
-            background: white;
+            background: linear-gradient(180deg, #EBF4FF 0%, #FFFFFF 100%);
             justify-content: center;
             align-items: center;
             padding: var(--space-xl);
             text-align: center;
         }
 
+        .loading-animation {
+            width: 200px;
+            height: 160px;
+            margin: 0 auto var(--space-lg);
+            position: relative;
+        }
+
         .loading-spinner {
-            width: 80px;
-            height: 80px;
-            border: 6px solid var(--gray-200);
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--gray-200);
             border-top-color: var(--dae-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto var(--space-xl);
+            margin: 0 auto var(--space-md);
         }
 
         @keyframes spin {
@@ -675,6 +747,29 @@
                 transform: rotate(360deg);
             }
         }
+
+        @keyframes driverBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes steamRise {
+            0% { opacity: 0; transform: translateY(0) scale(0.5); }
+            50% { opacity: 1; transform: translateY(-10px) scale(1); }
+            100% { opacity: 0; transform: translateY(-20px) scale(0.5); }
+        }
+
+        @keyframes truckWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-1deg); }
+            75% { transform: rotate(1deg); }
+        }
+
+        .driver-scene { animation: driverBounce 2s ease-in-out infinite; }
+        .steam { animation: steamRise 2s ease-in-out infinite; }
+        .steam:nth-child(2) { animation-delay: 0.5s; }
+        .steam:nth-child(3) { animation-delay: 1s; }
+        .truck-body { animation: truckWiggle 3s ease-in-out infinite; }
 
         .loading-title {
             font-size: var(--font-size-xl);
@@ -701,6 +796,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -733,9 +829,12 @@
         }
 
         @keyframes pulse-subtle {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.02);
             }
@@ -753,43 +852,19 @@
             color: var(--gray-600);
         }
 
+        /* ========== ENERGY FLOW: QR SCREEN ========== */
         .qr-code-container {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 2px solid var(--glass-border);
-            border-radius: 28px;
+            background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-xl);
             padding: var(--space-xl);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
             margin: var(--space-lg) 0;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .qr-code-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) translateY(-100%) rotate(45deg);
-            }
-            100% {
-                transform: translateX(100%) translateY(100%) rotate(45deg);
-            }
         }
 
         .qr-timer-ring {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             position: relative;
             margin: 0 auto var(--space-lg);
         }
@@ -798,9 +873,9 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 4px solid var(--gray-200);
-            border-top-color: var(--dae-accent);
-            animation: spin 5s linear infinite;
+            border: 3px solid #F2F2F7;
+            border-top-color: #007AFF;
+            animation: spin 8s linear infinite;
         }
 
         .qr-timer-text {
@@ -808,9 +883,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-lg);
             font-weight: 700;
-            color: var(--dae-primary);
+            color: #000000;
         }
 
         .qr-code {
@@ -821,36 +896,33 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-        }
-
-        .qr-code canvas {
-            width: 100% !important;
-            height: 100% !important;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: var(--space-md);
         }
 
         .qr-txn-id {
-            font-family: 'Courier New', monospace;
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            color: var(--gray-900);
-            letter-spacing: 1px;
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: 0.05em;
         }
 
         .qr-details {
-            background: var(--gray-50);
-            border-radius: 16px;
-            padding: var(--space-lg);
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
             margin-bottom: var(--space-lg);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .qr-detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--space-sm) 0;
-            border-bottom: 1px solid var(--gray-200);
+            padding: 8px 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .qr-detail-row:last-child {
@@ -859,130 +931,95 @@
 
         .qr-detail-label {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #8E8E93;
+            font-weight: 500;
         }
 
         .qr-detail-value {
-            font-size: var(--font-size-base);
-            font-weight: 600;
-            color: var(--gray-900);
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: #000000;
         }
 
         .qr-instruction-box {
-            background: var(--dae-primary);
+            background: #000000;
             color: white;
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: var(--space-lg);
             text-align: center;
         }
 
-        .qr-instruction-box h3 {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            margin-bottom: var(--space-sm);
-        }
-
-        .qr-instruction-box p {
-            font-size: var(--font-size-sm);
-            opacity: 0.9;
-        }
-
         .btn-cancel {
             width: 100%;
-            padding: var(--space-md);
+            padding: 16px;
             background: transparent;
-            color: var(--gray-600);
-            border: 2px solid var(--gray-300);
-            border-radius: 12px;
+            color: #FF3B30;
+            border: none;
             font-size: var(--font-size-base);
             font-weight: 600;
             cursor: pointer;
-            transition: all var(--transition-fast);
             margin-top: var(--space-md);
         }
 
-        .btn-cancel:active {
-            background: var(--gray-50);
+        /* ========== ENERGY FLOW: APPROVAL SCREEN ========== */
+        .approval-screen {
+            background: #F2F2F7;
+            padding: var(--space-md);
         }
 
-        /* ========== APPROVAL SCREEN ========== */
-        .approval-screen {
-            background: white;
-            justify-content: center;
-            align-items: center;
-            padding: var(--space-xl);
+        .approval-header {
+            background: #000000;
+            color: white;
+            padding: var(--space-2xl) var(--space-md) var(--space-xl);
+            border-bottom-left-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
             text-align: center;
+            margin: -20px -20px var(--space-lg);
         }
 
         .approval-icon {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, var(--dae-teal) 0%, var(--dae-success) 100%);
+            width: 80px;
+            height: 80px;
+            background: #34C759;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto var(--space-xl);
-            animation: scaleIn 0.5s ease-out;
-            box-shadow: var(--shadow-xl);
+            margin: 0 auto var(--space-lg);
         }
 
         .approval-icon i {
-            font-size: 60px;
+            font-size: 40px;
             color: white;
-            animation: checkMark 0.6s ease-out 0.2s both;
-        }
-
-        @keyframes scaleIn {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes checkMark {
-            0% {
-                opacity: 0;
-                transform: scale(0);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
 
         .approval-title {
-            font-size: var(--font-size-3xl);
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: var(--space-md);
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
         }
 
         .approval-message {
-            font-size: var(--font-size-lg);
-            color: var(--gray-600);
-            margin-bottom: var(--space-xl);
-            line-height: 1.6;
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
         }
 
         .approval-card {
-            background: var(--gray-50);
-            border-radius: 16px;
+            background: white;
+            border-radius: var(--radius-xl);
             padding: var(--space-xl);
             margin-bottom: var(--space-xl);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .approval-detail {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--space-md) 0;
-            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-lg) 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .approval-detail:last-child {
@@ -990,32 +1027,33 @@
         }
 
         .approval-label {
-            font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            font-size: var(--font-size-base);
+            color: #8E8E93;
+            font-weight: 500;
         }
 
         .approval-value {
-            font-size: var(--font-size-lg);
+            font-size: var(--font-size-xl);
             font-weight: 700;
-            color: var(--dae-primary);
+            color: #000000;
+            letter-spacing: -0.02em;
         }
 
         .btn-proceed {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, var(--dae-teal) 0%, var(--dae-primary) 100%);
+            background: #007AFF;
             color: white;
             border: none;
             border-radius: 16px;
             font-size: var(--font-size-lg);
             font-weight: 600;
             cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            transition: transform var(--transition-fast);
+            transition: opacity 0.2s ease;
         }
 
         .btn-proceed:active {
-            transform: scale(0.98);
+            opacity: 0.7;
         }
 
         /* ========== RECEIPT SCREEN ========== */
@@ -1109,6 +1147,26 @@
             text-align: right;
         }
 
+        .receipt-station-value {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .receipt-station-logo {
+            width: 24px;
+            height: 24px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .receipt-station-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         .receipt-total {
             background: linear-gradient(135deg, var(--dae-primary) 0%, var(--dae-teal) 100%);
             color: white;
@@ -1176,6 +1234,7 @@
                 opacity: 0;
                 transform: scale(0.9);
             }
+
             to {
                 opacity: 1;
                 transform: scale(1);
@@ -1187,6 +1246,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1206,7 +1266,7 @@
             margin-top: var(--space-xl);
         }
 
-        /* ========== BOTTOM NAVIGATION ========== */
+        /* ========== BOTTOM NAVIGATION - SYMMETRICAL REFINEMENT ========== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1217,11 +1277,10 @@
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
-            border-top: 1px solid var(--glass-border);
+            border-top: 0.5px solid var(--glass-border);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-            box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+            padding: 8px 0 max(12px, env(safe-area-inset-bottom));
             z-index: 1000;
         }
 
@@ -1231,105 +1290,63 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 4px;
+            padding: 6px 0;
             cursor: pointer;
             border: none;
             background: transparent;
-            transition: all var(--transition-fast);
-            min-height: 60px;
+            transition: opacity 0.2s ease;
+            min-height: 50px;
             position: relative;
         }
 
         .nav-item:active {
-            transform: scale(0.95);
+            opacity: 0.4;
         }
 
-        .nav-item.active .nav-icon {
-            color: var(--dae-primary);
-        }
-
+        .nav-item.active .nav-icon,
         .nav-item.active .nav-label {
-            color: var(--dae-primary);
-            font-weight: 600;
+            color: #007AFF;
         }
 
         .nav-icon {
-            font-size: 22px;
-            color: var(--gray-500);
+            font-size: 20px;
+            color: #8E8E93;
             margin-bottom: 4px;
-            transition: color var(--transition-fast);
         }
 
         .nav-label {
             font-size: 10px;
-            color: var(--gray-600);
-            transition: all var(--transition-fast);
+            color: #8E8E93;
+            font-weight: 500;
+            letter-spacing: 0.01em;
         }
 
-        .nav-item.center-action {
-            margin-top: -24px;
+        /* Center Action - Balanced Focus */
+        .nav-item.center-action .nav-icon {
+            font-size: 24px;
+            color: #007AFF;
         }
 
-        .nav-item.center-action .nav-icon-wrapper {
-            width: 64px;
-            height: 64px;
-            background: var(--gradient-primary);
+        .nav-badge {
+            position: absolute;
+            top: 4px;
+            right: 25%;
+            min-width: 18px;
+            height: 18px;
+            background: #FF3B30;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-            margin-bottom: 4px;
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-            }
-            50% {
-                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.6);
-            }
-        }
-
-        .nav-item.center-action .nav-icon {
-            color: white;
-            font-size: 28px;
-            margin-bottom: 0;
-        }
-
-        .nav-item.center-action .nav-label {
-            color: var(--dae-primary);
-            font-weight: 600;
-        }
-
-        /* Unread Badge */
-        .nav-badge {
-            position: absolute;
-            top: 6px;
-            right: 20%;
-            min-width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: white;
-            padding: 0 6px;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-            animation: badge-bounce 2s ease-in-out infinite;
+            border: 2px solid white;
         }
 
-        @keyframes badge-bounce {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+        /* Adjust screen padding for bottom nav */
+        .screen {
+            padding-bottom: 100px;
         }
 
         /* Adjust screen padding for bottom nav */
@@ -1337,91 +1354,67 @@
             padding-bottom: 80px;
         }
 
-        /* ========== HISTORY SCREEN ========== */
+        /* ========== ACTIVITY (HISTORY) SCREEN ========== */
         .history-screen {
-            background: transparent;
+            background: #F2F2F7;
         }
 
         .screen-header {
-            background: var(--gradient-primary);
+            background: #000000;
             color: white;
-            padding: var(--space-lg) var(--space-md);
-            padding-bottom: var(--space-2xl);
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            margin-bottom: 0;
-            position: relative;
-            box-shadow: 0 4px 24px rgba(59, 130, 246, 0.3);
+            padding: var(--space-xl) var(--space-md) var(--space-lg);
+            border-bottom-left-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
         }
 
         .screen-header-title {
             font-size: var(--font-size-2xl);
             font-weight: 700;
-            margin-bottom: var(--space-xs);
-        }
-
-        .screen-header-subtitle {
-            font-size: var(--font-size-sm);
-            opacity: 0.9;
+            letter-spacing: -0.03em;
         }
 
         .history-filters {
-            padding: var(--space-lg) var(--space-md);
-            padding-top: var(--space-md);
+            padding: var(--space-md);
             display: flex;
             gap: var(--space-sm);
             overflow-x: auto;
-            background: transparent;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .history-filters::-webkit-scrollbar {
+            display: none;
         }
 
         .filter-chip {
-            padding: var(--space-sm) var(--space-md);
+            padding: 8px 16px;
             background: white;
-            border: 2px solid var(--gray-200);
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
             border-radius: 20px;
             font-size: var(--font-size-sm);
-            font-weight: 500;
-            color: var(--gray-700);
-            cursor: pointer;
+            font-weight: 600;
+            color: #000000;
             white-space: nowrap;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
         }
 
         .filter-chip.active {
-            background: var(--dae-primary);
-            border-color: var(--dae-primary);
+            background: #007AFF;
             color: white;
-        }
-
-        .filter-chip:active {
-            transform: scale(0.95);
+            border-color: #007AFF;
         }
 
         .history-list {
-            padding: 0 var(--space-md) var(--space-md);
+            padding: 0 var(--space-md);
         }
 
         .history-item {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            background: white;
+            border-radius: var(--radius-lg);
             padding: var(--space-md);
-            margin-bottom: var(--space-md);
-            box-shadow: var(--glass-shadow);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.85);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .history-item:active {
-            transform: scale(0.98);
+            margin-bottom: var(--space-sm);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
+            transition: opacity 0.2s ease;
         }
 
         .history-item-header {
@@ -1432,28 +1425,46 @@
         }
 
         .history-item-station {
-            font-weight: 600;
+            font-weight: 700;
             font-size: var(--font-size-base);
-            color: var(--gray-900);
-            margin-bottom: 2px;
+            color: #000000;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-item-logo {
+            width: 24px;
+            height: 24px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .history-item-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .history-item-date {
             font-size: var(--font-size-xs);
-            color: var(--gray-500);
+            color: #8E8E93;
+            font-weight: 500;
         }
 
         .history-item-amount {
             font-size: var(--font-size-xl);
-            font-weight: 700;
-            color: var(--dae-primary);
+            font-weight: 800;
+            color: #000000;
+            letter-spacing: -0.02em;
         }
 
         .history-item-details {
             display: flex;
             gap: var(--space-lg);
             padding-top: var(--space-sm);
-            border-top: 1px solid var(--gray-100);
+            border-top: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .history-item-detail {
@@ -1462,14 +1473,14 @@
 
         .history-item-detail-label {
             font-size: var(--font-size-xs);
-            color: var(--gray-500);
+            color: #8E8E93;
             margin-bottom: 2px;
         }
 
         .history-item-detail-value {
             font-size: var(--font-size-sm);
             font-weight: 600;
-            color: var(--gray-900);
+            color: #000000;
         }
 
         .empty-state {
@@ -1479,7 +1490,7 @@
 
         .empty-state-icon {
             font-size: 64px;
-            color: var(--gray-300);
+            color: #C7C7CC;
             margin-bottom: var(--space-lg);
         }
 
@@ -1496,101 +1507,59 @@
             line-height: 1.6;
         }
 
-        /* ========== SETTINGS SCREEN ========== */
+        /* ========== SETTINGS (PROFILE) SCREEN REFINEMENT ========== */
         .settings-screen {
-            background: transparent;
+            background: #F2F2F7;
         }
 
         .settings-profile {
-            background: var(--gradient-primary);
+            background: #000000;
             padding: var(--space-xl) var(--space-md);
             text-align: center;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
+            border-bottom-left-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
             margin-bottom: var(--space-lg);
-            box-shadow: 0 4px 24px rgba(59, 130, 246, 0.3);
         }
 
         .settings-avatar {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto var(--space-md);
             overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            border: 3px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .settings-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .settings-avatar i {
-            font-size: 48px;
-            color: var(--gray-400);
-        }
-
-        .settings-avatar-edit {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-success);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 40px;
             color: white;
-            font-size: 14px;
-            border: 3px solid white;
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
         }
 
         .settings-name {
             font-size: var(--font-size-xl);
             font-weight: 700;
             color: white;
-            margin-bottom: var(--space-xs);
+            letter-spacing: -0.02em;
         }
 
         .settings-role {
             font-size: var(--font-size-sm);
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .settings-sections {
-            padding: 0 var(--space-md) var(--space-md);
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .settings-section {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: var(--space-md);
-            margin-bottom: var(--space-md);
-            box-shadow: var(--glass-shadow);
-        }
-
-        .settings-section-title {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: var(--space-md);
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 0 var(--space-md);
+            margin-bottom: var(--space-lg);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
         }
 
         .settings-item {
@@ -1598,8 +1567,11 @@
             justify-content: space-between;
             align-items: center;
             padding: var(--space-md) 0;
-            border-bottom: 1px solid var(--gray-100);
-            cursor: pointer;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        border-bottom: 1px solid var(--gray-100);
+        cursor: pointer;
         }
 
         .settings-item:last-child {
@@ -1616,102 +1588,87 @@
             gap: var(--space-md);
         }
 
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
         .settings-item-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gray-50);
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            background: #F2F2F7;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--dae-primary);
-            font-size: 18px;
-        }
-
-        .settings-item-text {
-            flex: 1;
+            color: #007AFF;
+            font-size: 14px;
         }
 
         .settings-item-label {
             font-size: var(--font-size-base);
             font-weight: 500;
-            color: var(--gray-900);
-            margin-bottom: 2px;
+            color: #000000;
         }
 
         .settings-item-value {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
+            color: #8E8E93;
         }
 
         .settings-item-arrow {
-            color: var(--gray-400);
-            font-size: 16px;
+            color: #C7C7CC;
+            font-size: 14px;
         }
 
-        /* ========== INBOX SCREEN ========== */
+        /* ========== MESSAGES (INBOX) SCREEN ========== */
         .inbox-screen {
-            background: transparent;
+            background: #F2F2F7;
         }
 
         .inbox-list {
-            padding: 0 var(--space-md) var(--space-md);
+            padding: 0 var(--space-md);
         }
 
         .inbox-item {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            background: white;
+            border-radius: var(--radius-lg);
             padding: var(--space-md);
-            margin-bottom: var(--space-md);
-            box-shadow: var(--glass-shadow);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: var(--space-sm);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
+            transition: opacity 0.2s ease;
             position: relative;
         }
 
         .inbox-item.unread {
-            border-left: 4px solid var(--dae-teal);
-            background: rgba(6, 182, 212, 0.08);
-        }
-
-        .inbox-item:hover {
-            background: rgba(255, 255, 255, 0.85);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .inbox-item:active {
-            transform: scale(0.98);
+            background: rgba(0, 122, 255, 0.03);
         }
 
         .inbox-item-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: var(--space-sm);
+            margin-bottom: 4px;
         }
 
         .inbox-item-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: var(--font-size-base);
-            color: var(--gray-900);
-            margin-bottom: 4px;
-            padding-right: var(--space-sm);
+            color: #000000;
+            letter-spacing: -0.01em;
         }
 
         .inbox-item-time {
             font-size: var(--font-size-xs);
-            color: var(--gray-500);
-            white-space: nowrap;
+            color: #8E8E93;
+            font-weight: 500;
         }
 
         .inbox-item-preview {
             font-size: var(--font-size-sm);
-            color: var(--gray-600);
-            line-height: 1.5;
+            color: #8E8E93;
+            line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -1720,31 +1677,33 @@
 
         .inbox-item-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 16px;
+            right: -4px;
             width: 8px;
             height: 8px;
-            background: var(--dae-teal);
+            background: #007AFF;
             border-radius: 50%;
         }
 
         .inbox-category-badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             margin-top: var(--space-sm);
         }
 
         .inbox-category-system {
-            background: var(--gray-100);
-            color: var(--gray-700);
+            background: #F2F2F7;
+            color: #8E8E93;
         }
 
         .inbox-category-promotion {
-            background: #FEF3C7;
-            color: #D97706;
+            background: rgba(255, 149, 0, 0.1);
+            color: #FF9500;
         }
 
         .inbox-category-alert {
@@ -1753,47 +1712,45 @@
         }
     </style>
 </head>
+
 <body>
     <div class="mobile-container">
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="carrier">Maxis</div>
-            <div class="indicators">
-                <div class="signal-bars">
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                </div>
-                <i class="fas fa-wifi wifi-icon"></i>
-                <div class="battery">
-                    <span>87%</span>
-                    <i class="fas fa-battery-three-quarters"></i>
-                </div>
-            </div>
-        </div>
+        <!-- The mock status bar has been removed to respect the native device environment -->
 
         <!-- SCREEN 1: Welcome / Splash -->
         <div id="screen-welcome" class="screen active welcome-screen">
-            <svg class="welcome-logo" viewBox="0 0 300 300" fill="white">
-                <text x="50%" y="45%" font-size="120" font-weight="700" text-anchor="middle" font-family="Inter">DAE</text>
-                <text x="50%" y="70%" font-size="24" text-anchor="middle" font-family="Inter" opacity="0.9">Digital Fleet App</text>
+            <svg class="welcome-logo" viewBox="0 0 300 300" fill="currentColor">
+                <path d="M150 50L250 250H50L150 50Z" opacity="0.1" />
+                <text x="50%" y="45%" font-size="90" font-weight="800" text-anchor="middle"
+                    font-family="-apple-system">DAE</text>
+                <text x="50%" y="65%" font-size="16" font-weight="500" text-anchor="middle" font-family="-apple-system"
+                    opacity="0.6">DIGITAL ASSISTANT</text>
             </svg>
-            <h1 class="welcome-title">Welcome to DAE Digital Fleet App</h1>
-            <p class="welcome-subtitle">Your smart guide for fleet fueling in Malaysia</p>
-            <button class="btn-start" onclick="startApp()">Get Started</button>
+            <h1 class="welcome-title">Refined Excellence</h1>
+            <p class="welcome-subtitle">A new era of energy management</p>
+            <button class="btn-start" onclick="startApp()">Enter Experience</button>
         </div>
 
         <!-- SCREEN 2: Home with Map -->
         <div id="screen-home" class="screen home-screen">
-            <div class="home-header">
-                <div class="home-greeting">Good Morning</div>
-                <div class="home-title">Ahmad</div>
+            <header class="home-header">
+                <div class="home-header-top">
+                    <svg class="home-dae-logo" viewBox="0 0 300 300" fill="currentColor" width="48" height="48">
+                        <path d="M150 50L250 250H50L150 50Z" opacity="0.2" />
+                        <text x="50%" y="55%" font-size="90" font-weight="800" text-anchor="middle" font-family="-apple-system">DAE</text>
+                    </svg>
+                    <div class="home-driver-info">
+                        <div class="home-driver-name">Abdul Hamid</div>
+                        <div class="home-greeting">Digital Fleet Driver</div>
+                    </div>
+                </div>
                 <div class="home-vehicle-info">
                     <i class="fas fa-truck"></i>
-                    <span>Mercedes-Benz Actros • ABC-1234</span>
+                    <span class="registration">ABC-1234</span>
+                    <span class="divider">•</span>
+                    <span class="vehicle-model">Mercedes-Benz Actros</span>
                 </div>
-            </div>
+            </header>
 
             <div class="home-content">
                 <!-- Quick Stats -->
@@ -1825,18 +1782,19 @@
                 <div class="map-section">
                     <div class="section-header">
                         <div class="section-title">Nearby Stations</div>
-                        <a href="#" class="see-all-link" onclick="event.preventDefault(); viewAllStations();">See All</a>
+                        <a href="#" class="see-all-link" onclick="event.preventDefault(); viewAllStations();">See
+                            All</a>
                     </div>
-                    
+
                     <div id="map"></div>
 
-                    <div class="station-item" onclick="selectStation('PETRONAS Kuching Central')">
-                        <div class="station-icon">
-                            <i class="fas fa-gas-pump"></i>
+                    <div class="station-item" onclick="selectStation('Petros Batu Kawa')">
+                        <div class="station-logo">
+                            <img src="petros.svg.png" alt="Petros">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">PETRONAS Kuching Central</div>
-                            <div class="station-distance">0.5 km away • Open 24/7</div>
+                            <div class="station-name">Petros Batu Kawa</div>
+                            <div class="station-distance">0.3 km away • Open 24/7</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-restaurant" title="Restaurant">
                                     <i class="fas fa-utensils"></i>
@@ -1844,11 +1802,11 @@
                                 <div class="amenity-icon amenity-surau" title="Surau">
                                     <i class="fas fa-mosque"></i>
                                 </div>
+                                <div class="amenity-icon amenity-shower" title="Shower">
+                                    <i class="fas fa-shower"></i>
+                                </div>
                                 <div class="amenity-icon amenity-atm" title="ATM">
                                     <i class="fas fa-money-bill"></i>
-                                </div>
-                                <div class="amenity-icon amenity-fuel" title="Euro 5">
-                                    <span style="font-weight: 700; font-size: 9px;">E5</span>
                                 </div>
                                 <div class="amenity-icon amenity-parking" title="Truck Parking">
                                     <i class="fas fa-truck"></i>
@@ -1858,16 +1816,19 @@
                         <i class="fas fa-chevron-right station-arrow"></i>
                     </div>
 
-                    <div class="station-item" onclick="selectStation('Shell Pending')">
-                        <div class="station-icon">
-                            <i class="fas fa-gas-pump"></i>
+                    <div class="station-item" onclick="selectStation('Shell Batu Kawa')">
+                        <div class="station-logo">
+                            <img src="shell.png" alt="Shell">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">Shell Pending</div>
-                            <div class="station-distance">2.8 km away • Open 24/7</div>
+                            <div class="station-name">Shell Batu Kawa</div>
+                            <div class="station-distance">1.5 km away • 6am - 10pm</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-restaurant" title="Restaurant">
                                     <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="amenity-icon amenity-shower" title="Shower">
+                                    <i class="fas fa-shower"></i>
                                 </div>
                                 <div class="amenity-icon amenity-atm" title="ATM">
                                     <i class="fas fa-money-bill"></i>
@@ -1883,13 +1844,13 @@
                         <i class="fas fa-chevron-right station-arrow"></i>
                     </div>
 
-                    <div class="station-item" onclick="selectStation('Caltex Petra Jaya')">
-                        <div class="station-icon">
-                            <i class="fas fa-gas-pump"></i>
+                    <div class="station-item" onclick="selectStation('PETRONAS Batu Kawa')">
+                        <div class="station-logo">
+                            <img src="petronas.png" alt="PETRONAS">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">Caltex Petra Jaya</div>
-                            <div class="station-distance">3.2 km away • Open 24/7</div>
+                            <div class="station-name">PETRONAS Batu Kawa</div>
+                            <div class="station-distance">1.8 km away • Open 24/7</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-surau" title="Surau">
                                     <i class="fas fa-mosque"></i>
@@ -1899,6 +1860,34 @@
                                 </div>
                                 <div class="amenity-icon amenity-fuel" title="Euro 5">
                                     <span style="font-weight: 700; font-size: 9px;">E5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right station-arrow"></i>
+                    </div>
+
+                    <div class="station-item" onclick="selectStation('Caltex Batu Kawa')">
+                        <div class="station-logo">
+                            <img src="caltex.png" alt="Caltex">
+                        </div>
+                        <div class="station-details">
+                            <div class="station-name">Caltex Batu Kawa</div>
+                            <div class="station-distance">2.5 km away • 6am - 10pm</div>
+                            <div class="station-amenities">
+                                <div class="amenity-icon amenity-restaurant" title="Restaurant">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="amenity-icon amenity-surau" title="Surau">
+                                    <i class="fas fa-mosque"></i>
+                                </div>
+                                <div class="amenity-icon amenity-atm" title="ATM">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="amenity-icon amenity-fuel" title="Diesel">
+                                    <span style="font-weight: 700; font-size: 9px;">D</span>
+                                </div>
+                                <div class="amenity-icon amenity-parking" title="Truck Parking">
+                                    <i class="fas fa-truck"></i>
                                 </div>
                             </div>
                         </div>
@@ -1923,22 +1912,55 @@
             <p class="nfc-instruction">Hold your phone near the NFC sticker on your vehicle's windshield</p>
 
             <div class="nfc-illustration">
-                <svg width="100%" height="150" viewBox="0 0 300 150">
-                    <!-- Windshield -->
-                    <rect x="50" y="30" width="200" height="90" rx="10" fill="#E3F2FD" stroke="#4A7BA7" stroke-width="2"/>
-                    
-                    <!-- NFC Sticker -->
-                    <circle cx="100" cy="75" r="20" fill="#4A7BA7"/>
-                    <path d="M 95 75 Q 95 65, 105 65 Q 105 75, 95 75" fill="white"/>
-                    <path d="M 95 75 Q 105 75, 105 85 Q 95 85, 95 75" fill="white"/>
-                    
-                    <!-- Phone -->
-                    <rect x="150" y="50" width="50" height="80" rx="8" fill="#FFF" stroke="#4A7BA7" stroke-width="2"/>
-                    <circle cx="175" cy="65" r="2" fill="#4A7BA7"/>
-                    
-                    <!-- Arrow -->
-                    <path d="M 130 75 L 145 75" stroke="#FF9500" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M 140 70 L 145 75 L 140 80" stroke="#FF9500" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <svg width="100%" height="180" viewBox="0 0 300 180">
+                    <defs>
+                        <style>
+                            @keyframes phoneMove {
+                                0%, 10% { transform: translateX(0); }
+                                40%, 60% { transform: translateX(-55px); }
+                                90%, 100% { transform: translateX(0); }
+                            }
+                            @keyframes nfcGlow {
+                                0%, 30% { opacity: 0; r: 20; }
+                                40%, 60% { opacity: 1; r: 28; }
+                                70%, 100% { opacity: 0; r: 20; }
+                            }
+                            @keyframes checkMark {
+                                0%, 50% { opacity: 0; transform: scale(0); }
+                                60%, 80% { opacity: 1; transform: scale(1); }
+                                90%, 100% { opacity: 0; transform: scale(0); }
+                            }
+                            .phone-group { animation: phoneMove 3s ease-in-out infinite; }
+                            .nfc-glow { animation: nfcGlow 3s ease-in-out infinite; }
+                            .check-mark { animation: checkMark 3s ease-in-out infinite; transform-origin: center; }
+                        </style>
+                    </defs>
+
+                    <!-- Windshield frame -->
+                    <rect x="30" y="20" width="140" height="140" rx="12" fill="#E3F2FD" stroke="#3B82F6" stroke-width="2" />
+                    <text x="100" y="155" font-size="10" fill="#6B7280" text-anchor="middle">Windshield</text>
+
+                    <!-- NFC Sticker on windshield -->
+                    <circle class="nfc-glow" cx="100" cy="90" r="28" fill="#3B82F6" opacity="0.3" />
+                    <circle cx="100" cy="90" r="20" fill="#3B82F6" />
+                    <text x="100" y="94" font-size="12" fill="white" text-anchor="middle" font-weight="bold">NFC</text>
+
+                    <!-- Success check mark -->
+                    <g class="check-mark">
+                        <circle cx="100" cy="90" r="15" fill="#10B981" />
+                        <path d="M 92 90 L 98 96 L 110 84" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+
+                    <!-- Phone (animated) -->
+                    <g class="phone-group">
+                        <rect x="200" y="55" width="55" height="90" rx="8" fill="#1F2937" />
+                        <rect x="204" y="65" width="47" height="70" rx="2" fill="#E5E7EB" />
+                        <circle cx="227" cy="60" r="2" fill="#374151" />
+                        <rect x="218" y="140" width="18" height="3" rx="1" fill="#374151" />
+                        <!-- Phone screen content -->
+                        <text x="227" y="95" font-size="8" fill="#3B82F6" text-anchor="middle" font-weight="bold">DAE</text>
+                        <text x="227" y="108" font-size="6" fill="#6B7280" text-anchor="middle">Tap NFC</text>
+                    </g>
                 </svg>
             </div>
 
@@ -1948,15 +1970,58 @@
                     Tip
                 </div>
                 <div class="nfc-tip-text">
-                    The NFC sticker is located on the driver's side of the windshield, clearly visible and easy to reach.
+                    The NFC sticker is located on the driver's side of the windshield, clearly visible and easy to
+                    reach.
                 </div>
             </div>
+
+            <button class="btn-proceed" onclick="simulateNFCTap()" style="margin-top: 24px;">
+                <i class="fas fa-hand-pointer"></i> Simulate NFC Tap
+            </button>
 
             <button class="btn-cancel" onclick="goToHome()">Cancel</button>
         </div>
 
         <!-- SCREEN 4: Loading / Processing -->
         <div id="screen-loading" class="screen loading-screen">
+            <div class="loading-animation">
+                <svg viewBox="0 0 200 160" width="200" height="160">
+                    <!-- Truck -->
+                    <g class="truck-body">
+                        <rect x="20" y="90" width="90" height="45" rx="5" fill="#3B82F6"/>
+                        <rect x="85" y="75" width="35" height="60" rx="5" fill="#1E40AF"/>
+                        <rect x="92" y="82" width="22" height="20" rx="2" fill="#93C5FD"/>
+                        <circle cx="45" cy="140" r="12" fill="#1F2937"/>
+                        <circle cx="45" cy="140" r="6" fill="#6B7280"/>
+                        <circle cx="95" cy="140" r="12" fill="#1F2937"/>
+                        <circle cx="95" cy="140" r="6" fill="#6B7280"/>
+                    </g>
+
+                    <!-- Driver taking a break -->
+                    <g class="driver-scene">
+                        <!-- Driver body -->
+                        <circle cx="150" cy="95" r="12" fill="#FBBF24"/>
+                        <ellipse cx="150" cy="125" rx="10" ry="15" fill="#3B82F6"/>
+                        <!-- Coffee cup -->
+                        <rect x="162" y="108" width="12" height="16" rx="2" fill="#F3F4F6"/>
+                        <rect x="174" y="112" width="5" height="8" rx="2" fill="#F3F4F6"/>
+                        <!-- Steam from coffee -->
+                        <g class="steam">
+                            <path d="M168 105 Q170 100, 168 95" stroke="#9CA3AF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g class="steam" style="animation-delay: 0.5s;">
+                            <path d="M172 105 Q174 100, 172 95" stroke="#9CA3AF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <!-- Driver face -->
+                        <circle cx="147" cy="93" r="1.5" fill="#1F2937"/>
+                        <circle cx="153" cy="93" r="1.5" fill="#1F2937"/>
+                        <path d="M147 98 Q150 101, 153 98" stroke="#1F2937" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    </g>
+
+                    <!-- Ground -->
+                    <line x1="10" y1="150" x2="190" y2="150" stroke="#E5E7EB" stroke-width="2"/>
+                </svg>
+            </div>
             <div class="loading-spinner"></div>
             <h3 class="loading-title">Processing...</h3>
             <p class="loading-message">Validating your transaction</p>
@@ -1998,7 +2063,8 @@
 
             <div class="qr-instruction-box">
                 <h3>Next Steps</h3>
-                <p>The cashier will scan this code to authorize your fueling. Please wait for confirmation before proceeding to the pump.</p>
+                <p>The cashier will scan this code to authorize your fueling. Please wait for confirmation before
+                    proceeding to the pump.</p>
             </div>
 
             <button class="btn-cancel" onclick="cancelTransaction()">Cancel Transaction</button>
@@ -2081,15 +2147,18 @@
                     <div class="receipt-section-title">Station Information</div>
                     <div class="receipt-row">
                         <span class="receipt-label">Station Name</span>
-                        <span class="receipt-value">PETRONAS Kuching Central</span>
+                        <span class="receipt-value receipt-station-value">
+                            <span class="receipt-station-logo"><img src="petros.svg.png" alt="" id="receiptStationLogo"></span>
+                            <span id="receiptStationName">Petros Batu Kawa</span>
+                        </span>
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Station ID</span>
-                        <span class="receipt-value">STN-KC-001</span>
+                        <span class="receipt-value">STN-BK-001</span>
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Address</span>
-                        <span class="receipt-value">Jalan Tunku Abdul Rahman, Kuching</span>
+                        <span class="receipt-value">Jalan Batu Kawa, Kuching</span>
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Contact</span>
@@ -2167,7 +2236,7 @@
                 <!-- Driver Information -->
                 <div class="settings-section">
                     <div class="settings-section-title">Driver Information</div>
-                    
+
                     <div class="settings-item" onclick="editDriverInfo('name')">
                         <div class="settings-item-left">
                             <div class="settings-item-icon">
@@ -2211,7 +2280,7 @@
                 <!-- Vehicle Information -->
                 <div class="settings-section">
                     <div class="settings-section-title">Authorized Vehicles</div>
-                    
+
                     <div class="settings-item" onclick="selectVehicle('ABC-1234')">
                         <div class="settings-item-left">
                             <div class="settings-item-icon">
@@ -2242,7 +2311,7 @@
                 <!-- App Settings -->
                 <div class="settings-section">
                     <div class="settings-section-title">App Settings</div>
-                    
+
                     <div class="settings-item" onclick="changeSetting('language')">
                         <div class="settings-item-left">
                             <div class="settings-item-icon">
@@ -2273,7 +2342,7 @@
                 <!-- Support & Legal -->
                 <div class="settings-section">
                     <div class="settings-section-title">Support & Legal</div>
-                    
+
                     <div class="settings-item" onclick="openHelp()">
                         <div class="settings-item-left">
                             <div class="settings-item-icon">
@@ -2304,10 +2373,9 @@
 
         <!-- SCREEN 10: Inbox -->
         <div id="screen-inbox" class="screen inbox-screen">
-            <div class="screen-header">
-                <h2 class="screen-header-title">Inbox</h2>
-                <p class="screen-header-subtitle">Stay updated with important messages</p>
-            </div>
+            <header class="screen-header">
+                <h1 class="screen-header-title">Messages</h1>
+            </header>
 
             <div class="inbox-list" id="inboxList">
                 <!-- Messages will be populated here -->
@@ -2318,30 +2386,28 @@
         <nav class="bottom-nav">
             <button class="nav-item" onclick="startFueling()" id="nav-fuel">
                 <i class="fas fa-gas-pump nav-icon"></i>
-                <span class="nav-label">Fuel</span>
+                <span class="nav-label">Energy</span>
             </button>
-            
+
             <button class="nav-item" onclick="goToHistory()" id="nav-history">
                 <i class="fas fa-clock-rotate-left nav-icon"></i>
                 <span class="nav-label">History</span>
             </button>
-            
+
             <button class="nav-item center-action" onclick="goToHome()" id="nav-home">
-                <div class="nav-icon-wrapper">
-                    <i class="fas fa-home nav-icon"></i>
-                </div>
+                <i class="fas fa-house-chimney nav-icon"></i>
                 <span class="nav-label">Home</span>
             </button>
-            
+
             <button class="nav-item" onclick="goToInbox()" id="nav-inbox">
-                <i class="fas fa-inbox nav-icon"></i>
-                <span class="nav-label">Inbox</span>
+                <i class="fas fa-envelope nav-icon"></i>
+                <span class="nav-label">Messages</span>
                 <div class="nav-badge" id="inbox-badge">2</div>
             </button>
-            
+
             <button class="nav-item" onclick="goToSettings()" id="nav-settings">
-                <i class="fas fa-gear nav-icon"></i>
-                <span class="nav-label">Settings</span>
+                <i class="fas fa-user-circle nav-icon"></i>
+                <span class="nav-label">Profile</span>
             </button>
         </nav>
     </div>
@@ -2350,13 +2416,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
-        // ========== GLOBAL STATE ==========
-        let currentScreen = 'screen-welcome';
-        let qrTimerInterval = null;
-        let transactionData = {};
+        // ========== STATION LOGO HELPER ==========
+        function getStationLogo(stationName) {
+            const name = stationName.toLowerCase();
+            if (name.includes('petronas')) return 'petronas.png';
+            if (name.includes('shell')) return 'shell.png';
+            if (name.includes('caltex')) return 'caltex.png';
+            if (name.includes('petros')) return 'petros.svg.png';
+            return null;
+        }
+
+        // ========== GLOBAL MOTION & STATE ==========
+        const Motion = {
+            spring: "cubic-bezier(0.17, 0.67, 0.43, 1.1)",
+            smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
+
+            transition: function (fromId, toId) {
+                const from = document.getElementById(fromId);
+                const to = document.getElementById(toId);
+
+                if (!from || !to) return;
+
+                from.style.transition = `opacity 0.4s ${this.smooth}, transform 0.4s ${this.spring}`;
+                to.style.transition = `opacity 0.4s ${this.smooth}, transform 0.4s ${this.spring}`;
+
+                from.style.opacity = '0';
+                from.style.transform = 'scale(0.98)';
+
+                setTimeout(() => {
+                    from.classList.remove('active');
+                    to.classList.add('active');
+                    to.style.transform = 'scale(1.02)';
+                    to.style.opacity = '0';
+
+                    requestAnimationFrame(() => {
+                        to.style.transform = 'scale(1)';
+                        to.style.opacity = '1';
+                    });
+                }, 400);
+            }
+        };
+
+        let currentScreenId = 'screen-welcome';
         let transactionHistory = [];
         let inboxMessages = [];
         let map = null;
+        let qrTimerInterval = null;
+        let transactionData = null;
 
         // Motivational messages for loading screen
         const motivationalMessages = [
@@ -2415,7 +2521,7 @@
                     time: '5 days ago',
                     unread: false,
                     category: 'system',
-                    fullMessage: 'December 2025 Usage Report\n\nYour monthly fuel consumption report is now available.\n\nSummary:\n- Total Transactions: 24\n- Total Volume: 1,245L\n- Total Amount: MYR 4,357.50\n- Most Visited Station: PETRONAS Kuching Central\n\nTo download the detailed report, visit the History tab and tap "Download Monthly Report".\n\nThank you for using DAE!'
+                    fullMessage: 'December 2025 Usage Report\n\nYour monthly fuel consumption report is now available.\n\nSummary:\n- Total Transactions: 24\n- Total Volume: 1,245L\n- Total Amount: MYR 4,357.50\n- Most Visited Station: Petros Batu Kawa\n\nTo download the detailed report, visit the History tab and tap "Download Monthly Report".\n\nThank you for using DAE!'
                 }
             ];
         }
@@ -2423,7 +2529,7 @@
         // Render inbox messages
         function renderInbox() {
             const inboxList = document.getElementById('inboxList');
-            
+
             if (inboxMessages.length === 0) {
                 inboxList.innerHTML = `
                     <div class="empty-state">
@@ -2463,9 +2569,9 @@
 
             // Mark as read
             message.unread = false;
-            
+
             alert(`${message.title}\n\n${message.fullMessage}`);
-            
+
             // Re-render inbox and update badge
             renderInbox();
         }
@@ -2473,21 +2579,21 @@
         // Generate sample transaction history
         function generateSampleHistory() {
             const stations = [
-                'PETRONAS Kuching Central',
-                'Shell Pending',
-                'Caltex Petra Jaya',
-                'PETRONAS Matang'
+                'Petros Batu Kawa',
+                'Shell Batu Kawa',
+                'PETRONAS Batu Kawa',
+                'Caltex Batu Kawa'
             ];
-            
+
             const now = new Date();
             transactionHistory = [];
-            
+
             for (let i = 0; i < 8; i++) {
                 const date = new Date(now - (i * 86400000 * Math.random() * 5));
                 const volume = (Math.random() * 50 + 20).toFixed(1);
                 const pricePerLiter = 3.50;
                 const total = (volume * pricePerLiter).toFixed(2);
-                
+
                 transactionHistory.push({
                     id: `TXN-${10000 + i}`,
                     receiptNo: `RCP-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${i}`,
@@ -2506,7 +2612,7 @@
         // Render history list
         function renderHistory(filter = 'all') {
             const historyList = document.getElementById('historyList');
-            
+
             if (transactionHistory.length === 0) {
                 historyList.innerHTML = `
                     <div class="empty-state">
@@ -2523,9 +2629,9 @@
             // Filter transactions
             let filtered = transactionHistory;
             const now = new Date();
-            
+
             if (filter === 'today') {
-                filtered = transactionHistory.filter(t => 
+                filtered = transactionHistory.filter(t =>
                     t.date.toDateString() === now.toDateString()
                 );
             } else if (filter === 'week') {
@@ -2549,11 +2655,14 @@
                 return;
             }
 
-            historyList.innerHTML = filtered.map(txn => `
+            historyList.innerHTML = filtered.map(txn => {
+                const logo = getStationLogo(txn.station);
+                const logoHtml = logo ? `<div class="history-item-logo"><img src="${logo}" alt=""></div>` : '';
+                return `
                 <div class="history-item" onclick="viewReceiptDetails('${txn.id}')">
                     <div class="history-item-header">
                         <div>
-                            <div class="history-item-station">${txn.station}</div>
+                            <div class="history-item-station">${logoHtml}<span>${txn.station}</span></div>
                             <div class="history-item-date">${txn.dateString} • ${txn.timeString}</div>
                         </div>
                         <div class="history-item-amount">MYR ${txn.amount}</div>
@@ -2573,69 +2682,54 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // ========== UTILITY FUNCTIONS ==========
-        function showScreen(screenId) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
+        function navigateTo(screenId) {
+            if (currentScreenId === screenId) return;
 
-            // Show target screen
-            document.getElementById(screenId).classList.add('active');
-            currentScreen = screenId;
+            const from = currentScreenId;
+            const to = screenId;
 
-            // Update bottom nav active state
+            // Motion transition
+            Motion.transition(from, to);
+            currentScreenId = to;
+
+            // Update Navigation active state
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
 
-            // Set active nav item
-            if (screenId === 'screen-home') {
-                document.getElementById('nav-home').classList.add('active');
-            } else if (screenId === 'screen-history') {
-                document.getElementById('nav-history').classList.add('active');
-            } else if (screenId === 'screen-settings') {
-                document.getElementById('nav-settings').classList.add('active');
-            } else if (screenId === 'screen-inbox') {
-                document.getElementById('nav-inbox').classList.add('active');
+            const navMap = {
+                'screen-home': 'nav-home',
+                'screen-history': 'nav-history',
+                'screen-inbox': 'nav-inbox',
+                'screen-settings': 'nav-settings'
+            };
+
+            const activeNavId = navMap[screenId];
+            if (activeNavId) {
+                document.getElementById(activeNavId).classList.add('active');
             }
 
-            // Special handling for specific screens
-            if (screenId === 'screen-nfc') {
-                // Simulate NFC tap after 3 seconds
-                setTimeout(() => {
-                    nfcTapped();
-                }, 3000);
-            } else if (screenId === 'screen-home' && !map) {
+            // Special handling
+            if (screenId === 'screen-home' && !map) {
                 initializeMap();
             }
         }
 
+        // Manual NFC tap simulation (triggered by button)
+        function simulateNFCTap() {
+            nfcTapped();
+        }
+
         // ========== NAVIGATION FUNCTIONS ==========
-        function goToHome() {
-            showScreen('screen-home');
-        }
-
-        function startFueling() {
-            showScreen('screen-nfc');
-        }
-
-        function goToHistory() {
-            showScreen('screen-history');
-            renderHistory();
-        }
-
-        function goToSettings() {
-            showScreen('screen-settings');
-        }
-
-        function goToInbox() {
-            showScreen('screen-inbox');
-            renderInbox();
-        }
+        function goToHome() { navigateTo('screen-home'); }
+        function startFueling() { navigateTo('screen-nfc'); }
+        function goToHistory() { navigateTo('screen-history'); }
+        function goToSettings() { navigateTo('screen-settings'); }
+        function goToInbox() { navigateTo('screen-inbox'); }
 
         function selectVehicle(plateNumber) {
             const vehicles = {
@@ -2652,10 +2746,10 @@
                     limit: '250L/day'
                 }
             };
-            
+
             const vehicle = vehicles[plateNumber];
             if (!vehicle) return;
-            
+
             alert(`Vehicle Selected\n\n${vehicle.model}\nPlate: ${vehicle.plate}\nFuel Type: ${vehicle.fuel}\nDaily Limit: ${vehicle.limit}\n\nIn production, this would:\n- Switch active vehicle for fueling\n- Update home screen display\n- Adjust fuel limits accordingly`);
         }
 
@@ -2686,7 +2780,7 @@
                 chip.classList.remove('active');
             });
             event.target.classList.add('active');
-            
+
             renderHistory(filter);
         }
 
@@ -2701,7 +2795,14 @@
             document.getElementById('receiptVolume').textContent = `${transaction.volume}L`;
             document.getElementById('receiptTotal').textContent = transaction.amount;
 
-            showScreen('screen-receipt');
+            // Update station name and logo
+            document.getElementById('receiptStationName').textContent = transaction.station;
+            const logo = getStationLogo(transaction.station);
+            if (logo) {
+                document.getElementById('receiptStationLogo').src = logo;
+            }
+
+            navigateTo('screen-receipt');
         }
 
         // ========== SETTINGS FUNCTIONS ==========
@@ -2746,42 +2847,47 @@
 
         // ========== APP FLOW FUNCTIONS ==========
         function startApp() {
-            // Device authentication happens at OS level (removed PIN screen per SOW)
-            showScreen('screen-home');
-            setTimeout(() => {
-                initializeMap();
-            }, 500);
+            navigateTo('screen-home');
+
+            // Populate sample data
+            generateSampleHistory();
+            generateSampleInbox();
+            renderHistory('all');
+            renderInbox();
         }
 
         function initializeMap() {
             if (map) return; // Already initialized
 
             try {
-                // Kuching, Sarawak coordinates - City Centre
-                const kuchingCenter = [1.5535, 110.3593];
-                
+                // Driver location - near Petros Batu Kawa station
+                const driverLocation = [1.5175, 110.3140];
+                // Petros Batu Kawa station
+                const petrosBatuKawa = [1.5155829493339648, 110.31229205902129];
+
                 map = L.map('map', {
-                    zoomControl: true,
+                    zoomControl: false,
                     scrollWheelZoom: false,
-                    dragging: true
-                }).setView(kuchingCenter, 13);
-                
+                    dragging: true,
+                    attributionControl: false
+                }).setView(driverLocation, 14);
+
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors',
                     maxZoom: 18
                 }).addTo(map);
 
-                // Add markers for gas stations in Kuching
+                // Add markers for gas stations near Batu Kawa
                 const stations = [
-                    { lat: 1.5535, lng: 110.3593, name: 'PETRONAS Kuching Central', distance: '0.5 km' },
-                    { lat: 1.5320, lng: 110.3450, name: 'Shell Pending', distance: '2.8 km' },
-                    { lat: 1.5650, lng: 110.3750, name: 'Caltex Petra Jaya', distance: '3.2 km' }
+                    { lat: 1.5155829493339648, lng: 110.31229205902129, name: 'Petros Batu Kawa', distance: '0.3 km' },
+                    { lat: 1.5280, lng: 110.3250, name: 'Shell Batu Kawa', distance: '1.5 km' },
+                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Batu Kawa', distance: '1.8 km' },
+                    { lat: 1.5350, lng: 110.3350, name: 'Caltex Batu Kawa', distance: '2.5 km' }
                 ];
 
                 // Custom marker icon
                 const customIcon = L.divIcon({
                     className: 'custom-marker',
-                    html: '<div style="background: #4A7BA7; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-gas-pump"></i></div>',
+                    html: '<div style="background: #3B82F6; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-gas-pump"></i></div>',
                     iconSize: [30, 30],
                     iconAnchor: [15, 15]
                 });
@@ -2792,7 +2898,7 @@
                         .bindPopup(`<b>${station.name}</b><br>${station.distance} away`);
                 });
 
-                // Add current location marker
+                // Add current location marker (driver)
                 const currentLocationIcon = L.divIcon({
                     className: 'current-location-marker',
                     html: '<div style="background: #FF9500; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
@@ -2800,14 +2906,22 @@
                     iconAnchor: [8, 8]
                 });
 
-                L.marker(kuchingCenter, { icon: currentLocationIcon })
+                L.marker(driverLocation, { icon: currentLocationIcon })
                     .addTo(map)
                     .bindPopup('<b>Your Location</b>');
 
-                // Force map to resize after initialization
+                // Force map to resize after initialization and fit bounds
                 setTimeout(() => {
                     map.invalidateSize();
-                }, 100);
+                    // Fit map to show driver and nearest station
+                    const bounds = L.latLngBounds([driverLocation, petrosBatuKawa]);
+                    map.fitBounds(bounds.pad(0.3));
+                }, 200);
+
+                // Also invalidate on window resize
+                window.addEventListener('resize', () => {
+                    if (map) map.invalidateSize();
+                });
             } catch (error) {
                 console.error('Map initialization error:', error);
             }
@@ -2815,8 +2929,8 @@
 
         function nfcTapped() {
             // Show loading screen
-            showScreen('screen-loading');
-            
+            navigateTo('screen-loading');
+
             // Rotate through motivational messages
             let messageIndex = 0;
             const messageInterval = setInterval(() => {
@@ -2846,13 +2960,14 @@
             document.getElementById('txnId').textContent = txnId.replace('TXN-', '');
 
             // Clear previous QR code
-            document.getElementById('qrCodeDisplay').innerHTML = '';
+            const qrContainer = document.getElementById('qrCodeDisplay');
+            qrContainer.innerHTML = '';
 
-            // Generate QR code
-            new QRCode(document.getElementById('qrCodeDisplay'), {
+            // Generate QR code with proper size
+            new QRCode(qrContainer, {
                 text: JSON.stringify(transactionData),
-                width: 240,
-                height: 240,
+                width: 220,
+                height: 220,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
@@ -2862,24 +2977,24 @@
             startQRTimer(300);
 
             // Show QR screen
-            showScreen('screen-qr');
+            navigateTo('screen-qr');
 
-            // Simulate cashier scanning after 6 seconds
+            // Simulate cashier scanning after 8 seconds (give user time to see it)
             setTimeout(() => {
                 qrScanned();
-            }, 6000);
+            }, 8000);
         }
 
         function startQRTimer(seconds) {
             if (qrTimerInterval) clearInterval(qrTimerInterval);
-            
+
             let remaining = seconds;
             qrTimerInterval = setInterval(() => {
                 remaining--;
                 const mins = Math.floor(remaining / 60);
                 const secs = remaining % 60;
                 document.getElementById('qrTimer').textContent = `${mins}:${String(secs).padStart(2, '0')}`;
-                
+
                 if (remaining <= 0) {
                     clearInterval(qrTimerInterval);
                     cancelTransaction();
@@ -2892,18 +3007,18 @@
             if (qrTimerInterval) clearInterval(qrTimerInterval);
 
             // Show loading for CMS validation
-            showScreen('screen-loading');
+            navigateTo('screen-loading');
             document.getElementById('motivationalText').textContent = '"Validating your authorization..."';
 
             // Simulate CMS approval
             setTimeout(() => {
-                showScreen('screen-approval');
+                navigateTo('screen-approval');
             }, 2000);
         }
 
         function simulateFueling() {
             // Show loading during fueling
-            showScreen('screen-loading');
+            navigateTo('screen-loading');
             document.getElementById('motivationalText').textContent = '"Fueling in progress..."';
 
             // Simulate fueling completion after 5 seconds
@@ -2917,7 +3032,7 @@
             const volume = (Math.random() * 50 + 20).toFixed(1);
             const pricePerLiter = 3.50;
             const total = (volume * pricePerLiter).toFixed(2);
-            
+
             const now = new Date();
             const receiptNo = `RCP-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${Math.floor(Math.random() * 1000)}`;
             const dateTime = `${now.getDate()} ${now.toLocaleString('en-US', { month: 'short' })} ${now.getFullYear()}, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -2932,7 +3047,7 @@
             transactionHistory.unshift({
                 id: transactionData.txnId || `TXN-${Date.now()}`,
                 receiptNo: receiptNo,
-                station: 'PETRONAS Kuching Central',
+                station: 'Petros Batu Kawa',
                 date: now,
                 dateString: `${now.getDate()} ${now.toLocaleString('en-US', { month: 'short' })} ${now.getFullYear()}`,
                 timeString: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
@@ -2942,12 +3057,12 @@
                 vehicle: 'ABC-1234'
             });
 
-            showScreen('screen-receipt');
+            navigateTo('screen-receipt');
         }
 
         function cancelTransaction() {
             if (qrTimerInterval) clearInterval(qrTimerInterval);
-            showScreen('screen-home');
+            navigateTo('screen-home');
         }
 
         function downloadReceipt() {
@@ -2955,7 +3070,7 @@
         }
 
         // ========== INITIALIZATION ==========
-        window.onload = function() {
+        window.onload = function () {
             generateSampleHistory();
             generateSampleInbox();
             updateInboxBadge();
@@ -2963,4 +3078,5 @@
         };
     </script>
 </body>
+
 </html>
