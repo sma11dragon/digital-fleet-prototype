@@ -295,10 +295,13 @@
             margin-bottom: var(--space-md);
         }
 
-        .home-dae-logo {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 4px;
+        .home-driver-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
         }
 
         .home-driver-info {
@@ -316,19 +319,34 @@
             opacity: 0.8;
         }
 
-        .home-vehicle-info {
+        .home-vehicle-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
-            font-size: var(--font-size-sm);
-            opacity: 0.95;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 12px;
-            border-radius: 8px;
+            gap: var(--space-md);
         }
 
-        .home-vehicle-info i {
-            font-size: 16px;
+        .vehicle-image {
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .vehicle-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .vehicle-details .registration {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+        }
+
+        .vehicle-details .vehicle-model {
+            font-size: var(--font-size-xs);
+            opacity: 0.8;
         }
 
         .home-content {
@@ -393,6 +411,44 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .stat-row.fuel-available {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stat-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .fuel-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .fuel-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981 0%, #06B6D4 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .fuel-percentage {
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: #10B981;
+        }
+
+        .fuel-type {
+            display: flex;
+            align-items: center;
         }
 
         /* Primary Action Button */
@@ -725,17 +781,14 @@
             text-align: center;
         }
 
-        .loading-animation {
-            width: 200px;
-            height: 160px;
+        .loading-fleet-graphic {
             margin: 0 auto var(--space-lg);
-            position: relative;
         }
 
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid var(--gray-200);
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
             border-top-color: var(--dae-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -747,29 +800,6 @@
                 transform: rotate(360deg);
             }
         }
-
-        @keyframes driverBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes steamRise {
-            0% { opacity: 0; transform: translateY(0) scale(0.5); }
-            50% { opacity: 1; transform: translateY(-10px) scale(1); }
-            100% { opacity: 0; transform: translateY(-20px) scale(0.5); }
-        }
-
-        @keyframes truckWiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-1deg); }
-            75% { transform: rotate(1deg); }
-        }
-
-        .driver-scene { animation: driverBounce 2s ease-in-out infinite; }
-        .steam { animation: steamRise 2s ease-in-out infinite; }
-        .steam:nth-child(2) { animation-delay: 0.5s; }
-        .steam:nth-child(3) { animation-delay: 1s; }
-        .truck-body { animation: truckWiggle 3s ease-in-out infinite; }
 
         .loading-title {
             font-size: var(--font-size-xl);
@@ -1374,12 +1404,17 @@
         }
 
         .history-filters {
+            position: sticky;
+            top: 0;
+            z-index: 100;
             padding: var(--space-md);
             display: flex;
             gap: var(--space-sm);
             overflow-x: auto;
             -ms-overflow-style: none;
             scrollbar-width: none;
+            background: #F2F2F7;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
         }
 
         .history-filters::-webkit-scrollbar {
@@ -1735,29 +1770,55 @@
         <div id="screen-home" class="screen home-screen">
             <header class="home-header">
                 <div class="home-header-top">
-                    <svg class="home-dae-logo" viewBox="0 0 300 300" fill="currentColor" width="48" height="48">
-                        <path d="M150 50L250 250H50L150 50Z" opacity="0.2" />
-                        <text x="50%" y="55%" font-size="90" font-weight="800" text-anchor="middle" font-family="-apple-system">DAE</text>
-                    </svg>
+                    <div class="home-driver-avatar">
+                        <svg viewBox="0 0 100 100" width="52" height="52">
+                            <circle cx="50" cy="50" r="48" fill="#8B5A2B"/>
+                            <circle cx="50" cy="38" r="18" fill="#6B4423"/>
+                            <ellipse cx="50" cy="75" rx="28" ry="22" fill="#1E40AF"/>
+                            <circle cx="42" cy="35" r="2" fill="#1F2937"/>
+                            <circle cx="58" cy="35" r="2" fill="#1F2937"/>
+                            <path d="M44 44 Q50 48, 56 44" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M32 25 Q50 15, 68 25 L65 30 Q50 22, 35 30 Z" fill="#1F2937"/>
+                        </svg>
+                    </div>
                     <div class="home-driver-info">
                         <div class="home-driver-name">Abdul Hamid</div>
-                        <div class="home-greeting">Digital Fleet Driver</div>
+                        <div class="home-greeting">Tiong Nam Group A</div>
                     </div>
                 </div>
-                <div class="home-vehicle-info">
-                    <i class="fas fa-truck"></i>
-                    <span class="registration">ABC-1234</span>
-                    <span class="divider">•</span>
-                    <span class="vehicle-model">Mercedes-Benz Actros</span>
+                <div class="home-vehicle-card">
+                    <div class="vehicle-image">
+                        <svg viewBox="0 0 120 60" width="100%" height="50">
+                            <rect x="5" y="25" width="70" height="30" rx="3" fill="#1E40AF"/>
+                            <rect x="60" y="15" width="35" height="40" rx="4" fill="#1E3A8A"/>
+                            <rect x="65" y="20" width="25" height="18" rx="2" fill="#93C5FD"/>
+                            <circle cx="25" cy="55" r="8" fill="#374151"/>
+                            <circle cx="25" cy="55" r="4" fill="#6B7280"/>
+                            <circle cx="75" cy="55" r="8" fill="#374151"/>
+                            <circle cx="75" cy="55" r="4" fill="#6B7280"/>
+                            <rect x="100" y="25" width="15" height="25" rx="2" fill="#9CA3AF"/>
+                            <text x="60" y="10" font-size="6" fill="white" text-anchor="middle">Mercedes-Benz Actros</text>
+                        </svg>
+                    </div>
+                    <div class="vehicle-details">
+                        <span class="registration">ABC-1234</span>
+                        <span class="vehicle-model">Mercedes-Benz Actros</span>
+                    </div>
                 </div>
             </header>
 
             <div class="home-content">
                 <!-- Quick Stats -->
                 <div class="quick-stats-card">
-                    <div class="stat-row">
-                        <div class="stat-label">Available Today</div>
-                        <div class="stat-value large">180L</div>
+                    <div class="stat-row fuel-available">
+                        <div class="stat-info">
+                            <div class="stat-label">Available Today</div>
+                            <div class="stat-value large">180L</div>
+                        </div>
+                        <div class="fuel-bar-container">
+                            <div class="fuel-bar" style="width: 72%;"></div>
+                        </div>
+                        <div class="fuel-percentage">72%</div>
                     </div>
                     <div class="stat-row">
                         <div class="stat-label">Daily Limit</div>
@@ -1765,7 +1826,10 @@
                     </div>
                     <div class="stat-row">
                         <div class="stat-label">Fuel Type</div>
-                        <div class="stat-value">Diesel</div>
+                        <div class="stat-value fuel-type">
+                            <i class="fas fa-gas-pump" style="color: #F59E0B; margin-right: 6px;"></i>
+                            Diesel
+                        </div>
                     </div>
                 </div>
 
@@ -1816,12 +1880,12 @@
                         <i class="fas fa-chevron-right station-arrow"></i>
                     </div>
 
-                    <div class="station-item" onclick="selectStation('Shell Batu Kawa')">
+                    <div class="station-item" onclick="selectStation('Shell Petra Jaya')">
                         <div class="station-logo">
                             <img src="shell.png" alt="Shell">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">Shell Batu Kawa</div>
+                            <div class="station-name">Shell Petra Jaya</div>
                             <div class="station-distance">1.5 km away • 6am - 10pm</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-restaurant" title="Restaurant">
@@ -1844,12 +1908,12 @@
                         <i class="fas fa-chevron-right station-arrow"></i>
                     </div>
 
-                    <div class="station-item" onclick="selectStation('PETRONAS Batu Kawa')">
+                    <div class="station-item" onclick="selectStation('PETRONAS Green Height')">
                         <div class="station-logo">
                             <img src="petronas.png" alt="PETRONAS">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">PETRONAS Batu Kawa</div>
+                            <div class="station-name">PETRONAS Green Height</div>
                             <div class="station-distance">1.8 km away • Open 24/7</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-surau" title="Surau">
@@ -1866,13 +1930,13 @@
                         <i class="fas fa-chevron-right station-arrow"></i>
                     </div>
 
-                    <div class="station-item" onclick="selectStation('Caltex Batu Kawa')">
+                    <div class="station-item" onclick="selectStation('Petron Jalan Tun Abang Hj Openg')">
                         <div class="station-logo">
-                            <img src="caltex.png" alt="Caltex">
+                            <img src="petron.png" alt="Petron">
                         </div>
                         <div class="station-details">
-                            <div class="station-name">Caltex Batu Kawa</div>
-                            <div class="station-distance">2.5 km away • 6am - 10pm</div>
+                            <div class="station-name">Petron Jln Tun Abang Hj Openg</div>
+                            <div class="station-distance">2.5 km away • Open 24/7</div>
                             <div class="station-amenities">
                                 <div class="amenity-icon amenity-restaurant" title="Restaurant">
                                     <i class="fas fa-utensils"></i>
@@ -1912,55 +1976,75 @@
             <p class="nfc-instruction">Hold your phone near the NFC sticker on your vehicle's windshield</p>
 
             <div class="nfc-illustration">
-                <svg width="100%" height="180" viewBox="0 0 300 180">
+                <svg width="100%" height="220" viewBox="0 0 320 220">
                     <defs>
                         <style>
                             @keyframes phoneMove {
-                                0%, 10% { transform: translateX(0); }
-                                40%, 60% { transform: translateX(-55px); }
-                                90%, 100% { transform: translateX(0); }
+                                0%, 15% { transform: translateX(0); }
+                                45%, 55% { transform: translateX(-85px); }
+                                85%, 100% { transform: translateX(0); }
                             }
-                            @keyframes nfcGlow {
-                                0%, 30% { opacity: 0; r: 20; }
-                                40%, 60% { opacity: 1; r: 28; }
-                                70%, 100% { opacity: 0; r: 20; }
+                            @keyframes nfcPulse {
+                                0%, 40% { opacity: 0.3; transform: scale(1); }
+                                45%, 55% { opacity: 1; transform: scale(1.2); }
+                                60%, 100% { opacity: 0.3; transform: scale(1); }
                             }
-                            @keyframes checkMark {
-                                0%, 50% { opacity: 0; transform: scale(0); }
-                                60%, 80% { opacity: 1; transform: scale(1); }
-                                90%, 100% { opacity: 0; transform: scale(0); }
-                            }
-                            .phone-group { animation: phoneMove 3s ease-in-out infinite; }
-                            .nfc-glow { animation: nfcGlow 3s ease-in-out infinite; }
-                            .check-mark { animation: checkMark 3s ease-in-out infinite; transform-origin: center; }
+                            .phone-anim { animation: phoneMove 3.5s ease-in-out infinite; }
+                            .nfc-pulse { animation: nfcPulse 3.5s ease-in-out infinite; transform-origin: center; }
                         </style>
+                        <linearGradient id="cabGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1E40AF"/>
+                            <stop offset="100%" style="stop-color:#1E3A8A"/>
+                        </linearGradient>
+                        <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#DBEAFE"/>
+                            <stop offset="100%" style="stop-color:#93C5FD"/>
+                        </linearGradient>
                     </defs>
 
-                    <!-- Windshield frame -->
-                    <rect x="30" y="20" width="140" height="140" rx="12" fill="#E3F2FD" stroke="#3B82F6" stroke-width="2" />
-                    <text x="100" y="155" font-size="10" fill="#6B7280" text-anchor="middle">Windshield</text>
+                    <!-- Truck cab body -->
+                    <rect x="15" y="70" width="180" height="130" rx="8" fill="url(#cabGrad)"/>
+
+                    <!-- Windshield (large, angled) -->
+                    <path d="M 25 75 L 185 75 L 170 145 L 40 145 Z" fill="url(#glassGrad)" stroke="#60A5FA" stroke-width="3"/>
+
+                    <!-- Windshield reflection -->
+                    <path d="M 40 82 L 85 82 L 78 100 L 47 100 Z" fill="rgba(255,255,255,0.4)"/>
 
                     <!-- NFC Sticker on windshield -->
-                    <circle class="nfc-glow" cx="100" cy="90" r="28" fill="#3B82F6" opacity="0.3" />
-                    <circle cx="100" cy="90" r="20" fill="#3B82F6" />
-                    <text x="100" y="94" font-size="12" fill="white" text-anchor="middle" font-weight="bold">NFC</text>
-
-                    <!-- Success check mark -->
-                    <g class="check-mark">
-                        <circle cx="100" cy="90" r="15" fill="#10B981" />
-                        <path d="M 92 90 L 98 96 L 110 84" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                    <g class="nfc-pulse">
+                        <circle cx="145" cy="115" r="28" fill="#3B82F6" opacity="0.3"/>
                     </g>
+                    <circle cx="145" cy="115" r="22" fill="#3B82F6"/>
+                    <text x="145" y="112" font-size="8" fill="white" text-anchor="middle" font-weight="bold">NFC</text>
+                    <text x="145" y="122" font-size="6" fill="rgba(255,255,255,0.8)" text-anchor="middle">TAP HERE</text>
+
+                    <!-- Side mirror -->
+                    <rect x="0" y="100" width="22" height="16" rx="3" fill="#374151"/>
+                    <rect x="3" y="103" width="16" height="10" rx="2" fill="#9CA3AF"/>
+
+                    <!-- Truck grille area -->
+                    <rect x="40" y="150" width="130" height="45" rx="4" fill="#1E3A8A"/>
+                    <rect x="55" y="158" width="100" height="12" rx="2" fill="#374151"/>
+
+                    <!-- Headlights -->
+                    <ellipse cx="55" cy="180" rx="12" ry="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+                    <ellipse cx="155" cy="180" rx="12" ry="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
 
                     <!-- Phone (animated) -->
-                    <g class="phone-group">
-                        <rect x="200" y="55" width="55" height="90" rx="8" fill="#1F2937" />
-                        <rect x="204" y="65" width="47" height="70" rx="2" fill="#E5E7EB" />
-                        <circle cx="227" cy="60" r="2" fill="#374151" />
-                        <rect x="218" y="140" width="18" height="3" rx="1" fill="#374151" />
-                        <!-- Phone screen content -->
-                        <text x="227" y="95" font-size="8" fill="#3B82F6" text-anchor="middle" font-weight="bold">DAE</text>
-                        <text x="227" y="108" font-size="6" fill="#6B7280" text-anchor="middle">Tap NFC</text>
+                    <g class="phone-anim">
+                        <rect x="250" y="65" width="55" height="95" rx="8" fill="#1F2937"/>
+                        <rect x="254" y="75" width="47" height="75" rx="3" fill="#F3F4F6"/>
+                        <circle cx="277" cy="70" r="2" fill="#4B5563"/>
+                        <rect x="267" y="155" width="20" height="3" rx="1" fill="#4B5563"/>
+                        <!-- Phone screen -->
+                        <rect x="262" y="95" width="30" height="30" rx="4" fill="#3B82F6"/>
+                        <text x="277" y="114" font-size="9" fill="white" text-anchor="middle" font-weight="bold">DAE</text>
+                        <text x="277" y="138" font-size="6" fill="#6B7280" text-anchor="middle">Ready to scan</text>
                     </g>
+
+                    <!-- Label -->
+                    <text x="105" y="210" font-size="11" fill="#6B7280" text-anchor="middle" font-weight="500">Hold phone near NFC sticker on windshield</text>
                 </svg>
             </div>
 
@@ -1984,42 +2068,50 @@
 
         <!-- SCREEN 4: Loading / Processing -->
         <div id="screen-loading" class="screen loading-screen">
-            <div class="loading-animation">
-                <svg viewBox="0 0 200 160" width="200" height="160">
-                    <!-- Truck -->
-                    <g class="truck-body">
-                        <rect x="20" y="90" width="90" height="45" rx="5" fill="#3B82F6"/>
-                        <rect x="85" y="75" width="35" height="60" rx="5" fill="#1E40AF"/>
-                        <rect x="92" y="82" width="22" height="20" rx="2" fill="#93C5FD"/>
-                        <circle cx="45" cy="140" r="12" fill="#1F2937"/>
-                        <circle cx="45" cy="140" r="6" fill="#6B7280"/>
-                        <circle cx="95" cy="140" r="12" fill="#1F2937"/>
-                        <circle cx="95" cy="140" r="6" fill="#6B7280"/>
+            <div class="loading-fleet-graphic">
+                <svg viewBox="0 0 280 140" width="280" height="140">
+                    <defs>
+                        <linearGradient id="truckGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3B82F6"/>
+                            <stop offset="100%" style="stop-color:#1E40AF"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Truck 1 (main, foreground) -->
+                    <g>
+                        <!-- Trailer -->
+                        <rect x="20" y="55" width="120" height="60" rx="4" fill="url(#truckGradient)"/>
+                        <rect x="25" y="60" width="110" height="50" rx="2" fill="#1E3A8A" opacity="0.3"/>
+                        <text x="80" y="90" font-size="12" fill="white" text-anchor="middle" font-weight="bold" opacity="0.8">DAE FLEET</text>
+
+                        <!-- Cab -->
+                        <rect x="140" y="45" width="50" height="70" rx="6" fill="url(#truckGradient)"/>
+                        <rect x="148" y="52" width="35" height="28" rx="3" fill="#BFDBFE"/>
+                        <rect x="148" y="52" width="35" height="8" fill="#93C5FD" rx="3"/>
+
+                        <!-- Wheels -->
+                        <circle cx="55" cy="118" r="12" fill="#1F2937"/>
+                        <circle cx="55" cy="118" r="6" fill="#4B5563"/>
+                        <circle cx="110" cy="118" r="12" fill="#1F2937"/>
+                        <circle cx="110" cy="118" r="6" fill="#4B5563"/>
+                        <circle cx="165" cy="118" r="12" fill="#1F2937"/>
+                        <circle cx="165" cy="118" r="6" fill="#4B5563"/>
+
+                        <!-- Headlight -->
+                        <rect x="185" y="75" width="8" height="15" rx="2" fill="#FEF3C7"/>
                     </g>
 
-                    <!-- Driver taking a break -->
-                    <g class="driver-scene">
-                        <!-- Driver body -->
-                        <circle cx="150" cy="95" r="12" fill="#FBBF24"/>
-                        <ellipse cx="150" cy="125" rx="10" ry="15" fill="#3B82F6"/>
-                        <!-- Coffee cup -->
-                        <rect x="162" y="108" width="12" height="16" rx="2" fill="#F3F4F6"/>
-                        <rect x="174" y="112" width="5" height="8" rx="2" fill="#F3F4F6"/>
-                        <!-- Steam from coffee -->
-                        <g class="steam">
-                            <path d="M168 105 Q170 100, 168 95" stroke="#9CA3AF" stroke-width="2" fill="none" stroke-linecap="round"/>
-                        </g>
-                        <g class="steam" style="animation-delay: 0.5s;">
-                            <path d="M172 105 Q174 100, 172 95" stroke="#9CA3AF" stroke-width="2" fill="none" stroke-linecap="round"/>
-                        </g>
-                        <!-- Driver face -->
-                        <circle cx="147" cy="93" r="1.5" fill="#1F2937"/>
-                        <circle cx="153" cy="93" r="1.5" fill="#1F2937"/>
-                        <path d="M147 98 Q150 101, 153 98" stroke="#1F2937" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <!-- Truck 2 (background, smaller) -->
+                    <g opacity="0.4" transform="translate(180, 20) scale(0.5)">
+                        <rect x="20" y="55" width="100" height="50" rx="3" fill="#64748B"/>
+                        <rect x="120" y="48" width="40" height="57" rx="4" fill="#64748B"/>
+                        <circle cx="50" cy="108" r="8" fill="#374151"/>
+                        <circle cx="90" cy="108" r="8" fill="#374151"/>
+                        <circle cx="140" cy="108" r="8" fill="#374151"/>
                     </g>
 
-                    <!-- Ground -->
-                    <line x1="10" y1="150" x2="190" y2="150" stroke="#E5E7EB" stroke-width="2"/>
+                    <!-- Ground line -->
+                    <line x1="0" y1="130" x2="280" y2="130" stroke="#E5E7EB" stroke-width="2"/>
                 </svg>
             </div>
             <div class="loading-spinner"></div>
@@ -2421,7 +2513,7 @@
             const name = stationName.toLowerCase();
             if (name.includes('petronas')) return 'petronas.png';
             if (name.includes('shell')) return 'shell.png';
-            if (name.includes('caltex')) return 'caltex.png';
+            if (name.includes('petron')) return 'petron.png';
             if (name.includes('petros')) return 'petros.svg.png';
             return null;
         }
@@ -2580,9 +2672,9 @@
         function generateSampleHistory() {
             const stations = [
                 'Petros Batu Kawa',
-                'Shell Batu Kawa',
-                'PETRONAS Batu Kawa',
-                'Caltex Batu Kawa'
+                'Shell Petra Jaya',
+                'PETRONAS Green Height',
+                'Petron Jln Tun Abang Hj Openg'
             ];
 
             const now = new Date();
@@ -2713,9 +2805,15 @@
                 document.getElementById(activeNavId).classList.add('active');
             }
 
-            // Special handling
-            if (screenId === 'screen-home' && !map) {
-                initializeMap();
+            // Special handling - initialize map after screen transition completes
+            if (screenId === 'screen-home') {
+                setTimeout(() => {
+                    if (!map) {
+                        initializeMap();
+                    } else {
+                        map.invalidateSize();
+                    }
+                }, 500);
             }
         }
 
@@ -2879,9 +2977,9 @@
                 // Add markers for gas stations near Batu Kawa
                 const stations = [
                     { lat: 1.5155829493339648, lng: 110.31229205902129, name: 'Petros Batu Kawa', distance: '0.3 km' },
-                    { lat: 1.5280, lng: 110.3250, name: 'Shell Batu Kawa', distance: '1.5 km' },
-                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Batu Kawa', distance: '1.8 km' },
-                    { lat: 1.5350, lng: 110.3350, name: 'Caltex Batu Kawa', distance: '2.5 km' }
+                    { lat: 1.5280, lng: 110.3250, name: 'Shell Petra Jaya', distance: '1.5 km' },
+                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Green Height', distance: '1.8 km' },
+                    { lat: 1.5350, lng: 110.3350, name: 'Petron Jln Tun Abang Hj Openg', distance: '2.5 km' }
                 ];
 
                 // Custom marker icon
