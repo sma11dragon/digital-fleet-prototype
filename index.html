@@ -564,17 +564,17 @@
         }
 
         .station-logo {
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: var(--space-md);
             flex-shrink: 0;
-            background: white;
-            border-radius: var(--radius-md);
+            background: transparent;
+            border-radius: 0;
             overflow: hidden;
-            padding: 4px;
+            padding: 0;
         }
 
         .station-logo img {
@@ -1390,7 +1390,7 @@
         }
 
         .screen-header {
-            background: #000000;
+            background: #FF9500;
             color: white;
             padding: var(--space-xl) var(--space-md) var(--space-lg);
             border-bottom-left-radius: var(--radius-xl);
@@ -1440,7 +1440,8 @@
         }
 
         .history-list {
-            padding: 0 var(--space-md);
+            padding: var(--space-md);
+            padding-top: var(--space-sm);
         }
 
         .history-item {
@@ -1489,10 +1490,12 @@
         }
 
         .history-item-amount {
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-base);
             font-weight: 800;
             color: #000000;
             letter-spacing: -0.02em;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .history-item-details {
@@ -1548,7 +1551,7 @@
         }
 
         .settings-profile {
-            background: #000000;
+            background: #FF9500;
             padding: var(--space-xl) var(--space-md);
             text-align: center;
             border-bottom-left-radius: var(--radius-xl);
@@ -1677,7 +1680,13 @@
         }
 
         .inbox-item.unread {
-            background: rgba(0, 122, 255, 0.03);
+            background: rgba(255, 149, 0, 0.1);
+            border-left: 4px solid #FF9500;
+        }
+
+        .inbox-item.unread .inbox-item-title {
+            color: #FF9500;
+            font-weight: 800;
         }
 
         .inbox-item-header {
@@ -1771,15 +1780,7 @@
             <header class="home-header">
                 <div class="home-header-top">
                     <div class="home-driver-avatar">
-                        <svg viewBox="0 0 100 100" width="52" height="52">
-                            <circle cx="50" cy="50" r="48" fill="#8B5A2B"/>
-                            <circle cx="50" cy="38" r="18" fill="#6B4423"/>
-                            <ellipse cx="50" cy="75" rx="28" ry="22" fill="#1E40AF"/>
-                            <circle cx="42" cy="35" r="2" fill="#1F2937"/>
-                            <circle cx="58" cy="35" r="2" fill="#1F2937"/>
-                            <path d="M44 44 Q50 48, 56 44" stroke="#1F2937" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            <path d="M32 25 Q50 15, 68 25 L65 30 Q50 22, 35 30 Z" fill="#1F2937"/>
-                        </svg>
+                        <img src="Fleet Driver Icon.png" alt="Abdul Hamid" style="width: 52px; height: 52px; object-fit: cover; border-radius: 50%;">
                     </div>
                     <div class="home-driver-info">
                         <div class="home-driver-name">Abdul Hamid</div>
@@ -1788,20 +1789,13 @@
                 </div>
                 <div class="home-vehicle-card">
                     <div class="vehicle-image">
-                        <svg viewBox="0 0 120 60" width="100%" height="50">
-                            <rect x="5" y="25" width="70" height="30" rx="3" fill="#1E40AF"/>
-                            <rect x="60" y="15" width="35" height="40" rx="4" fill="#1E3A8A"/>
-                            <rect x="65" y="20" width="25" height="18" rx="2" fill="#93C5FD"/>
-                            <circle cx="25" cy="55" r="8" fill="#374151"/>
-                            <circle cx="25" cy="55" r="4" fill="#6B7280"/>
-                            <circle cx="75" cy="55" r="8" fill="#374151"/>
-                            <circle cx="75" cy="55" r="4" fill="#6B7280"/>
-                            <rect x="100" y="25" width="15" height="25" rx="2" fill="#9CA3AF"/>
-                            <text x="60" y="10" font-size="6" fill="white" text-anchor="middle">Mercedes-Benz Actros</text>
-                        </svg>
+                        <img src="Mercedes-Benz Actros.jpeg" alt="Mercedes-Benz Actros" style="width: 80px; height: 50px; object-fit: contain; border-radius: 4px;">
                     </div>
                     <div class="vehicle-details">
-                        <span class="registration">ABC-1234</span>
+                        <span class="registration" style="display: flex; align-items: center; gap: 6px;">
+                            <img src="mercedes logo.png" alt="Mercedes" style="width: 20px; height: 20px; object-fit: contain;">
+                            ABC-1234
+                        </span>
                         <span class="vehicle-model">Mercedes-Benz Actros</span>
                     </div>
                 </div>
@@ -1975,77 +1969,45 @@
             <h2 class="nfc-title">Tap Your Phone</h2>
             <p class="nfc-instruction">Hold your phone near the NFC sticker on your vehicle's windshield</p>
 
-            <div class="nfc-illustration">
-                <svg width="100%" height="220" viewBox="0 0 320 220">
-                    <defs>
-                        <style>
-                            @keyframes phoneMove {
-                                0%, 15% { transform: translateX(0); }
-                                45%, 55% { transform: translateX(-85px); }
-                                85%, 100% { transform: translateX(0); }
-                            }
-                            @keyframes nfcPulse {
-                                0%, 40% { opacity: 0.3; transform: scale(1); }
-                                45%, 55% { opacity: 1; transform: scale(1.2); }
-                                60%, 100% { opacity: 0.3; transform: scale(1); }
-                            }
-                            .phone-anim { animation: phoneMove 3.5s ease-in-out infinite; }
-                            .nfc-pulse { animation: nfcPulse 3.5s ease-in-out infinite; transform-origin: center; }
-                        </style>
-                        <linearGradient id="cabGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#1E40AF"/>
-                            <stop offset="100%" style="stop-color:#1E3A8A"/>
-                        </linearGradient>
-                        <linearGradient id="glassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#DBEAFE"/>
-                            <stop offset="100%" style="stop-color:#93C5FD"/>
-                        </linearGradient>
-                    </defs>
-
-                    <!-- Truck cab body -->
-                    <rect x="15" y="70" width="180" height="130" rx="8" fill="url(#cabGrad)"/>
-
-                    <!-- Windshield (large, angled) -->
-                    <path d="M 25 75 L 185 75 L 170 145 L 40 145 Z" fill="url(#glassGrad)" stroke="#60A5FA" stroke-width="3"/>
-
-                    <!-- Windshield reflection -->
-                    <path d="M 40 82 L 85 82 L 78 100 L 47 100 Z" fill="rgba(255,255,255,0.4)"/>
-
-                    <!-- NFC Sticker on windshield -->
-                    <g class="nfc-pulse">
-                        <circle cx="145" cy="115" r="28" fill="#3B82F6" opacity="0.3"/>
-                    </g>
-                    <circle cx="145" cy="115" r="22" fill="#3B82F6"/>
-                    <text x="145" y="112" font-size="8" fill="white" text-anchor="middle" font-weight="bold">NFC</text>
-                    <text x="145" y="122" font-size="6" fill="rgba(255,255,255,0.8)" text-anchor="middle">TAP HERE</text>
-
-                    <!-- Side mirror -->
-                    <rect x="0" y="100" width="22" height="16" rx="3" fill="#374151"/>
-                    <rect x="3" y="103" width="16" height="10" rx="2" fill="#9CA3AF"/>
-
-                    <!-- Truck grille area -->
-                    <rect x="40" y="150" width="130" height="45" rx="4" fill="#1E3A8A"/>
-                    <rect x="55" y="158" width="100" height="12" rx="2" fill="#374151"/>
-
-                    <!-- Headlights -->
-                    <ellipse cx="55" cy="180" rx="12" ry="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
-                    <ellipse cx="155" cy="180" rx="12" ry="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
-
+            <div class="nfc-illustration" style="position: relative; overflow: visible;">
+                <style>
+                    @keyframes phoneMoveToTruck {
+                        0%, 15% { transform: translateX(0); }
+                        45%, 55% { transform: translateX(-70px); }
+                        85%, 100% { transform: translateX(0); }
+                    }
+                    @keyframes nfcPulseOverlay {
+                        0%, 40% { opacity: 0.3; transform: scale(1); }
+                        45%, 55% { opacity: 1; transform: scale(1.2); }
+                        60%, 100% { opacity: 0.3; transform: scale(1); }
+                    }
+                    .phone-animation { animation: phoneMoveToTruck 3.5s ease-in-out infinite; }
+                    .nfc-pulse-overlay { animation: nfcPulseOverlay 3.5s ease-in-out infinite; }
+                </style>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; position: relative;">
+                    <!-- Truck Image with NFC Overlay -->
+                    <div style="position: relative;">
+                        <img src="front-view-freight.jpg.webp" alt="Front view of truck" style="width: 180px; height: auto; border-radius: 12px; object-fit: cover;">
+                        <!-- NFC Sticker Overlay -->
+                        <div class="nfc-pulse-overlay" style="position: absolute; top: 25%; right: 20%; width: 50px; height: 50px; background: rgba(59, 130, 246, 0.3); border-radius: 50%;"></div>
+                        <div style="position: absolute; top: 25%; right: 20%; width: 40px; height: 40px; background: #3B82F6; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-left: 5px; margin-top: 5px;">
+                            <span style="font-size: 8px; color: white; font-weight: bold;">NFC</span>
+                            <span style="font-size: 6px; color: rgba(255,255,255,0.8);">TAP</span>
+                        </div>
+                    </div>
                     <!-- Phone (animated) -->
-                    <g class="phone-anim">
-                        <rect x="250" y="65" width="55" height="95" rx="8" fill="#1F2937"/>
-                        <rect x="254" y="75" width="47" height="75" rx="3" fill="#F3F4F6"/>
-                        <circle cx="277" cy="70" r="2" fill="#4B5563"/>
-                        <rect x="267" y="155" width="20" height="3" rx="1" fill="#4B5563"/>
-                        <!-- Phone screen -->
-                        <rect x="262" y="95" width="30" height="30" rx="4" fill="#3B82F6"/>
-                        <text x="277" y="114" font-size="9" fill="white" text-anchor="middle" font-weight="bold">DAE</text>
-                        <text x="277" y="138" font-size="6" fill="#6B7280" text-anchor="middle">Ready to scan</text>
-                    </g>
-
-                    <!-- Label -->
-                    <text x="105" y="210" font-size="11" fill="#6B7280" text-anchor="middle" font-weight="500">Hold phone near NFC sticker on windshield</text>
-                </svg>
+                    <div class="phone-animation" style="width: 55px; height: 95px; background: #1F2937; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 10px 4px;">
+                        <div style="width: 4px; height: 4px; background: #4B5563; border-radius: 50%; margin-bottom: 5px;"></div>
+                        <div style="width: 47px; height: 65px; background: #F3F4F6; border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="width: 30px; height: 30px; background: #3B82F6; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 9px; color: white; font-weight: bold;">DAE</span>
+                            </div>
+                            <span style="font-size: 6px; color: #6B7280; margin-top: 4px;">Ready to scan</span>
+                        </div>
+                        <div style="width: 20px; height: 3px; background: #4B5563; border-radius: 1px; margin-top: 5px;"></div>
+                    </div>
+                </div>
+                <p style="font-size: 11px; color: #6B7280; text-align: center; margin-top: 12px; font-weight: 500;">Hold phone near NFC sticker on windshield</p>
             </div>
 
             <div class="nfc-tip">
@@ -2069,50 +2031,7 @@
         <!-- SCREEN 4: Loading / Processing -->
         <div id="screen-loading" class="screen loading-screen">
             <div class="loading-fleet-graphic">
-                <svg viewBox="0 0 280 140" width="280" height="140">
-                    <defs>
-                        <linearGradient id="truckGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style="stop-color:#3B82F6"/>
-                            <stop offset="100%" style="stop-color:#1E40AF"/>
-                        </linearGradient>
-                    </defs>
-
-                    <!-- Truck 1 (main, foreground) -->
-                    <g>
-                        <!-- Trailer -->
-                        <rect x="20" y="55" width="120" height="60" rx="4" fill="url(#truckGradient)"/>
-                        <rect x="25" y="60" width="110" height="50" rx="2" fill="#1E3A8A" opacity="0.3"/>
-                        <text x="80" y="90" font-size="12" fill="white" text-anchor="middle" font-weight="bold" opacity="0.8">DAE FLEET</text>
-
-                        <!-- Cab -->
-                        <rect x="140" y="45" width="50" height="70" rx="6" fill="url(#truckGradient)"/>
-                        <rect x="148" y="52" width="35" height="28" rx="3" fill="#BFDBFE"/>
-                        <rect x="148" y="52" width="35" height="8" fill="#93C5FD" rx="3"/>
-
-                        <!-- Wheels -->
-                        <circle cx="55" cy="118" r="12" fill="#1F2937"/>
-                        <circle cx="55" cy="118" r="6" fill="#4B5563"/>
-                        <circle cx="110" cy="118" r="12" fill="#1F2937"/>
-                        <circle cx="110" cy="118" r="6" fill="#4B5563"/>
-                        <circle cx="165" cy="118" r="12" fill="#1F2937"/>
-                        <circle cx="165" cy="118" r="6" fill="#4B5563"/>
-
-                        <!-- Headlight -->
-                        <rect x="185" y="75" width="8" height="15" rx="2" fill="#FEF3C7"/>
-                    </g>
-
-                    <!-- Truck 2 (background, smaller) -->
-                    <g opacity="0.4" transform="translate(180, 20) scale(0.5)">
-                        <rect x="20" y="55" width="100" height="50" rx="3" fill="#64748B"/>
-                        <rect x="120" y="48" width="40" height="57" rx="4" fill="#64748B"/>
-                        <circle cx="50" cy="108" r="8" fill="#374151"/>
-                        <circle cx="90" cy="108" r="8" fill="#374151"/>
-                        <circle cx="140" cy="108" r="8" fill="#374151"/>
-                    </g>
-
-                    <!-- Ground line -->
-                    <line x1="0" y1="130" x2="280" y2="130" stroke="#E5E7EB" stroke-width="2"/>
-                </svg>
+                <img src="side view truck.png" alt="Truck" style="width: 280px; height: auto; object-fit: contain; border-radius: 12px;">
             </div>
             <div class="loading-spinner"></div>
             <h3 class="loading-title">Processing...</h3>
@@ -2222,7 +2141,7 @@
                     <div class="receipt-section-title">Driver & Vehicle</div>
                     <div class="receipt-row">
                         <span class="receipt-label">Driver Name</span>
-                        <span class="receipt-value">Abdul Hamid</span>
+                        <span class="receipt-value">Abdul Hamid Ahmad</span>
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Phone Number</span>
@@ -2230,7 +2149,10 @@
                     </div>
                     <div class="receipt-row">
                         <span class="receipt-label">Vehicle</span>
-                        <span class="receipt-value">ABC-1234</span>
+                        <span class="receipt-value" id="receiptVehicle" style="display: flex; align-items: center; gap: 6px;">
+                            <img src="mercedes logo.png" alt="Mercedes" id="receiptVehicleLogo" style="width: 18px; height: 18px; object-fit: contain;">
+                            ABC-1234
+                        </span>
                     </div>
                 </div>
 
@@ -2315,12 +2237,12 @@
         <div id="screen-settings" class="screen settings-screen">
             <div class="settings-profile">
                 <div class="settings-avatar" onclick="changeProfilePicture()">
-                    <i class="fas fa-user"></i>
+                    <img src="Fleet Driver Icon.png" alt="Abdul Hamid Ahmad" style="width: 100%; height: 100%; object-fit: cover;">
                     <div class="settings-avatar-edit">
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
-                <div class="settings-name">Abdul Hamid</div>
+                <div class="settings-name">Abdul Hamid Ahmad</div>
                 <div class="settings-role">Professional Truck Driver</div>
             </div>
 
@@ -2336,7 +2258,20 @@
                             </div>
                             <div class="settings-item-text">
                                 <div class="settings-item-label">Full Name</div>
-                                <div class="settings-item-value">Abdul Hamid</div>
+                                <div class="settings-item-value">Abdul Hamid Ahmad</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-venus-mars"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Gender</div>
+                                <div class="settings-item-value">Male</div>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right settings-item-arrow"></i>
@@ -2375,8 +2310,8 @@
 
                     <div class="settings-item" onclick="selectVehicle('ABC-1234')">
                         <div class="settings-item-left">
-                            <div class="settings-item-icon">
-                                <i class="fas fa-truck"></i>
+                            <div class="settings-item-icon" style="background: transparent; padding: 0;">
+                                <img src="mercedes logo.png" alt="Mercedes" style="width: 32px; height: 32px; object-fit: contain;">
                             </div>
                             <div class="settings-item-text">
                                 <div class="settings-item-label">Mercedes-Benz Actros</div>
@@ -2388,8 +2323,8 @@
 
                     <div class="settings-item" onclick="selectVehicle('QK888')">
                         <div class="settings-item-left">
-                            <div class="settings-item-icon" style="background: #FEF3C7; color: #D97706;">
-                                <i class="fas fa-truck"></i>
+                            <div class="settings-item-icon" style="background: transparent; padding: 0;">
+                                <img src="hino logo.png" alt="Hino" style="width: 32px; height: 32px; object-fit: contain;">
                             </div>
                             <div class="settings-item-text">
                                 <div class="settings-item-label">Hino 700 Series</div>
@@ -2516,6 +2451,42 @@
             if (name.includes('petron')) return 'petron.png';
             if (name.includes('petros')) return 'petros.svg.png';
             return null;
+        }
+
+        // ========== VEHICLE BRAND LOGO HELPER ==========
+        function getVehicleBrandLogo(vehicleModel) {
+            const model = vehicleModel.toLowerCase();
+            if (model.includes('mercedes')) return 'mercedes logo.png';
+            if (model.includes('hino')) return 'hino logo.png';
+            return null;
+        }
+
+        function getVehicleModelByPlate(plate) {
+            const vehicles = {
+                'ABC-1234': 'Mercedes-Benz Actros',
+                'QK888': 'Hino 700 Series'
+            };
+            return vehicles[plate] || 'Mercedes-Benz Actros';
+        }
+
+        // ========== FUEL BAR COLOR HELPER ==========
+        function getFuelBarColor(percentage) {
+            if (percentage >= 80) return '#10B981'; // Green
+            if (percentage >= 50) return '#3B82F6'; // Blue
+            if (percentage >= 25) return '#F59E0B'; // Orange/Warning
+            return '#EF4444'; // Red
+        }
+
+        function updateFuelBar(percentage) {
+            const fuelBar = document.querySelector('.fuel-bar');
+            const fuelPercentage = document.querySelector('.fuel-percentage');
+            if (fuelBar && fuelPercentage) {
+                const color = getFuelBarColor(percentage);
+                fuelBar.style.background = color;
+                fuelBar.style.width = percentage + '%';
+                fuelPercentage.style.color = color;
+                fuelPercentage.textContent = percentage + '%';
+            }
         }
 
         // ========== GLOBAL MOTION & STATE ==========
@@ -2677,6 +2648,8 @@
                 'Petron Jln Tun Abang Hj Openg'
             ];
 
+            const vehicles = ['ABC-1234', 'QK888'];
+
             const now = new Date();
             transactionHistory = [];
 
@@ -2685,6 +2658,7 @@
                 const volume = (Math.random() * 50 + 20).toFixed(1);
                 const pricePerLiter = 3.50;
                 const total = (volume * pricePerLiter).toFixed(2);
+                const vehicle = vehicles[Math.floor(Math.random() * vehicles.length)];
 
                 transactionHistory.push({
                     id: `TXN-${10000 + i}`,
@@ -2696,7 +2670,8 @@
                     volume: volume,
                     amount: total,
                     fuelType: 'Diesel',
-                    vehicle: 'ABC-1234'
+                    vehicle: vehicle,
+                    vehicleModel: getVehicleModelByPlate(vehicle)
                 });
             }
         }
@@ -2750,10 +2725,13 @@
             historyList.innerHTML = filtered.map(txn => {
                 const logo = getStationLogo(txn.station);
                 const logoHtml = logo ? `<div class="history-item-logo"><img src="${logo}" alt=""></div>` : '';
+                const vehicleModel = txn.vehicleModel || getVehicleModelByPlate(txn.vehicle);
+                const vehicleLogo = getVehicleBrandLogo(vehicleModel);
+                const vehicleLogoHtml = vehicleLogo ? `<img src="${vehicleLogo}" alt="" style="width: 16px; height: 16px; object-fit: contain; margin-right: 4px;">` : '';
                 return `
                 <div class="history-item" onclick="viewReceiptDetails('${txn.id}')">
                     <div class="history-item-header">
-                        <div>
+                        <div style="flex: 1; min-width: 0;">
                             <div class="history-item-station">${logoHtml}<span>${txn.station}</span></div>
                             <div class="history-item-date">${txn.dateString} • ${txn.timeString}</div>
                         </div>
@@ -2766,7 +2744,7 @@
                         </div>
                         <div class="history-item-detail">
                             <div class="history-item-detail-label">Vehicle</div>
-                            <div class="history-item-detail-value">${txn.vehicle}</div>
+                            <div class="history-item-detail-value" style="display: flex; align-items: center;">${vehicleLogoHtml}${txn.vehicle}</div>
                         </div>
                         <div class="history-item-detail">
                             <div class="history-item-detail-label">Fuel Type</div>
@@ -2900,6 +2878,15 @@
                 document.getElementById('receiptStationLogo').src = logo;
             }
 
+            // Update vehicle info with brand logo
+            const vehicleModel = transaction.vehicleModel || getVehicleModelByPlate(transaction.vehicle);
+            const vehicleLogo = getVehicleBrandLogo(vehicleModel);
+            const receiptVehicle = document.getElementById('receiptVehicle');
+            if (receiptVehicle && vehicleLogo) {
+                document.getElementById('receiptVehicleLogo').src = vehicleLogo;
+                receiptVehicle.lastChild.textContent = transaction.vehicle;
+            }
+
             navigateTo('screen-receipt');
         }
 
@@ -2952,6 +2939,9 @@
             generateSampleInbox();
             renderHistory('all');
             renderInbox();
+
+            // Set fuel bar color based on percentage (72%)
+            updateFuelBar(72);
         }
 
         function initializeMap() {
@@ -2964,8 +2954,8 @@
                 const petrosBatuKawa = [1.5155829493339648, 110.31229205902129];
 
                 map = L.map('map', {
-                    zoomControl: false,
-                    scrollWheelZoom: false,
+                    zoomControl: true,
+                    scrollWheelZoom: true,
                     dragging: true,
                     attributionControl: false
                 }).setView(driverLocation, 14);
@@ -2976,22 +2966,21 @@
 
                 // Add markers for gas stations near Batu Kawa
                 const stations = [
-                    { lat: 1.5155829493339648, lng: 110.31229205902129, name: 'Petros Batu Kawa', distance: '0.3 km' },
-                    { lat: 1.5280, lng: 110.3250, name: 'Shell Petra Jaya', distance: '1.5 km' },
-                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Green Height', distance: '1.8 km' },
-                    { lat: 1.5350, lng: 110.3350, name: 'Petron Jln Tun Abang Hj Openg', distance: '2.5 km' }
+                    { lat: 1.5155829493339648, lng: 110.31229205902129, name: 'Petros Batu Kawa', distance: '0.3 km', logo: 'petros.svg.png' },
+                    { lat: 1.5280, lng: 110.3250, name: 'Shell Petra Jaya', distance: '1.5 km', logo: 'shell.png' },
+                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Green Height', distance: '1.8 km', logo: 'petronas.png' },
+                    { lat: 1.5350, lng: 110.3350, name: 'Petron Jln Tun Abang Hj Openg', distance: '2.5 km', logo: 'petron.png' }
                 ];
 
-                // Custom marker icon
-                const customIcon = L.divIcon({
-                    className: 'custom-marker',
-                    html: '<div style="background: #3B82F6; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-gas-pump"></i></div>',
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
-                });
-
                 stations.forEach(station => {
-                    L.marker([station.lat, station.lng], { icon: customIcon })
+                    // Custom marker icon with fuel brand logo
+                    const stationIcon = L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="background: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid #3B82F6; overflow: hidden;"><img src="${station.logo}" style="width: 28px; height: 28px; object-fit: contain;"></div>`,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18]
+                    });
+                    L.marker([station.lat, station.lng], { icon: stationIcon })
                         .addTo(map)
                         .bindPopup(`<b>${station.name}</b><br>${station.distance} away`);
                 });
