@@ -972,65 +972,76 @@
             transform: scale(0.85);
         }
 
-        /* S.O.S Emergency Button */
+        /* S.O.S Emergency Button - Circular Design */
         .sos-container {
+            display: flex;
+            justify-content: center;
             padding: var(--space-md);
             padding-bottom: var(--space-xl);
         }
 
-        .btn-sos {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: 14px 16px;
-            background: var(--dae-error);
+        .btn-sos-circular {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #FF3B30 0%, #DC2626 100%);
             border: none;
-            border-radius: 12px;
             cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .btn-sos:hover {
-            background: #E02D25;
-        }
-
-        .btn-sos:active {
-            transform: scale(0.98);
-        }
-
-        .sos-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sos-icon i {
-            font-size: 20px;
-            color: white;
-        }
-
-        .sos-text {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow:
+                0 4px 15px rgba(220, 38, 38, 0.4),
+                0 0 0 4px rgba(220, 38, 38, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            transition: all var(--transition-fast);
+            position: relative;
         }
 
-        .sos-label {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
+        .btn-sos-circular::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed rgba(220, 38, 38, 0.4);
+            animation: sos-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes sos-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.6;
+            }
+        }
+
+        .btn-sos-circular:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 6px 20px rgba(220, 38, 38, 0.5),
+                0 0 0 6px rgba(220, 38, 38, 0.2),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-sos-circular:active {
+            transform: scale(0.95);
+        }
+
+        .btn-sos-circular i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .sos-circular-label {
+            font-size: 11px;
+            font-weight: 800;
             color: white;
             letter-spacing: 1px;
-        }
-
-        .sos-sublabel {
-            font-size: var(--font-size-xs);
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
         }
 
         .station-details {
@@ -2185,6 +2196,18 @@
             font-size: 14px;
         }
 
+        .settings-item-icon.company-logo-icon {
+            background: white;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .settings-item-icon.company-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         .settings-item-label {
             font-size: var(--font-size-base);
             font-weight: 500;
@@ -2291,13 +2314,85 @@
         }
 
         .inbox-category-promotion {
-            background: rgba(255, 149, 0, 0.1);
-            color: #FF9500;
+            background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);
+            color: white;
+        }
+
+        .inbox-category-promotion i {
+            margin-right: 4px;
         }
 
         .inbox-category-alert {
             background: #FEE2E2;
             color: #DC2626;
+        }
+
+        /* Promotional Message Styling */
+        .inbox-promo {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border: 2px solid #FB923C;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inbox-promo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, transparent 50%, rgba(251, 146, 60, 0.1) 50%);
+        }
+
+        .inbox-promo.unread {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);
+            border-color: #F97316;
+        }
+
+        .promo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+        }
+
+        .promo-brand-logo {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .promo-brand-logo img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .promo-discount-badge {
+            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        .inbox-promo .inbox-item-title {
+            color: #C2410C;
+            font-weight: 700;
+        }
+
+        .inbox-promo .inbox-item-preview {
+            color: #9A3412;
         }
     </style>
 </head>
@@ -2424,7 +2519,7 @@
                     </div>
                     <div class="home-driver-info">
                         <div class="home-driver-name">Abdul Hamid</div>
-                        <div class="home-greeting">Tiong Nam Group A</div>
+                        <div class="home-greeting">SITL Logistics</div>
                     </div>
                 </div>
                 <div class="home-vehicle-card">
@@ -2593,14 +2688,9 @@
 
             <!-- S.O.S Emergency Button -->
             <div class="sos-container">
-                <button class="btn-sos" onclick="callEmergencyHotline()">
-                    <div class="sos-icon">
-                        <i class="fas fa-phone-volume"></i>
-                    </div>
-                    <div class="sos-text">
-                        <span class="sos-label">S.O.S</span>
-                        <span class="sos-sublabel">Emergency Hotline</span>
-                    </div>
+                <button class="btn-sos-circular" onclick="callEmergencyHotline()">
+                    <i class="fas fa-phone-volume"></i>
+                    <span class="sos-circular-label">S.O.S</span>
                 </button>
             </div>
         </div>
@@ -2732,7 +2822,7 @@
 
             <button class="btn-sunmi-scan" onclick="simulateSunmiScan()">
                 <i class="fas fa-barcode"></i>
-                Simulate Sunmi P3 POS Scan
+                Simulate indoor DAE POS scanning...
             </button>
 
             <button class="btn-cancel" onclick="cancelTransaction()">Cancel Transaction</button>
@@ -2953,6 +3043,19 @@
                             <div class="settings-item-text">
                                 <div class="settings-item-label">License Number</div>
                                 <div class="settings-item-value">DRV-001-2024</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon company-logo-icon">
+                                <img src="SITL-Logo.png" alt="SITL Logo" onerror="this.parentElement.innerHTML='<i class=\'fas fa-building\'></i>'">
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Company</div>
+                                <div class="settings-item-value">SITL Logistics</div>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right settings-item-arrow"></i>
@@ -3250,11 +3353,14 @@
                 },
                 {
                     id: 2,
-                    title: 'Special Promotion: 5% Off Diesel',
-                    preview: 'Get 5% discount on all diesel purchases at PETRONAS stations this week! Valid until Sunday.',
+                    title: '5% OFF Diesel This Week!',
+                    preview: 'Exclusive for DAE drivers: Get 5% discount on all diesel purchases at PETRONAS stations!',
                     time: '1 day ago',
                     unread: true,
                     category: 'promotion',
+                    brand: 'petronas',
+                    brandLogo: 'petronas.png',
+                    promoDiscount: '5% OFF',
                     fullMessage: 'Limited Time Offer!\n\nEnjoy 5% off all diesel purchases at participating PETRONAS stations.\n\nPromotion Period: 13 Jan - 19 Jan 2026\n\nTerms & Conditions:\n- Valid for all diesel grades\n- Maximum discount: MYR 50 per transaction\n- Cannot be combined with other promotions\n\nHappy fueling!'
                 },
                 {
@@ -3268,15 +3374,27 @@
                 },
                 {
                     id: 4,
+                    title: 'Shell V-Power Bonus Points',
+                    preview: 'Earn 2X BonusLink points on Shell V-Power diesel this weekend only!',
+                    time: 'Yesterday',
+                    unread: false,
+                    category: 'promotion',
+                    brand: 'shell',
+                    brandLogo: 'shell.png',
+                    promoDiscount: '2X POINTS',
+                    fullMessage: 'Double Points Weekend!\n\nEarn 2X BonusLink points on every litre of Shell V-Power diesel.\n\nPromotion Period: 18 Jan - 19 Jan 2026\n\nBenefits:\n- 2X BonusLink points per litre\n- Valid at all Shell stations\n- Points credited within 24 hours\n\nDon\'t miss out on this exclusive offer!'
+                },
+                {
+                    id: 5,
                     title: 'New Station Added: Shell Tabuan',
                     preview: 'Great news! A new participating station has been added to your area. Check it out on the map.',
-                    time: 'Yesterday',
+                    time: '2 days ago',
                     unread: false,
                     category: 'system',
                     fullMessage: 'New Station Available\n\nShell Tabuan is now part of the DAE network!\n\nLocation: Jalan Tabuan, Kuching\nDistance: 4.2 km from your location\n\nAmenities:\n- 24/7 Operation\n- Truck Parking Available\n- Surau (Prayer Room)\n- ATM\n- Convenience Store\n\nOpen the app to view on map and start fueling there today!'
                 },
                 {
-                    id: 5,
+                    id: 6,
                     title: 'Monthly Usage Report Available',
                     preview: 'Your December 2025 fuel consumption report is ready for review. Download it from the History section.',
                     time: '5 days ago',
@@ -3304,21 +3422,45 @@
                 return;
             }
 
-            inboxList.innerHTML = inboxMessages.map(msg => `
-                <div class="inbox-item ${msg.unread ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
-                    ${msg.unread ? '<div class="inbox-item-badge"></div>' : ''}
-                    <div class="inbox-item-header">
-                        <div>
-                            <div class="inbox-item-title">${msg.title}</div>
+            inboxList.innerHTML = inboxMessages.map(msg => {
+                if (msg.category === 'promotion') {
+                    return `
+                        <div class="inbox-item inbox-promo ${msg.unread ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
+                            <div class="promo-header">
+                                <div class="promo-brand-logo">
+                                    <img src="${msg.brandLogo}" alt="${msg.brand}" onerror="this.style.display='none'">
+                                </div>
+                                <div class="promo-discount-badge">${msg.promoDiscount}</div>
+                            </div>
+                            <div class="inbox-item-header">
+                                <div>
+                                    <div class="inbox-item-title">${msg.title}</div>
+                                </div>
+                                <div class="inbox-item-time">${msg.time}</div>
+                            </div>
+                            <div class="inbox-item-preview">${msg.preview}</div>
+                            <span class="inbox-category-badge inbox-category-promotion">
+                                <i class="fas fa-tag"></i> Promotion
+                            </span>
                         </div>
-                        <div class="inbox-item-time">${msg.time}</div>
+                    `;
+                }
+                return `
+                    <div class="inbox-item ${msg.unread ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
+                        ${msg.unread ? '<div class="inbox-item-badge"></div>' : ''}
+                        <div class="inbox-item-header">
+                            <div>
+                                <div class="inbox-item-title">${msg.title}</div>
+                            </div>
+                            <div class="inbox-item-time">${msg.time}</div>
+                        </div>
+                        <div class="inbox-item-preview">${msg.preview}</div>
+                        <span class="inbox-category-badge inbox-category-${msg.category}">
+                            ${msg.category.charAt(0).toUpperCase() + msg.category.slice(1)}
+                        </span>
                     </div>
-                    <div class="inbox-item-preview">${msg.preview}</div>
-                    <span class="inbox-category-badge inbox-category-${msg.category}">
-                        ${msg.category.charAt(0).toUpperCase() + msg.category.slice(1)}
-                    </span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             // Update badge
             updateInboxBadge();
@@ -3509,7 +3651,10 @@
         function startFueling() { navigateTo('screen-nfc'); }
         function goToHistory() { navigateTo('screen-history'); }
         function goToSettings() { navigateTo('screen-settings'); }
-        function goToInbox() { navigateTo('screen-inbox'); }
+        function goToInbox() {
+            renderInbox();
+            navigateTo('screen-inbox');
+        }
 
         function selectVehicle(plateNumber) {
             const vehicles = {
@@ -3771,10 +3916,7 @@
             // Show QR screen
             navigateTo('screen-qr');
 
-            // Simulate cashier scanning after 8 seconds (give user time to see it)
-            setTimeout(() => {
-                qrScanned();
-            }, 8000);
+            // User must press the Simulate button to proceed
         }
 
         function startQRTimer(seconds) {
@@ -3865,9 +4007,9 @@
         function callEmergencyHotline() {
             const emergencyNumber = '+60-3-1234-5678'; // Company emergency hotline
 
-            if (confirm(`Call company emergency hotline?\n\n${emergencyNumber}\n\nTiong Nam Group Emergency Support`)) {
+            if (confirm(`Call company emergency hotline?\n\n${emergencyNumber}\n\nSITL Logistics Emergency Support`)) {
                 // In production, this would trigger: window.location.href = 'tel:' + emergencyNumber;
-                alert('Calling Emergency Hotline...\n\n' + emergencyNumber + '\n\nIn production, this would initiate a phone call to your company\'s 24/7 emergency support line.\n\nServices available:\n• Roadside assistance\n• Accident reporting\n• Vehicle breakdown support\n• Security concerns');
+                alert('Calling Emergency Hotline...\n\n' + emergencyNumber + '\n\nIn production, this would initiate a phone call to SITL Logistics 24/7 emergency support line.\n\nServices available:\n• Roadside assistance\n• Accident reporting\n• Vehicle breakdown support\n• Security concerns');
             }
         }
 
