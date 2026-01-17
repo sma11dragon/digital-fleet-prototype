@@ -1,0 +1,112 @@
+sequenceDiagram
+    participant D as Driver
+    participant App as Digital Fleet App
+    participant Pin as PinCode Auth
+    participant NFC as NFC Reader
+    participant GPS as GPS Service
+    participant CMS as CMS Backend
+    participant Rules as Rules Engine
+    participant DB as MySQL Database
+    participant WS as WebSocket
+    participant Sunmi as Sunmi P3 POS
+    participant Cashier as Cashier
+    participant SitePOS as Site POS
+    participant Pump as Fuel Dispenser
+    Note over D,Pump: HAPPY PATH - NFC Success Flow
+    D->>App: Open DAE Driver App
+    activate App
+    App->>Pin: Request PinCode authentication (Phone Level)
+    activate Pin
+    Pin->>D: Prompt Pin (Phone Level)
+    D->>Pin: Provide Pin (Phone Level)
+    Pin-->>App: Authentication success (Can access phone)
+    deactivate Pin
+    App->>App: Start session (3 min timeout)
+    App->>GPS: Request current location
+    activate GPS
+    GPS-->>App: GPS coordinates + timestamp
+    deactivate GPS
+    App->>D: Display "Tap NFC on vehicle"
+    D->>NFC: Tap phone on vehicle NFC sticker
+    activate NFC
+    NFC-->>App: NFC UID captured
+    deactivate NFC
+    App->>CMS: POST /api/transactions/initiate<br>{driverId, nfcUid, location, timestamp}
+    activate CMS
+    CMS->>DB: Query driver-vehicle pairing
+    activate DB
+    DB-->>CMS: Vehicle info + driver eligibility
+    deactivate DB
+    CMS->>Rules: Validate transaction rules
+    activate Rules
+    Rules->>DB: Check daily limits
+    Rules->>DB: Check allowed fuel stations
+    Rules->>DB: Check time window
+    Rules->>DB: Check vehicle eligibility
+    Rules-->>CMS: All rules passed ✓
+    deactivate Rules
+    CMS->>DB: Create transaction (status: CMS_Approved)
+    CMS->>DB: INSERT transaction details
+    DB-->>CMS: Transaction ID: TXN-12345
+    CMS->>CMS: Generate encrypted QR payload<br/>{txnId, driverId, vehicleId, maxAmount,<br/>fuelProduct, timestamp, signature,<br/>gps, deviceFingerprint}
+    CMS-->>App: 200 OK<br/>{txnId, qrData, maxAmount, product, validUntil}
+    deactivate CMS
+    App->>WS: Subscribe to transaction updates
+    activate WS
+    WS-->>App: Connected to TXN-12345 channel
+    App->>D: Display QR code (5 min validity)
+    Note over App: QR Code shown with:<br/>- Transaction ID<br/>- Max Amount: 250L <br/>- Product: Diesel<br/>- Valid until: 14:35
+    D->>Cashier: Show QR code on phone
+    Cashier->>Sunmi: Scan QR code
+    activate Sunmi
+    Sunmi->>Sunmi: Decode QR payload
+    Sunmi->>CMS: POST /api/pos/validate-qr<br/>{qrData, posId, timestamp, location}
+    activate CMS
+    CMS->>DB: Query transaction TXN-12345
+    DB-->>CMS: Transaction details
+    CMS->>CMS: Validate:<br/>✓ QR not expired<br/>✓ One-time token valid<br/>✓ GPS location matches<br/>✓ Device fingerprint matches
+    CMS->>DB: UPDATE transaction (status: QR_Scanned)
+    CMS-->>Sunmi: 200 OK<br/>{approved: true, details}
+    deactivate CMS
+    Sunmi->>Sunmi: Display transaction info
+    Note over Sunmi: Sunmi P3 Screen:<br/>✓ Driver: Abdul Hamid<br/>✓ Vehicle: ABC-1234<br/>✓ Max Amount: 250L<br/>✓ Product: Diesel<br/>✓ Pump: (to be set)
+    Sunmi-->>Cashier: Show approval details
+    deactivate Sunmi
+    Cashier->>D: "Which pump number?"
+    D->>Cashier: "Pump 3"
+    Cashier->>SitePOS: Select Pump 3
+    activate SitePOS
+    Cashier->>SitePOS: Set preset amount: MYR 500
+    SitePOS->>Pump: Authorize Pump 3 (max MYR 500)
+    activate Pump
+    Pump-->>SitePOS: Pump 3 authorized
+    SitePOS-->>Cashier: Ready for fueling
+    Cashier->>D: "You can start fueling"
+    D->>Pump: Start fueling (15 min max)
+    Note over Pump: Driver fueling...<br/>Timer: 00:00 → 05:32
+    D->>Pump: Complete fueling (5 min 32 sec)
+    D->>Pump: Return nozzle to holster
+    Pump->>SitePOS: Fueling complete signal
+    SitePOS->>SitePOS: Calculate final amount
+    Note over SitePOS: Final Amount:<br/>MYR 456.78<br/>45.2L Diesel
+    SitePOS-->>Cashier: Display final amount
+    deactivate Pump
+    Cashier->>Sunmi: Enter final amount: MYR 456.78
+    activate Sunmi
+    Sunmi->>Sunmi: Validate amount ≤ preset (MYR 500)
+    Note over Sunmi: ✓ MYR 456.78 ≤ MYR 500
+    Sunmi->>CMS: POST /api/pos/complete-transaction<br/>{txnId, finalAmount: 456.78,<br/>volume: 45.2, timestamp}
+    activate CMS
+    CMS->>DB: UPDATE transaction<br/>(status: Transaction_Completed,<br/>finalAmount: 456.78)
+    CMS->>CMS: Generate e-receipt
+    CMS-->>Sunmi: 200 OK {receiptId}
+    deactivate CMS
+    deactivate Sunmi
+    CMS->>WS: Push transaction complete event
+    WS->>App: Transaction update notification
+    deactivate WS
+    App->>App: Update UI with completion
+    App->>D: Display e-receipt
+    Note over App: E-Receipt:<br/>Transaction ID: TXN-12345<br/>Date: 2026-01-11 14:28<br/>Vehicle: ABC-1234<br/>Product: Diesel<br/>Volume: 45.2L<br/>Amount: MYR 456.78<br/>Station: Station Damansara
+    deactivate App
+    Note over D,Pump: ✓ Transaction Complete - Happy Path
