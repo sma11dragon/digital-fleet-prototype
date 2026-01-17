@@ -397,9 +397,9 @@
         }
 
         .welcome-logo {
-            width: 120px;
+            width: 240px;
             height: auto;
-            margin-bottom: var(--space-lg);
+            margin-bottom: var(--space-2xl);
             animation: fadeInScale 0.6s ease-out;
         }
 
@@ -690,13 +690,14 @@
         }
 
         .home-vehicle-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 12px 16px;
             display: flex;
             align-items: center;
             gap: var(--space-md);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 1);
+            color: var(--text-primary);
         }
 
         .vehicle-image {
@@ -729,7 +730,7 @@
 
         .vehicle-details .vehicle-model {
             font-size: var(--font-size-xs);
-            opacity: 0.7;
+            color: var(--text-secondary);
         }
 
         .home-content {
@@ -2332,7 +2333,7 @@
         }
 
         .inbox-category-promotion {
-            background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
             color: white;
         }
 
@@ -2396,11 +2397,11 @@
             color: var(--text-secondary);
         }
 
-        /* Promotional Message Styling - Unread state (attention-grabbing) */
+        /* Promotional Message Styling - Unread state (attention-grabbing green) */
         .inbox-promo.unread {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-            border: 2px solid #F97316;
-            border-left: 4px solid #F97316;
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            border: 2px solid #10B981;
+            border-left: 4px solid #10B981;
         }
 
         .inbox-promo.unread::before {
@@ -2410,7 +2411,7 @@
             right: 0;
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, transparent 50%, rgba(249, 115, 22, 0.1) 50%);
+            background: linear-gradient(135deg, transparent 50%, rgba(16, 185, 129, 0.1) 50%);
         }
 
         .inbox-promo.unread .promo-brand-logo {
@@ -2419,18 +2420,18 @@
         }
 
         .inbox-promo.unread .promo-discount-badge {
-            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
             color: white;
-            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
 
         .inbox-promo.unread .inbox-item-title {
-            color: #C2410C;
+            color: #047857;
             font-weight: 700;
         }
 
         .inbox-promo.unread .inbox-item-preview {
-            color: #9A3412;
+            color: #065F46;
         }
     </style>
 </head>
@@ -2460,8 +2461,6 @@
         <!-- SCREEN 1: Welcome / Splash -->
         <div id="screen-welcome" class="screen active welcome-screen">
             <img src="logo-nobackground.svg" alt="DAE Logo" class="welcome-logo" onerror="this.style.display='none'">
-            <div class="welcome-brand-name">DAE</div>
-            <div class="welcome-brand-tagline">Digital Assistant for Energy</div>
 
             <div class="welcome-tagline-container">
                 <div class="welcome-tagline-en" id="taglineEn">Tap. Fuel. Go.</div>
@@ -2553,7 +2552,7 @@
             <header class="home-header">
                 <div class="home-header-top">
                     <div class="home-driver-avatar">
-                        <img src="Fleet Driver Icon.png" alt="Abdul Hamid" style="width: 52px; height: 52px; object-fit: cover; border-radius: 50%;">
+                        <img src="Fleet Driver Icon.png" alt="Abdul Hamid" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%;">
                     </div>
                     <div class="home-driver-info">
                         <div class="home-driver-name">Abdul Hamid</div>
@@ -2993,7 +2992,7 @@
                 <button class="btn-secondary" onclick="downloadReceipt()">
                     <i class="fas fa-download"></i> Download
                 </button>
-                <button class="btn-primary" onclick="goToHome()">
+                <button class="btn-primary-teal" onclick="goToHome()">
                     <i class="fas fa-home"></i> Back to Home
                 </button>
             </div>
@@ -3020,7 +3019,7 @@
         <div id="screen-settings" class="screen settings-screen">
             <div class="settings-profile">
                 <div class="settings-avatar" onclick="changeProfilePicture()">
-                    <img src="Fleet Driver Icon.png" alt="Abdul Hamid Ahmad" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="Fleet Driver Icon.png" alt="Abdul Hamid Ahmad" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;">
                     <div class="settings-avatar-edit">
                         <i class="fas fa-camera"></i>
                     </div>
@@ -3413,26 +3412,26 @@
                 {
                     id: 4,
                     title: 'FREE Meal for 100L+ Fueling!',
-                    preview: 'Fuel over 100L at Petros Batu Kawa and get a FREE nasi lemak meal set!',
+                    preview: 'Fuel over 100L at Shell Kuching and get a FREE nasi lemak meal set!',
                     time: 'Yesterday',
                     unread: false,
                     category: 'promotion',
-                    brand: 'petros',
-                    brandLogo: 'petros.svg.png',
+                    brand: 'shell',
+                    brandLogo: 'shell.png',
                     promoDiscount: 'FREE MEAL',
-                    fullMessage: 'Big Fill, Free Meal!\n\nFuel over 100L at Petros Batu Kawa and receive a FREE nasi lemak meal set from the station restaurant.\n\nWhat You Get:\n- Nasi Lemak Special\n- Iced Tea/Hot Coffee\n\nHow to Claim:\n1. Fuel 100L or more via DAE\n2. Show e-receipt at restaurant counter\n3. Enjoy your free meal!\n\nValid: While stocks last\nLocation: Petros Batu Kawa only\n\nFuel up and fill up, driver!'
+                    fullMessage: 'Big Fill, Free Meal!\n\nFuel over 100L at Shell Kuching and receive a FREE nasi lemak meal set from the Shell Select store.\n\nWhat You Get:\n- Nasi Lemak Special\n- Iced Tea/Hot Coffee\n\nHow to Claim:\n1. Fuel 100L or more via DAE\n2. Show e-receipt at Shell Select counter\n3. Enjoy your free meal!\n\nValid: While stocks last\nLocation: Shell Kuching stations only\n\nFuel up and fill up, driver!'
                 },
                 {
                     id: 5,
-                    title: 'Premium Rest Area at Petros Kota Samarahan',
+                    title: 'Premium Rest Area at Petron MILE 7',
                     preview: 'New air-conditioned rest lounge with shower facilities now open for DAE drivers!',
                     time: '2 days ago',
                     unread: false,
                     category: 'promotion',
-                    brand: 'petros',
-                    brandLogo: 'petros.svg.png',
+                    brand: 'petron',
+                    brandLogo: 'petron.png',
                     promoDiscount: 'REST AREA',
-                    fullMessage: 'Driver Rest Facilities Now Open!\n\nPetros Kota Samarahan now features a premium driver rest area exclusively for fleet drivers.\n\nFacilities Available:\n- Air-conditioned lounge\n- Hot shower facilities\n- Private napping rooms (2-hour slots)\n- Prayer room (Surau)\n- Free WiFi\n\nHow to Access:\n1. Fuel via DAE at Petros Kota Samarahan\n2. Show e-receipt to attendant\n3. Enjoy up to 2 hours of rest!\n\nOpening Hours: 24/7\n\nRest well, drive safe!'
+                    fullMessage: 'Driver Rest Facilities Now Open!\n\nPetron MILE 7 now features a premium driver rest area exclusively for fleet drivers.\n\nFacilities Available:\n- Air-conditioned lounge\n- Hot shower facilities\n- Private napping rooms (2-hour slots)\n- Prayer room (Surau)\n- Free WiFi\n\nHow to Access:\n1. Fuel via DAE at Petron MILE 7\n2. Show e-receipt to attendant\n3. Enjoy up to 2 hours of rest!\n\nOpening Hours: 24/7\n\nRest well, drive safe!'
                 },
                 {
                     id: 6,
