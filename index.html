@@ -1786,6 +1786,24 @@
             background: var(--dae-primary-dark);
         }
 
+        /* Alternative teal button style for secondary actions */
+        .btn-primary-teal {
+            flex: 1;
+            padding: var(--space-md);
+            background: #0D9488;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-primary-teal:active {
+            background: #0F766E;
+        }
+
         /* ========== ANIMATIONS ========== */
         @keyframes fadeInScale {
             from {
@@ -2327,27 +2345,12 @@
             color: #DC2626;
         }
 
-        /* Promotional Message Styling */
+        /* Promotional Message Styling - Read state (subdued) */
         .inbox-promo {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-            border: 2px solid #FB923C;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             position: relative;
             overflow: hidden;
-        }
-
-        .inbox-promo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, transparent 50%, rgba(251, 146, 60, 0.1) 50%);
-        }
-
-        .inbox-promo.unread {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FED7AA 100%);
-            border-color: #F97316;
         }
 
         .promo-header {
@@ -2358,40 +2361,75 @@
         }
 
         .promo-brand-logo {
-            width: 48px;
-            height: 48px;
-            background: white;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         .promo-brand-logo img {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
         }
 
         .promo-discount-badge {
-            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 600;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
         }
 
         .inbox-promo .inbox-item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .inbox-promo .inbox-item-preview {
+            color: var(--text-secondary);
+        }
+
+        /* Promotional Message Styling - Unread state (attention-grabbing) */
+        .inbox-promo.unread {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border: 2px solid #F97316;
+            border-left: 4px solid #F97316;
+        }
+
+        .inbox-promo.unread::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, transparent 50%, rgba(249, 115, 22, 0.1) 50%);
+        }
+
+        .inbox-promo.unread .promo-brand-logo {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .inbox-promo.unread .promo-discount-badge {
+            background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        .inbox-promo.unread .inbox-item-title {
             color: #C2410C;
             font-weight: 700;
         }
 
-        .inbox-promo .inbox-item-preview {
+        .inbox-promo.unread .inbox-item-preview {
             color: #9A3412;
         }
     </style>
@@ -3353,15 +3391,15 @@
                 },
                 {
                     id: 2,
-                    title: '5% OFF Diesel This Week!',
-                    preview: 'Exclusive for DAE drivers: Get 5% discount on all diesel purchases at PETRONAS stations!',
+                    title: 'FREE Coffee at Petros Stations!',
+                    preview: 'Show your DAE app after fueling and enjoy a FREE hot coffee at any Petros station!',
                     time: '1 day ago',
                     unread: true,
                     category: 'promotion',
-                    brand: 'petronas',
-                    brandLogo: 'petronas.png',
-                    promoDiscount: '5% OFF',
-                    fullMessage: 'Limited Time Offer!\n\nEnjoy 5% off all diesel purchases at participating PETRONAS stations.\n\nPromotion Period: 13 Jan - 19 Jan 2026\n\nTerms & Conditions:\n- Valid for all diesel grades\n- Maximum discount: MYR 50 per transaction\n- Cannot be combined with other promotions\n\nHappy fueling!'
+                    brand: 'petros',
+                    brandLogo: 'petros.svg.png',
+                    promoDiscount: 'FREE COFFEE',
+                    fullMessage: 'Driver Appreciation Offer!\n\nEnjoy a FREE hot coffee (any size) at participating Petros stations.\n\nHow to Redeem:\n1. Complete any fueling transaction via DAE\n2. Show your e-receipt to the cashier\n3. Collect your free coffee!\n\nValid: 13 Jan - 31 Jan 2026\n\nStay refreshed on your journey, driver!'
                 },
                 {
                     id: 3,
@@ -3374,24 +3412,27 @@
                 },
                 {
                     id: 4,
-                    title: 'Shell V-Power Bonus Points',
-                    preview: 'Earn 2X BonusLink points on Shell V-Power diesel this weekend only!',
+                    title: 'FREE Meal for 100L+ Fueling!',
+                    preview: 'Fuel over 100L at Petros Batu Kawa and get a FREE nasi lemak meal set!',
                     time: 'Yesterday',
                     unread: false,
                     category: 'promotion',
-                    brand: 'shell',
-                    brandLogo: 'shell.png',
-                    promoDiscount: '2X POINTS',
-                    fullMessage: 'Double Points Weekend!\n\nEarn 2X BonusLink points on every litre of Shell V-Power diesel.\n\nPromotion Period: 18 Jan - 19 Jan 2026\n\nBenefits:\n- 2X BonusLink points per litre\n- Valid at all Shell stations\n- Points credited within 24 hours\n\nDon\'t miss out on this exclusive offer!'
+                    brand: 'petros',
+                    brandLogo: 'petros.svg.png',
+                    promoDiscount: 'FREE MEAL',
+                    fullMessage: 'Big Fill, Free Meal!\n\nFuel over 100L at Petros Batu Kawa and receive a FREE nasi lemak meal set from the station restaurant.\n\nWhat You Get:\n- Nasi Lemak Special\n- Iced Tea/Hot Coffee\n\nHow to Claim:\n1. Fuel 100L or more via DAE\n2. Show e-receipt at restaurant counter\n3. Enjoy your free meal!\n\nValid: While stocks last\nLocation: Petros Batu Kawa only\n\nFuel up and fill up, driver!'
                 },
                 {
                     id: 5,
-                    title: 'New Station Added: Shell Tabuan',
-                    preview: 'Great news! A new participating station has been added to your area. Check it out on the map.',
+                    title: 'Premium Rest Area at Petros Kota Samarahan',
+                    preview: 'New air-conditioned rest lounge with shower facilities now open for DAE drivers!',
                     time: '2 days ago',
                     unread: false,
-                    category: 'system',
-                    fullMessage: 'New Station Available\n\nShell Tabuan is now part of the DAE network!\n\nLocation: Jalan Tabuan, Kuching\nDistance: 4.2 km from your location\n\nAmenities:\n- 24/7 Operation\n- Truck Parking Available\n- Surau (Prayer Room)\n- ATM\n- Convenience Store\n\nOpen the app to view on map and start fueling there today!'
+                    category: 'promotion',
+                    brand: 'petros',
+                    brandLogo: 'petros.svg.png',
+                    promoDiscount: 'REST AREA',
+                    fullMessage: 'Driver Rest Facilities Now Open!\n\nPetros Kota Samarahan now features a premium driver rest area exclusively for fleet drivers.\n\nFacilities Available:\n- Air-conditioned lounge\n- Hot shower facilities\n- Private napping rooms (2-hour slots)\n- Prayer room (Surau)\n- Free WiFi\n\nHow to Access:\n1. Fuel via DAE at Petros Kota Samarahan\n2. Show e-receipt to attendant\n3. Enjoy up to 2 hours of rest!\n\nOpening Hours: 24/7\n\nRest well, drive safe!'
                 },
                 {
                     id: 6,
