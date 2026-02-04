@@ -210,11 +210,22 @@ No automated test suite. Manual testing required:
 - **Enhanced UI positioning**: Skip button positioned at top-right corner with appropriate styling for visibility on blue background
 - **Maintained UX flow**: Preserved existing navigation structure while adding optional skip functionality
 
+### February 4, 2025 - Bottom Navigation Visibility Fix
+- **Hidden bottom navigation until sign-in**: Bottom navigation (Fuel, History, Home, Messages, Profile) now hidden during onboarding and signup flow
+- **Full-screen pre-signin experience**: Screens before sign-in occupy entire mobile screen without bottom padding
+- **Dynamic navigation display**: Navigation automatically appears after successful phone verification and signup completion
+- **Proper screen padding**: Screens adjust padding dynamically based on navigation visibility state
+
 ### Key Changes:
 - `index.html:3103-3110` - Added skip button to success screen header
 - `index.html:907-914` - Added `position: relative` to success header
 - `index.html:569-578` - Added `.success-header .btn-skip` CSS styling
 - `index.html:3003-3012` - Updated fleet driver CTA screen messaging
+- `index.html:2317-2330` - Added `.bottom-nav.hidden` CSS class
+- `index.html:3825` - Added `hidden` class to bottom navigation element
+- `index.html:377-384` - Modified screen padding to be dynamic (`padding-bottom: 0` default)
+- `index.html:4904-4923` - Enhanced `completeSignup()` function to show navigation and add `nav-visible` class
+- Added CSS rule: `body.nav-visible .screen { padding-bottom: 100px; }`
 
 ## File Locations
 
