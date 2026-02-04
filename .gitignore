@@ -1,1 +1,5 @@
 .DS_Store
+backups/
+*.log
+*.tmp
+test-nas-*/
