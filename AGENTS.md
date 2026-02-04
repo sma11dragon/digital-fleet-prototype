@@ -201,6 +201,21 @@ No automated test suite. Manual testing required:
 4. Test fueling flow end-to-end
 5. Check responsive behavior (mobile/desktop)
 
+## Recent Updates
+
+### February 4, 2025 - Fleet Driver Onboarding Enhancement
+- **Added skip option to post-signup splash screen**: Implemented a "Skip" button on the signup success screen for fleet drivers who prefer to bypass the tutorial and go directly to the home screen
+- **Fixed CSS display bug**: Resolved issue where multiple screens were visible simultaneously by ensuring inactive screens use `display: none`
+- **Updated fleet driver messaging**: Modified CTA screen to clarify that employers pre-onboard driver details and only phone verification is needed
+- **Enhanced UI positioning**: Skip button positioned at top-right corner with appropriate styling for visibility on blue background
+- **Maintained UX flow**: Preserved existing navigation structure while adding optional skip functionality
+
+### Key Changes:
+- `index.html:3103-3110` - Added skip button to success screen header
+- `index.html:907-914` - Added `position: relative` to success header
+- `index.html:569-578` - Added `.success-header .btn-skip` CSS styling
+- `index.html:3003-3012` - Updated fleet driver CTA screen messaging
+
 ## File Locations
 
 ```

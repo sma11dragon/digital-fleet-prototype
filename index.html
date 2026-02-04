@@ -380,6 +380,7 @@
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
+            padding-bottom: 100px; /* For bottom navigation */
         }
 
         .screen.active {
@@ -576,6 +577,14 @@
             margin-top: var(--space-sm);
         }
 
+        .success-header .btn-skip {
+            color: white;
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            margin-top: 0;
+        }
+
         /* ========== FINAL CTA SCREEN ========== */
         .cta-screen {
             background: var(--bg-primary);
@@ -643,6 +652,461 @@
             font-size: var(--font-size-sm);
             color: var(--text-muted);
             font-style: italic;
+        }
+
+        /* ========== SIGNUP SCREENS ========== */
+        .signup-screen {
+            background: var(--bg-primary);
+        }
+
+        .signup-header {
+            padding: var(--space-xl) var(--space-md) var(--space-lg);
+            text-align: center;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: var(--space-md);
+            top: var(--space-xl);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            cursor: pointer;
+            padding: var(--space-sm);
+            border-radius: 8px;
+            transition: background var(--transition-fast);
+        }
+
+        .btn-back:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-back:active {
+            opacity: 0.6;
+        }
+
+        .signup-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .signup-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .signup-content {
+            flex: 1;
+            padding: 0 var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .signup-icon {
+            width: 88px;
+            height: 88px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .signup-icon i {
+            font-size: 36px;
+            color: var(--dae-primary);
+        }
+
+        .phone-input-container {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .country-code {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-right: var(--space-md);
+            padding-right: var(--space-md);
+            border-right: 1px solid var(--card-border);
+        }
+
+        .phone-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+            outline: none;
+            padding: 0;
+        }
+
+        .phone-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .phone-hint {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+            max-width: 320px;
+        }
+
+        .terms-checkbox {
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .terms-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .terms-label a {
+            color: var(--dae-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-footer {
+            padding: var(--space-lg) var(--space-md) var(--space-xl);
+            border-top: 1px solid var(--card-border);
+            background: var(--bg-primary);
+        }
+
+        .btn-signup {
+            background: var(--dae-primary);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-signup:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-signup:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-signup:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .signup-help {
+            text-align: center;
+            margin-top: var(--space-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .signup-help a {
+            color: var(--dae-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* OTP Screen Specific */
+        .otp-instruction {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            text-align: center;
+        }
+
+        .otp-input-container {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            justify-content: center;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .otp-input:focus {
+            border-color: var(--dae-primary);
+            box-shadow: 0 0 0 3px rgba(0, 75, 142, 0.1);
+        }
+
+        .otp-input.filled {
+            border-color: var(--dae-primary);
+        }
+
+        .otp-timer {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            text-align: center;
+        }
+
+        .btn-resend {
+            background: transparent;
+            color: var(--dae-primary);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-sm);
+            border-radius: 8px;
+            transition: background var(--transition-fast);
+        }
+
+        .btn-resend:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-resend:active {
+            opacity: 0.6;
+        }
+
+        .btn-resend:disabled {
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Success Screen */
+        .signup-success-screen {
+            background: var(--bg-primary);
+        }
+
+        .success-header {
+            padding: var(--space-xl) var(--space-md) var(--space-lg);
+            text-align: center;
+            background: var(--dae-primary);
+            color: white;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            position: relative;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+        }
+
+        .success-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .success-subtitle {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: var(--space-xs);
+        }
+
+        .success-company {
+            font-size: var(--font-size-sm);
+            opacity: 0.7;
+        }
+
+        .success-content {
+            flex: 1;
+            padding: var(--space-lg);
+        }
+
+        .vehicle-assigned-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .vehicle-assigned-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .vehicle-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--dae-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .vehicle-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .vehicle-info {
+            flex: 1;
+        }
+
+        .vehicle-model {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .vehicle-plate {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .vehicle-note {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--card-border);
+        }
+
+        .quick-tutorial {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+        }
+
+        .tutorial-title {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        .tutorial-steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .tutorial-step {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--dae-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .step-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .success-footer {
+            padding: var(--space-lg) var(--space-md) var(--space-xl);
+            border-top: 1px solid var(--card-border);
+            background: var(--bg-primary);
+        }
+
+        .btn-success {
+            background: var(--dae-primary);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-success:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-success:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .success-note {
+            text-align: center;
+            margin-top: var(--space-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
         }
 
         /* ========== HOME SCREEN ========== */
@@ -1932,10 +2396,7 @@
             border: 2px solid white;
         }
 
-        /* Adjust screen padding for bottom nav */
-        .screen {
-            padding-bottom: 100px;
-        }
+
 
         /* ========== ACTIVITY (HISTORY) SCREEN ========== */
         .history-screen {
@@ -2539,16 +3000,168 @@
             </div>
         </div>
 
-        <!-- SCREEN 1E: Final CTA -->
+        <!-- SCREEN 1E: Fleet Driver Signup Intro -->
         <div id="screen-cta" class="screen cta-screen">
             <div class="cta-icon">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-mobile-alt"></i>
             </div>
-            <h2 class="cta-headline">You're all set!</h2>
-            <p class="cta-subtext">Start fueling at any station across Malaysia with just a tap.</p>
+            <h2 class="cta-headline">Your Company Has You Covered</h2>
+            <p class="cta-subtext">Your employer has already onboarded your personal details, vehicle model, and plate number with your mobile phone number. Just verify your phone to start using DAE Digital Fleet.</p>
 
-            <button class="btn-cta-primary" onclick="startApp()">Start Fueling</button>
+            <button class="btn-cta-primary" onclick="startSignup()">Verify Phone</button>
             <div class="btn-cta-secondary">Mula Isi Minyak</div>
+        </div>
+
+        <!-- SCREEN 1F: Sign Up - Phone Entry -->
+        <div id="screen-signup-phone" class="screen signup-screen">
+            <div class="signup-header">
+                <button class="btn-back" onclick="goBackToCTA()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="signup-title">Enter Your Number</h1>
+                <div class="signup-subtitle">We'll send a verification code</div>
+            </div>
+
+            <div class="signup-content">
+                <div class="signup-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                
+                <div class="phone-input-container">
+                    <div class="country-code">+60</div>
+                    <input type="tel" id="phoneInput" class="phone-input" placeholder="12 345 6789" maxlength="11" inputmode="numeric">
+                </div>
+                
+                <div class="phone-hint">Enter your Malaysian mobile number</div>
+                
+                <div class="terms-agreement">
+                    <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                    <label for="termsCheckbox" class="terms-label">
+                        I agree to DAE's <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+
+            <div class="signup-footer">
+                <button class="btn-signup" onclick="sendOTP()" id="sendOTPBtn" disabled>
+                    Send Verification Code
+                </button>
+                <div class="signup-help">
+                    Already registered? <a href="#" onclick="recoverAccount()">Recover account</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 1G: Sign Up - OTP Verification -->
+        <div id="screen-signup-otp" class="screen signup-screen">
+            <div class="signup-header">
+                <button class="btn-back" onclick="goBackToPhone()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="signup-title">Verify Your Number</h1>
+                <div class="signup-subtitle" id="otpSubtitle">Code sent to +60 <span id="phoneDisplay">12 345 6789</span></div>
+            </div>
+
+            <div class="signup-content">
+                <div class="signup-icon">
+                    <i class="fas fa-sms"></i>
+                </div>
+                
+                <div class="otp-instruction">
+                    Enter the 6-digit code sent to your phone
+                </div>
+                
+                <div class="otp-input-container">
+                    <input type="text" id="otp1" class="otp-input" maxlength="1" inputmode="numeric" autofocus>
+                    <input type="text" id="otp2" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp3" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp4" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp5" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp6" class="otp-input" maxlength="1" inputmode="numeric">
+                </div>
+                
+                <div class="otp-timer" id="otpTimer">
+                    Resend code in <span id="timerCount">60</span>s
+                </div>
+                <button class="btn-resend" onclick="resendOTP()" id="resendBtn" disabled>
+                    Resend Code
+                </button>
+            </div>
+
+            <div class="signup-footer">
+                <button class="btn-signup" onclick="verifyOTP()" id="verifyOTPBtn" disabled>
+                    Verify & Continue
+                </button>
+                <div class="signup-help">
+                    Didn't receive code? <a href="#" onclick="troubleshootOTP()">Troubleshoot</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 1H: Sign Up - Success & Quick Tutorial -->
+        <div id="screen-signup-success" class="screen signup-success-screen">
+            <div class="success-header">
+                <button class="btn-skip" onclick="completeSignup()">Skip</button>
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1 class="success-title">Welcome to DAE!</h1>
+                <div class="success-subtitle" id="driverName">Abdul Hamid Ahmad</div>
+                <div class="success-company" id="driverCompany">SITL Logistics</div>
+            </div>
+
+            <div class="success-content">
+                <div class="vehicle-assigned-card">
+                    <div class="vehicle-assigned-header">
+                        <div class="vehicle-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="vehicle-info">
+                            <div class="vehicle-model" id="vehicleModel">Mercedes-Benz Actros</div>
+                            <div class="vehicle-plate" id="vehiclePlate">ABC-1234</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-note">
+                        This vehicle has been assigned to you. You can fuel it at any station.
+                    </div>
+                </div>
+                
+                <div class="quick-tutorial">
+                    <h3 class="tutorial-title">How to Fuel in 3 Steps</h3>
+                    <div class="tutorial-steps">
+                        <div class="tutorial-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">Tap NFC Tag</div>
+                                <div class="step-description">Tap your phone on the vehicle's NFC sticker</div>
+                            </div>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Show QR Code</div>
+                                <div class="step-description">Show the generated QR to station cashier</div>
+                            </div>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Fuel & Go</div>
+                                <div class="step-description">Pump fuel and receive e-receipt automatically</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-footer">
+                <button class="btn-success" onclick="completeSignup()">
+                    Start Fueling
+                </button>
+                <div class="success-note">
+                    You can update your profile in Settings anytime
+                </div>
+            </div>
         </div>
 
         <!-- SCREEN 2: Home with Map -->
@@ -3368,6 +3981,7 @@
         let map = null;
         let qrTimerInterval = null;
         let transactionData = null;
+        let driverData = null;
 
         // Motivational messages for loading screen
         const motivationalMessages = [
@@ -3684,6 +4298,22 @@
                     } else {
                         map.invalidateSize();
                     }
+                }, 500);
+            }
+
+            // Auto-focus first OTP input when OTP screen is shown
+            if (screenId === 'screen-signup-otp') {
+                setTimeout(() => {
+                    const firstOtpInput = document.getElementById('otp1');
+                    if (firstOtpInput) firstOtpInput.focus();
+                }, 500);
+            }
+
+            // Auto-focus phone input when phone screen is shown
+            if (screenId === 'screen-signup-phone') {
+                setTimeout(() => {
+                    const phoneInput = document.getElementById('phoneInput');
+                    if (phoneInput) phoneInput.focus();
                 }, 500);
             }
         }
@@ -4082,6 +4712,251 @@
                 }, 1000);
             }, 2000);
         }
+
+        // ========== SIGNUP FLOW FUNCTIONS ==========
+        let otpTimerInterval = null;
+        let otpCountdown = 60;
+        let enteredPhone = '';
+
+        function startSignup() {
+            navigateTo('screen-signup-phone');
+        }
+
+        function goBackToCTA() {
+            navigateTo('screen-cta');
+        }
+
+        function goBackToPhone() {
+            navigateTo('screen-signup-phone');
+        }
+
+        function validatePhoneNumber(phone) {
+            // Malaysian mobile numbers: 10-11 digits (excluding +60)
+            const cleaned = phone.replace(/\D/g, '');
+            return cleaned.length >= 9 && cleaned.length <= 11;
+        }
+
+        function sendOTP() {
+            const phoneInput = document.getElementById('phoneInput');
+            const phone = phoneInput.value.trim();
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            
+            if (!validatePhoneNumber(phone)) {
+                alert('Please enter a valid Malaysian mobile number (10-11 digits).');
+                return;
+            }
+            
+            if (!termsCheckbox.checked) {
+                alert('Please agree to the Terms of Service and Privacy Policy.');
+                return;
+            }
+            
+            enteredPhone = phone;
+            document.getElementById('phoneDisplay').textContent = phone.replace(/(\d{2})(\d{3})(\d{4})/, '$1 $2 $3');
+            
+            // Simulate sending OTP
+            console.log('OTP sent to +60' + phone);
+            
+            // Reset OTP inputs
+            for (let i = 1; i <= 6; i++) {
+                const input = document.getElementById('otp' + i);
+                input.value = '';
+                input.classList.remove('filled');
+            }
+            
+            // Start OTP timer
+            startOTPTimer();
+            
+            // Navigate to OTP screen
+            navigateTo('screen-signup-otp');
+        }
+
+        function startOTPTimer() {
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+            otpCountdown = 60;
+            
+            const timerElement = document.getElementById('timerCount');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            timerElement.textContent = otpCountdown;
+            resendBtn.disabled = true;
+            
+            otpTimerInterval = setInterval(() => {
+                otpCountdown--;
+                timerElement.textContent = otpCountdown;
+                
+                if (otpCountdown <= 0) {
+                    clearInterval(otpTimerInterval);
+                    document.getElementById('otpTimer').style.display = 'none';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            // Simulate resending OTP
+            console.log('OTP resent to +60' + enteredPhone);
+            alert('A new verification code has been sent to your phone.');
+            
+            // Restart timer
+            startOTPTimer();
+            document.getElementById('otpTimer').style.display = 'block';
+        }
+
+        function setupOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    // Auto-focus next input
+                    if (value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // Update filled state
+                    if (value.length === 1) {
+                        input.classList.add('filled');
+                    } else {
+                        input.classList.remove('filled');
+                    }
+                    
+                    // Check if all inputs are filled
+                    checkOTPCompletion();
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    // Handle backspace to focus previous input
+                    if (e.key === 'Backspace' && !input.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        function checkOTPCompletion() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const verifyBtn = document.getElementById('verifyOTPBtn');
+            
+            let allFilled = true;
+            for (let i = 0; i < inputs.length; i++) {
+                if (!inputs[i].value) {
+                    allFilled = false;
+                    break;
+                }
+            }
+            
+            verifyBtn.disabled = !allFilled;
+        }
+
+        function verifyOTP() {
+            // Simulate OTP verification
+            const otp = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value)
+                .join('');
+            
+            // For demo, accept any 6-digit code
+            if (otp.length === 6 && /^\d+$/.test(otp)) {
+                console.log('OTP verified:', otp);
+                
+                // Simulate driver data from CMS
+                driverData = {
+                    name: 'Abdul Hamid Ahmad',
+                    company: 'SITL Logistics',
+                    vehicleModel: 'Mercedes-Benz Actros',
+                    vehiclePlate: 'ABC-1234'
+                };
+                
+                try {
+                    document.getElementById('driverName').textContent = driverData.name;
+                    document.getElementById('driverCompany').textContent = driverData.company;
+                    document.getElementById('vehicleModel').textContent = driverData.vehicleModel;
+                    document.getElementById('vehiclePlate').textContent = driverData.vehiclePlate;
+                    console.log('Driver data updated');
+                } catch (error) {
+                    console.error('Error updating driver data:', error);
+                }
+                
+                // Navigate to success screen
+                console.log('Navigating to success screen');
+                console.log('Motion object exists:', typeof Motion !== 'undefined');
+                console.log('navigateTo function exists:', typeof navigateTo !== 'undefined');
+                try {
+                    navigateTo('screen-signup-success');
+                    console.log('navigateTo called successfully');
+                } catch (error) {
+                    console.error('Error in navigateTo:', error);
+                }
+            } else {
+                alert('Please enter a valid 6-digit verification code.');
+            }
+        }
+
+        function completeSignup() {
+            // Clear OTP timer
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+            
+            // Update home screen with driver data
+            if (driverData) {
+                const driverNameElement = document.querySelector('.home-driver-name');
+                const driverGreetingElement = document.querySelector('.home-greeting');
+                const registrationElement = document.querySelector('.registration');
+                const vehicleModelElement = document.querySelector('.vehicle-model');
+                
+                if (driverNameElement) driverNameElement.textContent = driverData.name.split(' ')[0]; // First name only
+                if (driverGreetingElement) driverGreetingElement.textContent = driverData.company;
+                if (registrationElement) registrationElement.textContent = driverData.vehiclePlate;
+                if (vehicleModelElement) vehicleModelElement.textContent = driverData.vehicleModel;
+            }
+            
+            // Navigate to home screen
+            navigateTo('screen-home');
+        }
+
+        function recoverAccount() {
+            alert('Account recovery functionality would be implemented here.\n\nIn production, this would:\n- Verify your identity\n- Send recovery instructions to your registered email\n- Allow resetting your account credentials');
+        }
+
+        function troubleshootOTP() {
+            alert('OTP Troubleshooting:\n\n1. Check that your phone number is correct\n2. Ensure you have mobile network reception\n3. Wait 60 seconds then tap "Resend Code"\n4. Contact support if issues persist');
+        }
+
+        function showTerms() {
+            alert('Terms of Service would be displayed here.\n\nIn production, this would open a modal with full terms and conditions.');
+        }
+
+        function showPrivacy() {
+            alert('Privacy Policy would be displayed here.\n\nIn production, this would open a modal with detailed privacy policy information.');
+        }
+
+        // Initialize OTP input handling when OTP screen is shown
+        document.addEventListener('DOMContentLoaded', function() {
+            setupOTPInputs();
+            
+            // Phone input validation
+            const phoneInput = document.getElementById('phoneInput');
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const sendOTPBtn = document.getElementById('sendOTPBtn');
+            
+            if (phoneInput && sendOTPBtn) {
+                phoneInput.addEventListener('input', () => {
+                    const phone = phoneInput.value.trim();
+                    const isValid = validatePhoneNumber(phone);
+                    
+                    sendOTPBtn.disabled = !isValid || !termsCheckbox.checked;
+                });
+            }
+            
+            if (termsCheckbox && sendOTPBtn) {
+                termsCheckbox.addEventListener('change', () => {
+                    const phone = phoneInput ? phoneInput.value.trim() : '';
+                    const isValid = validatePhoneNumber(phone);
+                    
+                    sendOTPBtn.disabled = !isValid || !termsCheckbox.checked;
+                });
+            }
+        });
 
         // ========== INITIALIZATION ==========
         window.onload = function () {
