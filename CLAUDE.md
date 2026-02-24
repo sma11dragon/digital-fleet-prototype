@@ -80,3 +80,15 @@ The map uses Leaflet with OpenStreetMap tiles centered on Kuching (coordinates: 
 - iOS-inspired UI patterns (navigation, cards, list items)
 - Glassmorphism card styling with backdrop blur
 - Primary gradient: blue (#3B82F6) to teal (#06B6D4)
+
+## Journey Documentation Files
+
+Three UX journey HTML files have been built alongside `index.html`. See **`JOURNEY.md`** for full details, design decisions, CSS patterns, and asset references.
+
+| File | Purpose | Live URL |
+|------|---------|----------|
+| `journey_driver.html` | Fleet driver vertical timeline (6 stages) | /journey_driver.html |
+| `journey_cashier.html` | Cashier POS vertical timeline (5 stages) | /journey_cashier.html |
+| `journey_combined.html` | **Main** — two-column combined flow with sync bars | /journey_combined.html |
+
+**`journey_combined.html` is the primary deliverable.** Always read `JOURNEY.md` before editing any journey file.
