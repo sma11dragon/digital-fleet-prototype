@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DAE - Digital Assistant for Energy</title>
+    <title>DAE Digital Fleet App - POC Stage for PETROS</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -162,25 +162,46 @@
                 text-align: left;
             }
 
-            .desktop-logo {
-                width: 72px;
-                height: auto;
+            /* Co-branded logo row */
+            .desktop-logo-row {
+                display: flex;
+                align-items: center;
+                gap: 14px;
                 margin-bottom: 20px;
+            }
+
+            .desktop-logo {
+                height: 36px;
+                width: auto;
+            }
+
+            .desktop-logo-divider {
+                font-size: 20px;
+                color: var(--text-muted);
+                opacity: 0.45;
+                line-height: 1;
+            }
+
+            .desktop-petros-logo {
+                height: 28px;
+                width: auto;
+                object-fit: contain;
             }
 
             .desktop-title {
                 font-size: 36px;
                 font-weight: 700;
                 color: var(--dae-primary);
-                margin-bottom: 6px;
+                margin-bottom: 4px;
                 letter-spacing: -1px;
             }
 
             .desktop-subtitle {
-                font-size: 12px;
-                color: var(--text-secondary);
+                font-size: 11px;
+                color: var(--dae-accent);
+                font-weight: 700;
                 text-transform: uppercase;
-                letter-spacing: 2px;
+                letter-spacing: 1.5px;
                 margin-bottom: 20px;
             }
 
@@ -264,7 +285,15 @@
             }
 
             .desktop-title {
-                font-size: 40px;
+                font-size: 38px;
+            }
+
+            .desktop-logo {
+                height: 38px;
+            }
+
+            .desktop-petros-logo {
+                height: 30px;
             }
 
             .desktop-description {
@@ -423,6 +452,30 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: var(--space-xl);
+        }
+
+        /* POC co-branding on welcome screen */
+        .welcome-poc-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: -12px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .welcome-poc-text {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+        }
+
+        .welcome-petros-logo {
+            height: 16px;
+            width: auto;
+            object-fit: contain;
         }
 
         .welcome-tagline-container {
@@ -2912,9 +2965,13 @@
 <body>
     <!-- Desktop info panel - only visible on desktop -->
     <div class="desktop-info">
-        <img src="logo-nobackground.svg" alt="DAE Logo" class="desktop-logo" onerror="this.style.display='none'">
-        <h1 class="desktop-title">DAE Digital Fleet</h1>
-        <p class="desktop-subtitle">Digital Assistant for Energy</p>
+        <div class="desktop-logo-row">
+            <img src="logo-nobackground.svg" alt="DAE Logo" class="desktop-logo" onerror="this.style.display='none'">
+            <span class="desktop-logo-divider">×</span>
+            <img src="petros.svg.png" alt="PETROS Logo" class="desktop-petros-logo" onerror="this.style.display='none'">
+        </div>
+        <h1 class="desktop-title">DAE Digital Fleet App</h1>
+        <p class="desktop-subtitle">POC Stage for PETROS</p>
         <p class="desktop-description">
             A smarter way to fuel your fleet. Tap, fuel, and go — no cards, no cash, no hassle.
         </p>
@@ -2934,6 +2991,10 @@
         <!-- SCREEN 1: Welcome / Splash -->
         <div id="screen-welcome" class="screen active welcome-screen">
             <img src="logo-nobackground.svg" alt="DAE Logo" class="welcome-logo" onerror="this.style.display='none'">
+            <div class="welcome-poc-row">
+                <span class="welcome-poc-text">POC Stage for</span>
+                <img src="petros.svg.png" alt="PETROS" class="welcome-petros-logo" onerror="this.style.display='none'">
+            </div>
 
             <div class="welcome-tagline-container">
                 <div class="welcome-tagline-en" id="taglineEn">Tap. Fuel. Go.</div>
