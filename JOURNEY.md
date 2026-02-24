@@ -6,16 +6,18 @@ Knowledge base for the three journey HTML files in this project. Read this befor
 
 ## What Was Built
 
-Three self-contained HTML files that visualise the end-to-end DAE Fleet Card workflow as a visual reference/documentation page — separate from the live mobile app prototype (`index.html`).
+Four self-contained HTML files that visualise the end-to-end DAE Fleet Card workflow as a visual reference/documentation page — separate from the live mobile app prototype (`index.html`).
 
 | File | Description | Approx. lines |
 |------|-------------|---------------|
 | `journey_driver.html` | Vertical 6-stage timeline, driver perspective only | ~280 |
 | `journey_cashier.html` | Vertical 5-stage timeline, cashier perspective only | ~260 |
-| `journey_combined.html` | **Primary file.** Two-column layout, driver + cashier side by side with amber sync bars | ~453 |
+| `journey_combined.html` | **POC stage.** Two-column layout, driver + cashier side by side with amber sync bars | ~453 |
+| `journey_post_poc.html` | **Post-POC stage.** Two-column layout, streamlined driver flow + automated cashier column (Meta/DAE co-branded) | ~290 |
 
 **Live URLs (GitHub Pages):**
-- https://digitalfleet.daeit.com.sg/journey_combined.html ← main deliverable
+- https://digitalfleet.daeit.com.sg/journey_combined.html ← POC stage deliverable
+- https://digitalfleet.daeit.com.sg/journey_post_poc.html ← Post-POC stage deliverable
 - https://digitalfleet.daeit.com.sg/journey_driver.html
 - https://digitalfleet.daeit.com.sg/journey_cashier.html
 
@@ -147,6 +149,92 @@ All 7 driver preview slots use `.drv-card` with inline SVG icons. There are **no
 | 5 | `.pos-mock` | PETROS logo + pump/fuel preset data (RM 180.00, Nozzle 3 Ready) |
 | 6 | `.pos-mock` | PETROS logo + fueling-in-progress data + progress bar |
 | 7 | `.sunmi-mock` | Amount entry screen with MYR input display + number grid |
+
+---
+
+---
+
+## journey_post_poc.html — Full Reference
+
+### Context
+
+Represents the **Meta/DAE Digital Fleet App — Post POC Stage**. In this phase, API integration between the DAE system and the station POS eliminates all manual cashier operations. The driver flow is faster and entirely self-service.
+
+> ⚙️ **Prerequisite:** API integration between the DAE system and the existing station POS (for pump preset and final fueling capture).
+
+### Layout
+
+Same two-column CSS grid as `journey_combined.html` (`1fr 1fr; gap: 14px`). Key differences:
+- **No amber ⚡ sync bars** — cashier is not an active participant in the normal flow
+- **Cashier column** contains only `.card.empty` placeholder cards in every row
+- **Stage 4** is a dashed/greyed `.card.backup` to indicate a rare contingency
+- **API note banner** appears between the legend and the grid (`.api-note` class, teal border)
+
+### Row Map
+
+| Row | Driver (left) | Cashier (right) |
+|-----|--------------|-----------------|
+| 1 | Stage 1 — Onboarding & Fleet Card Provisioning | — No cashier action required — |
+| 2 | Stage 2 — Tap Phone on Vehicle NFC Sticker | — No cashier action required — |
+| 3 | Stage 3 — Fueling Approved/Rejected: Push Notification | — No cashier action required — (API presets pump) |
+| 4 | Stage 4 — Show QR Code at C-Store *(Backup — POS Down Only, 99% skipped)* | — Cashier manual scan (backup scenario only) — |
+| 5 | ⛽ Fueling — Driver Fuels Vehicle at Pump | — No cashier action required — (API captures final amount) |
+| 6 | Stage 6 — E-Receipt & Transaction History | — No cashier action required — |
+
+### New/Modified CSS Classes
+
+```css
+/* API integration note banner */
+.api-note          /* teal-bordered info strip above grid */
+
+/* Backup card — Stage 4 (greyed, dashed amber border) */
+.card.backup       /* opacity:.46; border:1px dashed rgba(255,165,0,.3) */
+.card.backup:hover /* opacity increases slightly on hover */
+
+/* Backup step number badge */
+.sn.bk             /* amber-tinted circle for Stage 4 */
+
+/* Backup badge label */
+.badge.bk          /* amber colour variant of .badge */
+
+/* Header Meta branding */
+.hdr-meta          /* "meta" wordmark text in Meta Blue (#1877F2) */
+.hdr-sep           /* "/" separator between meta and DAE logo */
+```
+
+### Stage 3 — Push Notification (New)
+
+**Badge:** App Notification
+**Icon:** Phone with teal notification card + checkmark + faint text lines
+**Content shown in notification:** Company Name · Driver Name · Vehicle Number · Fuel Type · Allowable Fuel Amount (MYR)
+**Normal flow note:** Driver proceeds Stage 3 → Fueling directly (no C-store visit)
+
+### Stage 4 — Backup QR Code (Modified from POC Stage 4)
+
+- Entire `.card.backup` has `opacity: 0.46` and dashed amber border
+- Badge reads: `⚠ Backup — POS System Down Only`
+- `.sn.bk` step circle is amber-tinted
+- Hover increases opacity slightly to remain readable on inspection
+- The QR icon (3-corner finder pattern) is reused from the POC stage but within a backup-styled `.drv-card`
+
+### Fueling Row — Key Differences from POC
+
+Description explicitly highlights the three improvements over the POC stage:
+1. Driver does not walk back and forth between pump and C-store
+2. Cashier does not need to use the Sunmi EDC Terminal
+3. Cashier does not need to preset or authorise the station POS
+
+### Branding
+
+- Co-branded header: `meta` (text in Meta Blue `#1877F2`) + `/` separator + DAE SVG logo + PETROS logo
+- Subtitle chip: `Post POC Stage for PETROS` in teal (`#00d4aa`) instead of amber
+- Footer: `Meta / DAE Digital Fleet App · Post POC Stage for PETROS · Driver Journey — API-Integrated POS Flow`
+
+### TODO / Pending
+
+- [ ] Add Meta logo image asset (`meta-logo.svg`) to the repo root if official co-branding artwork is provided — replace the current text-only `<span class="hdr-meta">meta</span>` with an `<img>` tag
+- [ ] Confirm final live URL path once deployed to GitHub Pages
+- [ ] Update footer and header once the official project name is finalised
 
 ---
 

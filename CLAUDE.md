@@ -89,6 +89,7 @@ Three UX journey HTML files have been built alongside `index.html`. See **`JOURN
 |------|---------|----------|
 | `journey_driver.html` | Fleet driver vertical timeline (6 stages) | /journey_driver.html |
 | `journey_cashier.html` | Cashier POS vertical timeline (5 stages) | /journey_cashier.html |
-| `journey_combined.html` | **Main** — two-column combined flow with sync bars | /journey_combined.html |
+| `journey_combined.html` | **POC stage** — two-column combined flow with amber sync bars | /journey_combined.html |
+| `journey_post_poc.html` | **Post-POC stage** — Meta/DAE co-branded, streamlined driver flow, cashier column replaced with "no action needed" | /journey_post_poc.html |
 
-**`journey_combined.html` is the primary deliverable.** Always read `JOURNEY.md` before editing any journey file.
+**`journey_combined.html` is the POC-stage deliverable. `journey_post_poc.html` is the Post-POC stage deliverable.** Always read `JOURNEY.md` before editing any journey file.
