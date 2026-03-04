@@ -1,0 +1,5069 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DAE Digital Fleet App - POC Stage for XCEL</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Leaflet for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* ========== CSS VARIABLES - DAE BRANDING (Jonathan Ive Inspired) ========== */
+        :root {
+            /* DAE Brand Colors - Calm & Restrained Palette */
+            --dae-primary: #004B8E;
+            --dae-primary-dark: #003A6E;
+            --dae-primary-light: #1A6AB8;
+            --dae-accent: #FF9500;
+            --dae-success: #34C759;
+            --dae-warning: #FF9500;
+            --dae-error: #FF3B30;
+
+            /* Text Colors */
+            --text-primary: #3C3C49;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+
+            /* Clean Backgrounds - No Glassmorphism */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F7;
+            --bg-tertiary: #E8E8ED;
+            --card-bg: #FFFFFF;
+            --card-border: rgba(0, 0, 0, 0.08);
+
+            /* Simplified Shadows */
+            --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+            /* Legacy Support (for gradual migration) */
+            --glass-bg: #FFFFFF;
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --glass-blur: none;
+            --gradient-primary: #004B8E;
+            --gradient-success: #34C759;
+
+            /* Neutral Colors */
+            --gray-50: #F9FAFB;
+            --gray-100: #F5F5F7;
+            --gray-200: #E8E8ED;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #3C3C49;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 32px;
+            --font-size-4xl: 40px;
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+            /* Animations */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: 1.5;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
+
+        /* ========== CLEAN CARD BASE (Replaces Glassmorphism) ========== */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-card);
+            border-radius: 16px;
+        }
+
+        .glass-hover {
+            transition: all 0.2s ease;
+        }
+
+        .glass-hover:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .glass-hover:active {
+            transform: scale(0.98);
+        }
+
+        /* ========== RESPONSIVE DESKTOP LAYOUT ========== */
+        /* Mobile: Hide desktop elements */
+        .desktop-info {
+            display: none;
+        }
+
+        .phone-frame {
+            display: contents;
+        }
+
+        /* Desktop View (768px and above) */
+        @media (min-width: 768px) {
+            body {
+                background: linear-gradient(135deg, #F5F5F7 0%, #E8E8ED 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 60px;
+                padding: 40px;
+            }
+
+            .desktop-info {
+                display: block;
+                flex: 0 0 360px;
+                max-width: 360px;
+                text-align: left;
+            }
+
+            /* Co-branded logo row */
+            .desktop-logo-row {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                margin-bottom: 20px;
+            }
+
+            .desktop-logo {
+                height: 36px;
+                width: auto;
+            }
+
+            .desktop-logo-divider {
+                font-size: 20px;
+                color: var(--text-muted);
+                opacity: 0.45;
+                line-height: 1;
+            }
+
+            .desktop-xcel-logo {
+                height: 36px;
+                width: auto;
+                object-fit: contain;
+            }
+
+            .desktop-title {
+                font-size: 36px;
+                font-weight: 700;
+                color: var(--dae-primary);
+                margin-bottom: 4px;
+                letter-spacing: -1px;
+            }
+
+            .desktop-subtitle {
+                font-size: 11px;
+                color: var(--dae-accent);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 20px;
+            }
+
+            .desktop-description {
+                font-size: 16px;
+                color: var(--text-primary);
+                line-height: 1.6;
+                margin-bottom: 28px;
+            }
+
+            .desktop-features {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .desktop-features li {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 0;
+                font-size: 14px;
+                color: var(--text-secondary);
+                border-bottom: 1px solid var(--bg-tertiary);
+            }
+
+            .desktop-features li:last-child {
+                border-bottom: none;
+            }
+
+            .desktop-features li i {
+                width: 20px;
+                color: var(--dae-primary);
+                text-align: center;
+            }
+
+            .phone-frame {
+                display: block;
+                width: 375px;
+                height: 750px;
+                background: #1A1A1A;
+                border-radius: 44px;
+                padding: 10px;
+                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+                position: relative;
+                flex-shrink: 0;
+            }
+
+            .phone-frame::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 120px;
+                height: 24px;
+                background: #1A1A1A;
+                border-radius: 0 0 16px 16px;
+                z-index: 100;
+            }
+
+            .phone-frame .mobile-container {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                border-radius: 34px;
+                overflow: hidden;
+                box-shadow: none;
+            }
+        }
+
+        /* Large Desktop (1200px and above) */
+        @media (min-width: 1200px) {
+            body {
+                gap: 80px;
+            }
+
+            .desktop-info {
+                flex: 0 0 420px;
+                max-width: 420px;
+            }
+
+            .desktop-title {
+                font-size: 38px;
+            }
+
+            .desktop-logo {
+                height: 38px;
+            }
+
+            .desktop-xcel-logo {
+                height: 30px;
+            }
+
+            .desktop-description {
+                font-size: 17px;
+            }
+
+            .phone-frame {
+                width: 390px;
+                height: 780px;
+            }
+        }
+
+        /* ========== MOBILE CONTAINER ========== */
+        .mobile-container {
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        @media (min-width: 768px) {
+            .mobile-container {
+                height: 100%;
+            }
+        }
+
+        /* ========== STATUS BAR (iOS Style) ========== */
+        .status-bar {
+            height: 54px;
+            background: var(--dae-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-md);
+            padding-top: env(safe-area-inset-top, 10px);
+            color: white;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+
+        @media (min-width: 768px) {
+            .status-bar {
+                display: none;
+            }
+        }
+
+        .status-bar .carrier {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .status-bar .indicators {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-bar .signal-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 14px;
+        }
+
+        .status-bar .signal-bar {
+            width: 3px;
+            background: white;
+            border-radius: 1px;
+        }
+
+        .status-bar .signal-bar:nth-child(1) {
+            height: 4px;
+        }
+
+        .status-bar .signal-bar:nth-child(2) {
+            height: 7px;
+        }
+
+        .status-bar .signal-bar:nth-child(3) {
+            height: 10px;
+        }
+
+        .status-bar .signal-bar:nth-child(4) {
+            height: 13px;
+        }
+
+        .status-bar .wifi-icon {
+            font-size: 14px;
+        }
+
+        .status-bar .battery {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .status-bar .battery i {
+            font-size: 16px;
+        }
+
+        /* ========== SCREENS ========== */
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 0;
+        }
+
+        body.nav-visible .screen {
+            padding-bottom: 100px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ========== WELCOME / SPLASH SCREEN ========== */
+        .welcome-screen {
+            background: var(--bg-primary);
+            justify-content: center;
+            align-items: center;
+            color: var(--text-primary);
+            text-align: center;
+            padding: var(--space-xl);
+        }
+
+        .welcome-logo {
+            width: 240px;
+            height: auto;
+            margin-bottom: var(--space-2xl);
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .welcome-brand-name {
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--dae-primary);
+            margin-bottom: var(--space-xs);
+            letter-spacing: -1px;
+        }
+
+        .welcome-brand-tagline {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: var(--space-xl);
+        }
+
+        /* POC co-branding on welcome screen */
+        .welcome-poc-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: -12px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .welcome-poc-text {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+        }
+
+        .welcome-xcel-logo {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .welcome-tagline-container {
+            margin-bottom: var(--space-2xl);
+            min-height: 80px;
+        }
+
+        .welcome-tagline-en {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .welcome-tagline-bm {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .btn-start {
+            background: var(--dae-primary);
+            color: white;
+            padding: 16px 48px;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            border: none;
+            box-shadow: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .btn-start:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-start:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        /* ========== ONBOARDING SCREENS ========== */
+        .onboarding-screen {
+            background: var(--bg-primary);
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-xl);
+            text-align: center;
+        }
+
+        .onboarding-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-xl) 0;
+        }
+
+        .onboarding-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .onboarding-icon i {
+            font-size: 40px;
+            color: var(--dae-primary);
+        }
+
+        .onboarding-headline {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+            letter-spacing: -0.5px;
+        }
+
+        .onboarding-subtext-en {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+            font-weight: 500;
+        }
+
+        .onboarding-subtext-bm {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .onboarding-footer {
+            width: 100%;
+            padding-bottom: var(--space-lg);
+        }
+
+        .onboarding-dots {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .onboarding-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            transition: all 0.3s ease;
+        }
+
+        .onboarding-dot.active {
+            background: var(--dae-primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .btn-onboarding {
+            background: var(--dae-primary);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-onboarding:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-onboarding:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-skip {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 12px 24px;
+            border: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: var(--space-sm);
+        }
+
+        .success-header .btn-skip {
+            color: white;
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            margin-top: 0;
+        }
+
+        /* ========== FINAL CTA SCREEN ========== */
+        .cta-screen {
+            background: var(--bg-primary);
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-xl);
+            text-align: center;
+        }
+
+        .cta-icon {
+            width: 88px;
+            height: 88px;
+            background: var(--dae-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .cta-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .cta-headline {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+
+        .cta-subtext {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2xl);
+            line-height: 1.6;
+        }
+
+        .btn-cta-primary {
+            background: var(--dae-primary);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: var(--space-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-cta-primary:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-cta-primary:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-cta-secondary {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ========== SIGNUP SCREENS ========== */
+        .signup-screen {
+            background: var(--bg-primary);
+        }
+
+        .signup-header {
+            padding: var(--space-xl) var(--space-md) var(--space-lg);
+            text-align: center;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: var(--space-md);
+            top: var(--space-xl);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            cursor: pointer;
+            padding: var(--space-sm);
+            border-radius: 8px;
+            transition: background var(--transition-fast);
+        }
+
+        .btn-back:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-back:active {
+            opacity: 0.6;
+        }
+
+        .signup-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .signup-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .signup-content {
+            flex: 1;
+            padding: 0 var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .signup-icon {
+            width: 88px;
+            height: 88px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .signup-icon i {
+            font-size: 36px;
+            color: var(--dae-primary);
+        }
+
+        .phone-input-container {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .country-code {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-right: var(--space-md);
+            padding-right: var(--space-md);
+            border-right: 1px solid var(--card-border);
+        }
+
+        .phone-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+            outline: none;
+            padding: 0;
+        }
+
+        .phone-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .phone-hint {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+            max-width: 320px;
+        }
+
+        .terms-checkbox {
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .terms-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .terms-label a {
+            color: var(--dae-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-footer {
+            padding: var(--space-lg) var(--space-md) var(--space-xl);
+            border-top: 1px solid var(--card-border);
+            background: var(--bg-primary);
+        }
+
+        .btn-signup {
+            background: var(--dae-primary);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-signup:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-signup:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-signup:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .signup-help {
+            text-align: center;
+            margin-top: var(--space-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .signup-help a {
+            color: var(--dae-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* OTP Screen Specific */
+        .otp-instruction {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            text-align: center;
+        }
+
+        .otp-input-container {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            justify-content: center;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 56px;
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .otp-input:focus {
+            border-color: var(--dae-primary);
+            box-shadow: 0 0 0 3px rgba(0, 75, 142, 0.1);
+        }
+
+        .otp-input.filled {
+            border-color: var(--dae-primary);
+        }
+
+        .otp-timer {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            text-align: center;
+        }
+
+        .btn-resend {
+            background: transparent;
+            color: var(--dae-primary);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: var(--space-xl);
+            padding: var(--space-sm);
+            border-radius: 8px;
+            transition: background var(--transition-fast);
+        }
+
+        .btn-resend:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-resend:active {
+            opacity: 0.6;
+        }
+
+        .btn-resend:disabled {
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Success Screen */
+        .signup-success-screen {
+            background: var(--bg-primary);
+        }
+
+        .success-header {
+            padding: var(--space-xl) var(--space-md) var(--space-lg);
+            text-align: center;
+            background: var(--dae-primary);
+            color: white;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            position: relative;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+        }
+
+        .success-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .success-subtitle {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: var(--space-xs);
+        }
+
+        .success-company {
+            font-size: var(--font-size-sm);
+            opacity: 0.7;
+        }
+
+        .success-content {
+            flex: 1;
+            padding: var(--space-lg);
+        }
+
+        .vehicle-assigned-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .vehicle-assigned-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .vehicle-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--dae-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .vehicle-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .vehicle-info {
+            flex: 1;
+        }
+
+        .vehicle-model {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .vehicle-plate {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .vehicle-note {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--card-border);
+        }
+
+        .quick-tutorial {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+        }
+
+        .tutorial-title {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        .tutorial-steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .tutorial-step {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--dae-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .step-description {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .success-footer {
+            padding: var(--space-lg) var(--space-md) var(--space-xl);
+            border-top: 1px solid var(--card-border);
+            background: var(--bg-primary);
+        }
+
+        .btn-success {
+            background: var(--dae-primary);
+            color: white;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-success:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-success:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .success-note {
+            text-align: center;
+            margin-top: var(--space-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* ========== HOME SCREEN ========== */
+        .home-screen {
+            background: var(--bg-secondary);
+        }
+
+        .home-header {
+            background: var(--dae-primary);
+            color: white;
+            padding: var(--space-lg) var(--space-md) var(--space-xl);
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+
+        .home-header-top {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .home-driver-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .home-driver-info {
+            flex: 1;
+        }
+
+        .home-driver-name {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .home-greeting {
+            font-size: var(--font-size-sm);
+            opacity: 0.7;
+        }
+
+        .home-vehicle-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            border: 1px solid rgba(255, 255, 255, 1);
+            color: var(--text-primary);
+        }
+
+        .vehicle-image {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vehicle-image img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .vehicle-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .vehicle-details .registration {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+        }
+
+        .vehicle-details .vehicle-model {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        .home-content {
+            padding: var(--space-md);
+            flex: 1;
+        }
+
+        /* Quick Stats Card */
+        .quick-stats-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-card);
+            margin-top: -32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--dae-primary);
+        }
+
+        .stat-value.large {
+            font-size: var(--font-size-3xl);
+            color: var(--dae-primary);
+        }
+
+        .stat-row.fuel-available {
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stat-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .fuel-bar-container {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .fuel-bar {
+            height: 100%;
+            background: var(--dae-primary);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .fuel-percentage {
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: var(--dae-primary);
+        }
+
+        .fuel-type {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Primary Action Button */
+        .action-card {
+            background: var(--dae-primary);
+            border-radius: 16px;
+            padding: var(--space-xl);
+            margin-bottom: var(--space-lg);
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-card:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .action-card:active {
+            transform: scale(0.98);
+        }
+
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+            font-size: 28px;
+        }
+
+        .action-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .action-subtitle {
+            font-size: var(--font-size-sm);
+            opacity: 0.8;
+        }
+
+        /* Map Section */
+        .map-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-card);
+            margin-bottom: var(--space-lg);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-title {
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.012em;
+        }
+
+        .see-all-link {
+            color: #007AFF;
+            font-size: var(--font-size-sm);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #map {
+            height: 180px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--space-md);
+        }
+
+        /* Station List - iOS Pattern */
+        .station-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md) 0;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .station-item:last-child {
+            border-bottom: none;
+        }
+
+        .station-item:active {
+            opacity: 0.6;
+        }
+
+        .station-icon {
+            width: 44px;
+            height: 44px;
+            background: #F2F2F7;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #007AFF;
+            font-size: 18px;
+            margin-right: var(--space-md);
+            flex-shrink: 0;
+        }
+
+        .station-logo {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--space-md);
+            flex-shrink: 0;
+            background: transparent;
+            border-radius: 0;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .station-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Petron logo specific sizing to match other logos */
+        .station-logo img[src*="Petron"],
+        .station-logo img[src*="petron"] {
+            transform: scale(1.4);
+        }
+
+        /* Petronas logo - scale down to show full "PETRONAS" text */
+        .station-logo img[src*="petronas"] {
+            transform: scale(0.85);
+        }
+
+        /* XCEL logo in station list - no scale; image fills container naturally at full width */
+        .station-logo img[src*="xcellogo"] {
+            transform: scale(0.9);
+        }
+
+        /* S.O.S Emergency Button - Circular Design */
+        .sos-container {
+            display: flex;
+            justify-content: center;
+            padding: var(--space-md);
+            padding-bottom: 100px;
+            margin-bottom: var(--space-md);
+        }
+
+        .btn-sos-circular {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #FF3B30 0%, #DC2626 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow:
+                0 4px 15px rgba(220, 38, 38, 0.4),
+                0 0 0 4px rgba(220, 38, 38, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .btn-sos-circular::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed rgba(220, 38, 38, 0.4);
+            animation: sos-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes sos-pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.6;
+            }
+        }
+
+        .btn-sos-circular:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 6px 20px rgba(220, 38, 38, 0.5),
+                0 0 0 6px rgba(220, 38, 38, 0.2),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-sos-circular:active {
+            transform: scale(0.95);
+        }
+
+        .btn-sos-circular i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .sos-circular-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .station-details {
+            flex: 1;
+        }
+
+        .station-name {
+            font-weight: 600;
+            font-size: var(--font-size-base);
+            color: #000000;
+            margin-bottom: 2px;
+            letter-spacing: -0.01em;
+        }
+
+        .station-distance {
+            font-size: var(--font-size-sm);
+            color: #8E8E93;
+        }
+
+        .station-arrow {
+            color: #C7C7CC;
+            font-size: 14px;
+        }
+
+        .station-amenities {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .amenity-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            background: #F2F2F7;
+            color: #8E8E93;
+        }
+
+        .amenity-restaurant {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .amenity-surau {
+            background: #DBEAFE;
+            color: #2563EB;
+        }
+
+        .amenity-atm {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .amenity-fuel {
+            background: #FCE7F3;
+            color: #DB2777;
+        }
+
+        .amenity-parking {
+            background: #E0E7FF;
+            color: #6366F1;
+        }
+
+        .amenity-shower {
+            background: #CFFAFE;
+            color: #0891B2;
+        }
+
+        /* ========== NFC TAP SCREEN ========== */
+        .nfc-screen {
+            background: var(--bg-primary);
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-xl);
+            padding-bottom: 120px;
+            text-align: center;
+        }
+
+        .nfc-animation {
+            width: 88px;
+            height: 88px;
+            position: relative;
+            margin: 0 auto var(--space-md);
+        }
+
+        .nfc-pulse {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--dae-primary);
+            border-radius: 50%;
+            position: absolute;
+            animation: pulse 2s infinite;
+            opacity: 0.3;
+        }
+
+        .nfc-pulse:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .nfc-pulse:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        .nfc-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--dae-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 22px;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        .nfc-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .nfc-instruction {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--space-lg);
+        }
+
+        .nfc-illustration {
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .nfc-illustration img {
+            width: 100%;
+            max-width: 260px;
+            height: auto;
+        }
+
+        .nfc-tip {
+            background: #FFF8E6;
+            border-left: 3px solid var(--dae-accent);
+            padding: var(--space-md);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .nfc-tip-title {
+            font-weight: 600;
+            color: #92400E;
+            margin-bottom: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: var(--font-size-sm);
+        }
+
+        .nfc-tip-text {
+            font-size: var(--font-size-sm);
+            color: #78350F;
+            line-height: 1.5;
+        }
+
+        /* ========== LOADING SCREEN ========== */
+        .loading-screen {
+            background: var(--bg-primary);
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-xl);
+            padding-bottom: 120px;
+            text-align: center;
+        }
+
+        .loading-fleet-graphic {
+            margin: 0 auto var(--space-lg);
+        }
+
+        /* Clean spinner */
+        .ms365-spinner {
+            width: 64px;
+            height: 64px;
+            position: relative;
+            margin: 0 auto var(--space-xl);
+        }
+
+        .spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--dae-primary);
+            animation: ms365spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .spinner-ring:nth-child(1) {
+            animation-delay: -0.45s;
+            border-top-color: var(--dae-primary);
+        }
+
+        .spinner-ring:nth-child(2) {
+            animation-delay: -0.3s;
+            border-top-color: var(--dae-primary-light);
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+        }
+
+        .spinner-ring:nth-child(3) {
+            animation-delay: -0.15s;
+            border-top-color: var(--bg-tertiary);
+            width: 50%;
+            height: 50%;
+            top: 25%;
+            left: 25%;
+        }
+
+        .spinner-ring:nth-child(4) {
+            border-top-color: var(--bg-tertiary);
+            width: 30%;
+            height: 30%;
+            top: 35%;
+            left: 35%;
+        }
+
+        @keyframes ms365spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--dae-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--space-md);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .loading-message {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .motivational-message {
+            font-size: var(--font-size-sm);
+            color: var(--dae-primary);
+            font-weight: 500;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ========== QR CODE SCREEN ========== */
+        .qr-screen {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            padding-bottom: 120px;
+        }
+
+        .qr-header {
+            text-align: center;
+            padding: var(--space-lg) 0;
+        }
+
+        .qr-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            background: #FFF8E6;
+            color: #D97706;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 20px;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .qr-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .qr-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        /* ========== ENERGY FLOW: QR SCREEN ========== */
+        .qr-code-container {
+            background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin: var(--space-lg) 0;
+            text-align: center;
+        }
+
+        .qr-timer-ring {
+            width: 72px;
+            height: 72px;
+            position: relative;
+            margin: 0 auto var(--space-lg);
+        }
+
+        .qr-timer-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid #F2F2F7;
+            border-top-color: #007AFF;
+            animation: spin 8s linear infinite;
+        }
+
+        .qr-timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .qr-code {
+            width: 240px;
+            height: 240px;
+            margin: 0 auto var(--space-lg);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: var(--space-md);
+        }
+
+        .qr-txn-id {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: 0.05em;
+        }
+
+        .qr-details {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .qr-detail-label {
+            font-size: var(--font-size-sm);
+            color: #8E8E93;
+            font-weight: 500;
+        }
+
+        .qr-detail-value {
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .qr-instruction-box {
+            background: #FF9500;
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            text-align: center;
+        }
+
+        .btn-sunmi-scan {
+            width: 100%;
+            padding: 14px;
+            background: var(--dae-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .btn-sunmi-scan:hover {
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-sunmi-scan:active {
+            transform: scale(0.98);
+            background: var(--dae-primary-dark);
+        }
+
+        .btn-sunmi-scan i {
+            font-size: 16px;
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            color: #FF3B30;
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: var(--space-md);
+        }
+
+        /* ========== ENERGY FLOW: APPROVAL SCREEN ========== */
+        .approval-screen {
+            background: #F2F2F7;
+            padding: var(--space-md);
+            padding-bottom: 120px;
+        }
+
+        .approval-header {
+            background: #000000;
+            color: white;
+            padding: var(--space-2xl) var(--space-md) var(--space-xl);
+            border-bottom-left-radius: var(--radius-xl);
+            border-bottom-right-radius: var(--radius-xl);
+            text-align: center;
+            margin: -20px -20px var(--space-lg);
+        }
+
+        .approval-icon {
+            width: 80px;
+            height: 80px;
+            background: #34C759;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-lg);
+        }
+
+        .approval-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .approval-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
+        }
+
+        .approval-message {
+            font-size: var(--font-size-sm);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .approval-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            border: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .approval-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg) 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .approval-detail:last-child {
+            border-bottom: none;
+        }
+
+        .approval-label {
+            font-size: var(--font-size-base);
+            color: #8E8E93;
+            font-weight: 500;
+        }
+
+        .approval-value {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.02em;
+        }
+
+        .btn-proceed {
+            width: 100%;
+            padding: 18px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-proceed:active {
+            opacity: 0.7;
+        }
+
+        /* ========== RECEIPT SCREEN ========== */
+        .receipt-screen {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            padding-bottom: 120px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            padding: var(--space-lg) 0;
+        }
+
+        .receipt-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--dae-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+        }
+
+        .receipt-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .receipt-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .receipt-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .receipt-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-card);
+            margin-bottom: var(--space-lg);
+        }
+
+        .receipt-section {
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-lg);
+            border-bottom: 2px dashed var(--gray-200);
+        }
+
+        .receipt-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .receipt-section-title {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-md);
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+        }
+
+        .receipt-label {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+
+        .receipt-value {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--gray-900);
+            text-align: right;
+        }
+
+        .receipt-station-value {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .receipt-station-logo {
+            width: 24px;
+            height: 24px;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+
+        .receipt-station-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* XCEL logo in receipt row */
+        .receipt-station-logo img[src*="xcellogo"] {
+            transform: scale(1.2);
+        }
+
+        .receipt-total {
+            background: var(--dae-primary);
+            color: white;
+            border-radius: 12px;
+            padding: var(--space-lg);
+            text-align: center;
+            margin-top: var(--space-lg);
+        }
+
+        .receipt-total-label {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+            margin-bottom: var(--space-xs);
+        }
+
+        .receipt-total-value {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+        }
+
+        .receipt-actions {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: var(--space-md);
+            background: white;
+            color: var(--dae-primary);
+            border: 2px solid var(--dae-primary);
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-secondary:active {
+            background: var(--gray-50);
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: var(--space-md);
+            background: var(--dae-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-primary:active {
+            background: var(--dae-primary-dark);
+        }
+
+        /* Alternative teal button style for secondary actions */
+        .btn-primary-teal {
+            flex: 1;
+            padding: var(--space-md);
+            background: #0D9488;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-primary-teal:active {
+            background: #0F766E;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== UTILITIES ========== */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-lg {
+            margin-bottom: var(--space-lg);
+        }
+
+        .mt-xl {
+            margin-top: var(--space-xl);
+        }
+
+        /* ========== BOTTOM NAVIGATION ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 max(12px, env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .bottom-nav.hidden {
+            display: none !important;
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav {
+                position: absolute;
+                max-width: none;
+            }
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 0;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            transition: opacity 0.2s ease;
+            min-height: 50px;
+            position: relative;
+        }
+
+        .nav-item:active {
+            opacity: 0.4;
+        }
+
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-label {
+            color: var(--dae-primary);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /* Center Action - Balanced Focus */
+        .nav-item.center-action .nav-icon {
+            font-size: 24px;
+            color: var(--dae-primary);
+        }
+
+        .nav-badge {
+            position: absolute;
+            top: 4px;
+            right: 25%;
+            min-width: 18px;
+            height: 18px;
+            background: #FF3B30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            border: 2px solid white;
+        }
+
+
+
+        /* ========== ACTIVITY (HISTORY) SCREEN ========== */
+        .history-screen {
+            background: var(--bg-secondary);
+            padding-bottom: 120px;
+        }
+
+        .screen-header {
+            background: var(--dae-primary);
+            color: white;
+            padding: var(--space-lg) var(--space-md) var(--space-md);
+        }
+
+        .screen-header-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-md);
+        }
+
+        .history-filters {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: nowrap;
+            padding: 0;
+            background: transparent;
+        }
+
+        .history-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .filter-chip:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .filter-chip.active {
+            background: white;
+            color: var(--dae-primary);
+            border-color: white;
+        }
+
+        .history-list {
+            padding: var(--space-md);
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: var(--space-md);
+            margin-bottom: var(--space-sm);
+            border: 1px solid var(--card-border);
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-sm);
+        }
+
+        .history-item-station {
+            font-weight: 700;
+            font-size: var(--font-size-base);
+            color: #000000;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-item-logo {
+            width: 24px;
+            height: 24px;
+            overflow: visible;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-item-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .history-item-logo img[src*="Petron"],
+        .history-item-logo img[src*="petron"] {
+            transform: scale(1.8);
+        }
+
+        /* XCEL logo in history list - small scale only; 8px gap prevents text overlap */
+        .history-item-logo img[src*="xcellogo"] {
+            transform: scale(1.1);
+            transform-origin: left center;
+        }
+
+        .history-item-date {
+            font-size: var(--font-size-xs);
+            color: #8E8E93;
+            font-weight: 500;
+        }
+
+        .history-item-amount {
+            font-size: var(--font-size-base);
+            font-weight: 800;
+            color: #000000;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .history-item-details {
+            display: flex;
+            gap: var(--space-lg);
+            padding-top: var(--space-sm);
+            border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .history-item-detail {
+            flex: 1;
+        }
+
+        .history-item-detail-label {
+            font-size: var(--font-size-xs);
+            color: #8E8E93;
+            margin-bottom: 2px;
+        }
+
+        .history-item-detail-value {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-2xl) var(--space-md);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            color: #C7C7CC;
+            margin-bottom: var(--space-lg);
+        }
+
+        .empty-state-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+        }
+
+        .empty-state-message {
+            font-size: var(--font-size-base);
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* ========== SETTINGS (PROFILE) SCREEN ========== */
+        .settings-screen {
+            background: var(--bg-secondary);
+            padding-bottom: 120px;
+        }
+
+        .settings-profile {
+            background: var(--dae-primary);
+            padding: var(--space-xl) var(--space-md);
+            text-align: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .settings-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-md);
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .settings-avatar i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .settings-name {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .settings-role {
+            font-size: var(--font-size-xs);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .settings-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0 var(--space-md);
+            margin-bottom: var(--space-md);
+            border: 1px solid var(--card-border);
+        }
+
+        .settings-section-title {
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+            color: var(--dae-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        border-bottom: 1px solid var(--gray-100);
+        cursor: pointer;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-item:active {
+            background: var(--gray-50);
+        }
+
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .settings-item-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dae-primary);
+            font-size: 14px;
+        }
+
+        .settings-item-icon.company-logo-icon {
+            background: white;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .settings-item-icon.company-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .settings-item-label {
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            color: #000000;
+        }
+
+        .settings-item-value {
+            font-size: var(--font-size-sm);
+            color: #8E8E93;
+        }
+
+        .settings-item-arrow {
+            color: #C7C7CC;
+            font-size: 14px;
+        }
+
+        /* ========== MESSAGES (INBOX) SCREEN ========== */
+        .inbox-screen {
+            background: var(--bg-secondary);
+            padding-bottom: 120px;
+        }
+
+        .inbox-list {
+            padding: 0 var(--space-md);
+        }
+
+        .inbox-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: var(--space-md);
+            margin-bottom: var(--space-sm);
+            border: 1px solid var(--card-border);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .inbox-item:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .inbox-item.unread {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-left: 4px solid #F59E0B;
+        }
+
+        .inbox-item.unread .inbox-item-title {
+            color: #B45309;
+            font-weight: 700;
+        }
+
+        .inbox-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .inbox-item-title {
+            font-weight: 700;
+            font-size: var(--font-size-base);
+            color: #000000;
+            letter-spacing: -0.01em;
+        }
+
+        .inbox-item-time {
+            font-size: var(--font-size-xs);
+            color: #8E8E93;
+            font-weight: 500;
+        }
+
+        .inbox-item-preview {
+            font-size: var(--font-size-sm);
+            color: #8E8E93;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .inbox-item-badge {
+            position: absolute;
+            top: 16px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            background: #007AFF;
+            border-radius: 50%;
+        }
+
+        .inbox-category-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: var(--space-sm);
+        }
+
+        .inbox-category-system {
+            background: #F2F2F7;
+            color: #8E8E93;
+        }
+
+        .inbox-category-promotion {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+        }
+
+        .inbox-category-promotion i {
+            margin-right: 4px;
+        }
+
+        .inbox-category-alert {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        /* Promotional Message Styling - Read state (subdued) */
+        .inbox-promo {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+        }
+
+        .promo-brand-logo {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .promo-brand-logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        /* XCEL logo in promo/inbox */
+        .promo-brand-logo img[src*="xcellogo"] {
+            transform: scale(1.2);
+        }
+
+        .promo-discount-badge {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .inbox-promo .inbox-item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .inbox-promo .inbox-item-preview {
+            color: var(--text-secondary);
+        }
+
+        /* Promotional Message Styling - Unread state (orange/yellow like other unread) */
+        .inbox-promo.unread {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 2px solid #F59E0B;
+            border-left: 4px solid #F59E0B;
+        }
+
+        .inbox-promo.unread::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, transparent 50%, rgba(245, 158, 11, 0.1) 50%);
+        }
+
+        .inbox-promo.unread .promo-brand-logo {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .inbox-promo.unread .promo-discount-badge {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .inbox-promo.unread .inbox-item-title {
+            color: #B45309;
+            font-weight: 700;
+        }
+
+        .inbox-promo.unread .inbox-item-preview {
+            color: #92400E;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Desktop info panel - only visible on desktop -->
+    <div class="desktop-info">
+        <div class="desktop-logo-row">
+            <img src="logo-nobackground.svg" alt="DAE Logo" class="desktop-logo" onerror="this.style.display='none'">
+            <span class="desktop-logo-divider">×</span>
+            <img src="xcellogo.jpg" alt="XCEL Logo" class="desktop-xcel-logo" onerror="this.style.display='none'">
+        </div>
+        <h1 class="desktop-title">DAE Digital Fleet App</h1>
+        <p class="desktop-subtitle">POC Stage for XCEL</p>
+        <p class="desktop-description">
+            A smarter way to fuel your fleet. Tap, fuel, and go — no cards, no cash, no hassle.
+        </p>
+        <ul class="desktop-features">
+            <li><i class="fas fa-gas-pump"></i> Fuel at any participating station</li>
+            <li><i class="fas fa-bolt"></i> NFC tap for instant authorization</li>
+            <li><i class="fas fa-shield-halved"></i> Secure transaction tracking</li>
+            <li><i class="fas fa-receipt"></i> Automatic e-receipts</li>
+        </ul>
+    </div>
+
+    <!-- Phone frame wrapper - only visible on desktop -->
+    <div class="phone-frame">
+        <div class="mobile-container">
+        <!-- The mock status bar has been removed to respect the native device environment -->
+
+        <!-- SCREEN 1: Welcome / Splash -->
+        <div id="screen-welcome" class="screen active welcome-screen">
+            <img src="logo-nobackground.svg" alt="DAE Logo" class="welcome-logo" onerror="this.style.display='none'">
+            <div class="welcome-poc-row">
+                <span class="welcome-poc-text">POC Stage for</span>
+                <img src="xcellogo.jpg" alt="XCEL" class="welcome-xcel-logo" onerror="this.style.display='none'">
+            </div>
+
+            <div class="welcome-tagline-container">
+                <div class="welcome-tagline-en" id="taglineEn">Tap. Fuel. Go.</div>
+                <div class="welcome-tagline-bm" id="taglineBm">Imbas. Isi. Jalan.</div>
+            </div>
+
+            <button class="btn-start" onclick="goToOnboarding1()">Get Started</button>
+        </div>
+
+        <!-- SCREEN 1B: Onboarding 1 - Universal Acceptance -->
+        <div id="screen-onboarding-1" class="screen onboarding-screen">
+            <div class="onboarding-content">
+                <div class="onboarding-icon">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+                <h2 class="onboarding-headline">Fuel at any station</h2>
+                <p class="onboarding-subtext-en">No brand restrictions</p>
+                <p class="onboarding-subtext-bm">Tiada had jenama</p>
+            </div>
+
+            <div class="onboarding-footer">
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+                <button class="btn-onboarding" onclick="goToOnboarding2()">Next</button>
+                <button class="btn-skip" onclick="skipOnboarding()">Skip</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 1C: Onboarding 2 - Speed & Simplicity -->
+        <div id="screen-onboarding-2" class="screen onboarding-screen">
+            <div class="onboarding-content">
+                <div class="onboarding-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h2 class="onboarding-headline">Tap. Fuel. Go.</h2>
+                <p class="onboarding-subtext-en">No cards. No cash.</p>
+                <p class="onboarding-subtext-bm">Tiada kad. Tiada tunai.</p>
+            </div>
+
+            <div class="onboarding-footer">
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                    <div class="onboarding-dot"></div>
+                </div>
+                <button class="btn-onboarding" onclick="goToOnboarding3()">Next</button>
+                <button class="btn-skip" onclick="skipOnboarding()">Skip</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 1D: Onboarding 3 - Trust & Safety -->
+        <div id="screen-onboarding-3" class="screen onboarding-screen">
+            <div class="onboarding-content">
+                <div class="onboarding-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h2 class="onboarding-headline">Secure for every trip</h2>
+                <p class="onboarding-subtext-en">Approved fuel only</p>
+                <p class="onboarding-subtext-bm">Isi minyak yang diluluskan sahaja</p>
+            </div>
+
+            <div class="onboarding-footer">
+                <div class="onboarding-dots">
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot"></div>
+                    <div class="onboarding-dot active"></div>
+                </div>
+                <button class="btn-onboarding" onclick="goToFinalCTA()">Next</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 1E: Fleet Driver Signup Intro -->
+        <div id="screen-cta" class="screen cta-screen">
+            <div class="cta-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2 class="cta-headline">Your Company Has You Covered</h2>
+            <p class="cta-subtext">Your employer has already onboarded your personal details, vehicle model, and plate number with your mobile phone number. Just verify your phone to start using DAE Digital Fleet.</p>
+
+            <button class="btn-cta-primary" onclick="startSignup()">Verify Phone</button>
+            <div class="btn-cta-secondary">Mula Isi Minyak</div>
+        </div>
+
+        <!-- SCREEN 1F: Sign Up - Phone Entry -->
+        <div id="screen-signup-phone" class="screen signup-screen">
+            <div class="signup-header">
+                <button class="btn-back" onclick="goBackToCTA()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="signup-title">Enter Your Number</h1>
+                <div class="signup-subtitle">We'll send a verification code</div>
+            </div>
+
+            <div class="signup-content">
+                <div class="signup-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                
+                <div class="phone-input-container">
+                    <div class="country-code">+60</div>
+                    <input type="tel" id="phoneInput" class="phone-input" placeholder="12 345 6789" maxlength="11" inputmode="numeric">
+                </div>
+                
+                <div class="phone-hint">Enter your Malaysian mobile number</div>
+                
+                <div class="terms-agreement">
+                    <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                    <label for="termsCheckbox" class="terms-label">
+                        I agree to DAE's <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+
+            <div class="signup-footer">
+                <button class="btn-signup" onclick="sendOTP()" id="sendOTPBtn" disabled>
+                    Send Verification Code
+                </button>
+                <div class="signup-help">
+                    Already registered? <a href="#" onclick="recoverAccount()">Recover account</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 1G: Sign Up - OTP Verification -->
+        <div id="screen-signup-otp" class="screen signup-screen">
+            <div class="signup-header">
+                <button class="btn-back" onclick="goBackToPhone()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="signup-title">Verify Your Number</h1>
+                <div class="signup-subtitle" id="otpSubtitle">Code sent to +60 <span id="phoneDisplay">12 345 6789</span></div>
+            </div>
+
+            <div class="signup-content">
+                <div class="signup-icon">
+                    <i class="fas fa-sms"></i>
+                </div>
+                
+                <div class="otp-instruction">
+                    Enter the 6-digit code sent to your phone
+                </div>
+                
+                <div class="otp-input-container">
+                    <input type="text" id="otp1" class="otp-input" maxlength="1" inputmode="numeric" autofocus>
+                    <input type="text" id="otp2" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp3" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp4" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp5" class="otp-input" maxlength="1" inputmode="numeric">
+                    <input type="text" id="otp6" class="otp-input" maxlength="1" inputmode="numeric">
+                </div>
+                
+                <div class="otp-timer" id="otpTimer">
+                    Resend code in <span id="timerCount">60</span>s
+                </div>
+                <button class="btn-resend" onclick="resendOTP()" id="resendBtn" disabled>
+                    Resend Code
+                </button>
+            </div>
+
+            <div class="signup-footer">
+                <button class="btn-signup" onclick="verifyOTP()" id="verifyOTPBtn" disabled>
+                    Verify & Continue
+                </button>
+                <div class="signup-help">
+                    Didn't receive code? <a href="#" onclick="troubleshootOTP()">Troubleshoot</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 1H: Sign Up - Success & Quick Tutorial -->
+        <div id="screen-signup-success" class="screen signup-success-screen">
+            <div class="success-header">
+                <button class="btn-skip" onclick="completeSignup()">Skip</button>
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1 class="success-title">Welcome to DAE!</h1>
+                <div class="success-subtitle" id="driverName">Abdul Hamid Ahmad</div>
+                <div class="success-company" id="driverCompany">SITL Logistics</div>
+            </div>
+
+            <div class="success-content">
+                <div class="vehicle-assigned-card">
+                    <div class="vehicle-assigned-header">
+                        <div class="vehicle-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="vehicle-info">
+                            <div class="vehicle-model" id="vehicleModel">Mercedes-Benz Actros</div>
+                            <div class="vehicle-plate" id="vehiclePlate">ABC-1234</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-note">
+                        This vehicle has been assigned to you. You can fuel it at any station.
+                    </div>
+                </div>
+                
+                <div class="quick-tutorial">
+                    <h3 class="tutorial-title">How to Fuel in 3 Steps</h3>
+                    <div class="tutorial-steps">
+                        <div class="tutorial-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">Tap NFC Tag</div>
+                                <div class="step-description">Tap your phone on the vehicle's NFC sticker</div>
+                            </div>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Show QR Code</div>
+                                <div class="step-description">Show the generated QR to station cashier</div>
+                            </div>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Fuel & Go</div>
+                                <div class="step-description">Pump fuel and receive e-receipt automatically</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-footer">
+                <button class="btn-success" onclick="completeSignup()">
+                    Start Fueling
+                </button>
+                <div class="success-note">
+                    You can update your profile in Settings anytime
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Home with Map -->
+        <div id="screen-home" class="screen home-screen">
+            <header class="home-header">
+                <div class="home-header-top">
+                    <div class="home-driver-avatar">
+                        <img src="Fleet Driver Icon.png" alt="Abdul Hamid" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; border-radius: 50%;">
+                    </div>
+                    <div class="home-driver-info">
+                        <div class="home-driver-name">Abdul Hamid</div>
+                        <div class="home-greeting">SITL Logistics</div>
+                    </div>
+                </div>
+                <div class="home-vehicle-card">
+                    <div class="vehicle-image">
+                        <img src="png-clipart-mercedes-benz-sprinter-car-mercedes-benz-actros-mercedes-benz-vito-benz-logo-emblem-trademark-thumbnail.png" alt="Mercedes-Benz">
+                    </div>
+                    <div class="vehicle-details">
+                        <span class="registration">ABC-1234</span>
+                        <span class="vehicle-model">Mercedes-Benz Actros</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="home-content">
+                <!-- Quick Stats -->
+                <div class="quick-stats-card">
+                    <div class="stat-row fuel-available">
+                        <div class="stat-info">
+                            <div class="stat-label">Available Today</div>
+                            <div class="stat-value large">180L</div>
+                        </div>
+                        <div class="fuel-bar-container">
+                            <div class="fuel-bar" style="width: 72%;"></div>
+                        </div>
+                        <div class="fuel-percentage">72%</div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label">Daily Limit</div>
+                        <div class="stat-value">250L</div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-label">Fuel Type</div>
+                        <div class="stat-value fuel-type">
+                            <i class="fas fa-gas-pump" style="color: #F59E0B; margin-right: 6px;"></i>
+                            Diesel
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Action -->
+                <div class="action-card" onclick="startFueling()">
+                    <div class="action-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="action-title">Start Fueling</div>
+                    <div class="action-subtitle">Tap to begin your fueling journey</div>
+                </div>
+
+                <!-- Map Section -->
+                <div class="map-section">
+                    <div class="section-header">
+                        <div class="section-title">Nearby Stations</div>
+                        <a href="#" class="see-all-link" onclick="event.preventDefault(); viewAllStations();">See
+                            All</a>
+                    </div>
+
+                    <div id="map"></div>
+
+                    <div class="station-item" onclick="selectStation('Xcel Jln Mendu/Tabuan')">
+                        <div class="station-logo">
+                            <img src="xcellogo.jpg" alt="XCEL">
+                        </div>
+                        <div class="station-details">
+                            <div class="station-name">Xcel Jln Mendu/Tabuan</div>
+                            <div class="station-distance">0.3 km away • Open 24/7</div>
+                            <div class="station-amenities">
+                                <div class="amenity-icon amenity-restaurant" title="Restaurant">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="amenity-icon amenity-surau" title="Surau">
+                                    <i class="fas fa-mosque"></i>
+                                </div>
+                                <div class="amenity-icon amenity-shower" title="Shower">
+                                    <i class="fas fa-shower"></i>
+                                </div>
+                                <div class="amenity-icon amenity-atm" title="ATM">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="amenity-icon amenity-parking" title="Truck Parking">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right station-arrow"></i>
+                    </div>
+
+                    <div class="station-item" onclick="selectStation('Shell Petra Jaya')">
+                        <div class="station-logo">
+                            <img src="shell.png" alt="Shell">
+                        </div>
+                        <div class="station-details">
+                            <div class="station-name">Shell Petra Jaya</div>
+                            <div class="station-distance">1.5 km away • 6am - 10pm</div>
+                            <div class="station-amenities">
+                                <div class="amenity-icon amenity-restaurant" title="Restaurant">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="amenity-icon amenity-shower" title="Shower">
+                                    <i class="fas fa-shower"></i>
+                                </div>
+                                <div class="amenity-icon amenity-atm" title="ATM">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="amenity-icon amenity-fuel" title="Diesel">
+                                    <span style="font-weight: 700; font-size: 9px;">D</span>
+                                </div>
+                                <div class="amenity-icon amenity-parking" title="Truck Parking">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right station-arrow"></i>
+                    </div>
+
+                    <div class="station-item" onclick="selectStation('PETRONAS Green Height')">
+                        <div class="station-logo">
+                            <img src="petronas.png" alt="PETRONAS">
+                        </div>
+                        <div class="station-details">
+                            <div class="station-name">PETRONAS Green Height</div>
+                            <div class="station-distance">1.8 km away • Open 24/7</div>
+                            <div class="station-amenities">
+                                <div class="amenity-icon amenity-surau" title="Surau">
+                                    <i class="fas fa-mosque"></i>
+                                </div>
+                                <div class="amenity-icon amenity-atm" title="ATM">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="amenity-icon amenity-fuel" title="Euro 5">
+                                    <span style="font-weight: 700; font-size: 9px;">E5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right station-arrow"></i>
+                    </div>
+
+                    <div class="station-item" onclick="selectStation('Petron Jalan Tun Abang Hj Openg')">
+                        <div class="station-logo">
+                            <img src="Petron_Corporation-Logo.wine.svg" alt="Petron">
+                        </div>
+                        <div class="station-details">
+                            <div class="station-name">Petron Jln Tun Abang Hj Openg</div>
+                            <div class="station-distance">2.5 km away • Open 24/7</div>
+                            <div class="station-amenities">
+                                <div class="amenity-icon amenity-restaurant" title="Restaurant">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="amenity-icon amenity-surau" title="Surau">
+                                    <i class="fas fa-mosque"></i>
+                                </div>
+                                <div class="amenity-icon amenity-atm" title="ATM">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="amenity-icon amenity-fuel" title="Diesel">
+                                    <span style="font-weight: 700; font-size: 9px;">D</span>
+                                </div>
+                                <div class="amenity-icon amenity-parking" title="Truck Parking">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right station-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- S.O.S Emergency Button -->
+            <div class="sos-container">
+                <button class="btn-sos-circular" onclick="callEmergencyHotline()">
+                    <i class="fas fa-phone-volume"></i>
+                    <span class="sos-circular-label">S.O.S</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: NFC Tap Instructions -->
+        <div id="screen-nfc" class="screen nfc-screen">
+            <div class="nfc-animation">
+                <div class="nfc-pulse"></div>
+                <div class="nfc-pulse"></div>
+                <div class="nfc-pulse"></div>
+                <div class="nfc-icon">
+                    <i class="fas fa-broadcast-tower"></i>
+                </div>
+            </div>
+
+            <h2 class="nfc-title">Tap Your Phone</h2>
+            <p class="nfc-instruction">Hold your phone near the NFC sticker on your vehicle's windshield</p>
+
+            <div class="nfc-illustration" style="position: relative; overflow: visible;">
+                <style>
+                    @keyframes phoneMoveToTruck {
+                        0%, 15% { transform: translateX(0); }
+                        45%, 55% { transform: translateX(-70px); }
+                        85%, 100% { transform: translateX(0); }
+                    }
+                    @keyframes nfcPulseOverlay {
+                        0%, 40% { opacity: 0.3; transform: scale(1); }
+                        45%, 55% { opacity: 1; transform: scale(1.2); }
+                        60%, 100% { opacity: 0.3; transform: scale(1); }
+                    }
+                    .phone-animation { animation: phoneMoveToTruck 3.5s ease-in-out infinite; }
+                    .nfc-pulse-overlay { animation: nfcPulseOverlay 3.5s ease-in-out infinite; }
+                </style>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; position: relative;">
+                    <!-- Truck Image with NFC Overlay -->
+                    <div style="position: relative;">
+                        <img src="front-view-freight.jpg.webp" alt="Front view of truck" style="width: 180px; height: auto; border-radius: 12px; object-fit: cover;">
+                        <!-- NFC Sticker Overlay -->
+                        <div class="nfc-pulse-overlay" style="position: absolute; top: 25%; right: 20%; width: 50px; height: 50px; background: rgba(59, 130, 246, 0.3); border-radius: 50%;"></div>
+                        <div style="position: absolute; top: 25%; right: 20%; width: 40px; height: 40px; background: #3B82F6; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-left: 5px; margin-top: 5px;">
+                            <span style="font-size: 8px; color: white; font-weight: bold;">NFC</span>
+                            <span style="font-size: 6px; color: rgba(255,255,255,0.8);">TAP</span>
+                        </div>
+                    </div>
+                    <!-- Phone (animated) -->
+                    <div class="phone-animation" style="width: 55px; height: 95px; background: #1F2937; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 10px 4px;">
+                        <div style="width: 4px; height: 4px; background: #4B5563; border-radius: 50%; margin-bottom: 5px;"></div>
+                        <div style="width: 47px; height: 65px; background: #F3F4F6; border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="width: 30px; height: 30px; background: #3B82F6; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 9px; color: white; font-weight: bold;">DAE</span>
+                            </div>
+                            <span style="font-size: 6px; color: #6B7280; margin-top: 4px;">Ready to scan</span>
+                        </div>
+                        <div style="width: 20px; height: 3px; background: #4B5563; border-radius: 1px; margin-top: 5px;"></div>
+                    </div>
+                </div>
+                <p style="font-size: 11px; color: #6B7280; text-align: center; margin-top: 12px; font-weight: 500;">Hold phone near NFC sticker on windshield</p>
+            </div>
+
+            <div class="nfc-tip">
+                <div class="nfc-tip-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Tip
+                </div>
+                <div class="nfc-tip-text">
+                    The NFC sticker is located on the driver's side of the windshield, clearly visible and easy to
+                    reach.
+                </div>
+            </div>
+
+            <button class="btn-proceed" onclick="simulateNFCTap()" style="margin-top: 24px;">
+                <i class="fas fa-hand-pointer"></i> Simulate NFC Tap
+            </button>
+
+            <button class="btn-cancel" onclick="goToHome()">Cancel</button>
+        </div>
+
+        <!-- SCREEN 4: Loading / Processing -->
+        <div id="screen-loading" class="screen loading-screen">
+            <div class="ms365-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <h3 class="loading-title">Processing...</h3>
+            <p class="loading-message">Validating your transaction</p>
+            <p class="motivational-message" id="motivationalText">"Safety first, efficiency always"</p>
+        </div>
+
+        <!-- SCREEN 5: QR Code Display -->
+        <div id="screen-qr" class="screen qr-screen">
+            <div class="qr-header">
+                <div class="qr-status">
+                    <i class="fas fa-clock"></i>
+                    <span>Valid for <span id="qrTimer">5:00</span> minutes</span>
+                </div>
+                <h2 class="qr-title">Show QR to Cashier</h2>
+                <p class="qr-subtitle">Present this code at the station counter</p>
+            </div>
+
+            <div class="qr-code-container">
+                <div class="qr-code" id="qrCodeDisplay">
+                    <!-- QR Code will be generated here -->
+                </div>
+                <div class="qr-txn-id">TXN-<span id="txnId">12345</span></div>
+            </div>
+
+            <div class="qr-details">
+                <div class="qr-detail-row">
+                    <span class="qr-detail-label">Max Amount</span>
+                    <span class="qr-detail-value">180L</span>
+                </div>
+                <div class="qr-detail-row">
+                    <span class="qr-detail-label">Fuel Type</span>
+                    <span class="qr-detail-value">Diesel</span>
+                </div>
+                <div class="qr-detail-row">
+                    <span class="qr-detail-label">Vehicle</span>
+                    <span class="qr-detail-value">ABC-1234</span>
+                </div>
+            </div>
+
+            <div class="qr-instruction-box">
+                <h3>Next Steps</h3>
+                <p>The cashier will scan this code to authorize your fueling. Please wait for confirmation before
+                    proceeding to the pump.</p>
+            </div>
+
+            <button class="btn-sunmi-scan" onclick="simulateSunmiScan()">
+                <i class="fas fa-barcode"></i>
+                Simulate indoor DAE POS scanning...
+            </button>
+
+            <button class="btn-cancel" onclick="cancelTransaction()">Cancel Transaction</button>
+        </div>
+
+        <!-- SCREEN 6: Approval -->
+        <div id="screen-approval" class="screen approval-screen">
+            <div class="approval-icon">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <h2 class="approval-title" style="text-align: center; width: 100%;">Approved!</h2>
+            <p class="approval-message" style="text-align: center;">You are authorized to proceed with fueling</p>
+
+            <div class="approval-card">
+                <div class="approval-detail">
+                    <span class="approval-label">Approved Amount</span>
+                    <span class="approval-value">180L</span>
+                </div>
+                <div class="approval-detail">
+                    <span class="approval-label">Fuel Type</span>
+                    <span class="approval-value">Diesel</span>
+                </div>
+                <div class="approval-detail">
+                    <span class="approval-label">Pump Number</span>
+                    <span class="approval-value">Pump 3</span>
+                </div>
+            </div>
+
+            <button class="btn-proceed" onclick="simulateFueling()">Proceed to Pump</button>
+        </div>
+
+        <!-- SCREEN 7: E-Receipt -->
+        <div id="screen-receipt" class="screen receipt-screen">
+            <div class="receipt-header">
+                <div class="receipt-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h2 class="receipt-title">Transaction Complete</h2>
+                <p class="receipt-subtitle">Thank you for using DAE</p>
+            </div>
+
+            <div class="receipt-card">
+                <!-- Transaction Details -->
+                <div class="receipt-section">
+                    <div class="receipt-section-title">Transaction Details</div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Receipt No.</span>
+                        <span class="receipt-value" id="receiptNo">RCP-20260115-001</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Transaction ID</span>
+                        <span class="receipt-value" id="receiptTxnId">TXN-12345</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Date & Time</span>
+                        <span class="receipt-value" id="receiptDateTime">15 Jan 2026, 14:32</span>
+                    </div>
+                </div>
+
+                <!-- Driver & Vehicle -->
+                <div class="receipt-section">
+                    <div class="receipt-section-title">Driver & Vehicle</div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Driver Name</span>
+                        <span class="receipt-value">Abdul Hamid Ahmad</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Phone Number</span>
+                        <span class="receipt-value">+60 12-345 6789</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Vehicle</span>
+                        <span class="receipt-value" id="receiptVehicle" style="display: flex; align-items: center; gap: 6px;">
+                            <img src="png-clipart-mercedes-benz-sprinter-car-mercedes-benz-actros-mercedes-benz-vito-benz-logo-emblem-trademark-thumbnail.png" alt="Mercedes" id="receiptVehicleLogo" style="width: 18px; height: 18px; object-fit: contain;">
+                            ABC-1234
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Station Details -->
+                <div class="receipt-section">
+                    <div class="receipt-section-title">Station Information</div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Station Name</span>
+                        <span class="receipt-value receipt-station-value">
+                            <span class="receipt-station-logo"><img src="xcellogo.jpg" alt="" id="receiptStationLogo"></span>
+                            <span id="receiptStationName">Xcel Jln Mendu/Tabuan</span>
+                        </span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Station ID</span>
+                        <span class="receipt-value">STN-BK-001</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Address</span>
+                        <span class="receipt-value">Jln Mendu/Jln Tabuan, Kuching, Sarawak</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Contact</span>
+                        <span class="receipt-value">+60 82-123 456</span>
+                    </div>
+                </div>
+
+                <!-- Fuel Details -->
+                <div class="receipt-section">
+                    <div class="receipt-section-title">Fuel Details</div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Product</span>
+                        <span class="receipt-value">Diesel</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Volume</span>
+                        <span class="receipt-value" id="receiptVolume">45.2L</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="receipt-label">Price per Liter</span>
+                        <span class="receipt-value">MYR 3.50</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="receipt-total">
+                    <div class="receipt-total-label">Total Amount</div>
+                    <div class="receipt-total-value">MYR <span id="receiptTotal">158.20</span></div>
+                </div>
+            </div>
+
+            <div class="receipt-actions">
+                <button class="btn-secondary" onclick="downloadReceipt()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button class="btn-primary-teal" onclick="goToHome()">
+                    <i class="fas fa-home"></i> Back to Home
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 8: History -->
+        <div id="screen-history" class="screen history-screen">
+            <header class="screen-header">
+                <h1 class="screen-header-title">Transaction History</h1>
+                <div class="history-filters">
+                    <button class="filter-chip active" onclick="filterHistory('all')">All</button>
+                    <button class="filter-chip" onclick="filterHistory('today')">Today</button>
+                    <button class="filter-chip" onclick="filterHistory('week')">This Week</button>
+                    <button class="filter-chip" onclick="filterHistory('month')">This Month</button>
+                </div>
+            </header>
+
+            <div class="history-list" id="historyList">
+                <!-- History items will be populated here -->
+            </div>
+        </div>
+
+        <!-- SCREEN 9: Settings -->
+        <div id="screen-settings" class="screen settings-screen">
+            <div class="settings-profile">
+                <div class="settings-avatar" onclick="changeProfilePicture()">
+                    <img src="Fleet Driver Icon.png" alt="Abdul Hamid Ahmad" style="width: 100%; height: 100%; object-fit: cover; object-position: center 15%;">
+                    <div class="settings-avatar-edit">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="settings-name">Abdul Hamid Ahmad</div>
+                <div class="settings-role">Professional Truck Driver</div>
+            </div>
+
+            <div class="settings-sections">
+                <!-- Driver Information -->
+                <div class="settings-section">
+                    <div class="settings-section-title">Driver Information</div>
+
+                    <div class="settings-item" onclick="editDriverInfo('name')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Full Name</div>
+                                <div class="settings-item-value">Abdul Hamid Ahmad</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-venus-mars"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Gender</div>
+                                <div class="settings-item-value">Male</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item" onclick="editDriverInfo('phone')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Phone Number</div>
+                                <div class="settings-item-value">+60 12-345 6789</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item" onclick="editDriverInfo('license')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-id-badge"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">License Number</div>
+                                <div class="settings-item-value">DRV-001-2024</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon company-logo-icon">
+                                <img src="SITL-Logo.png" alt="SITL Logo" onerror="this.parentElement.innerHTML='<i class=\'fas fa-building\'></i>'">
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Company</div>
+                                <div class="settings-item-value">SITL Logistics</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- Vehicle Information -->
+                <div class="settings-section">
+                    <div class="settings-section-title">Authorized Vehicles</div>
+
+                    <div class="settings-item" onclick="selectVehicle('ABC-1234')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon" style="background: transparent; padding: 0;">
+                                <img src="png-clipart-mercedes-benz-sprinter-car-mercedes-benz-actros-mercedes-benz-vito-benz-logo-emblem-trademark-thumbnail.png" alt="Mercedes" style="width: 32px; height: 32px; object-fit: contain;">
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Mercedes-Benz Actros</div>
+                                <div class="settings-item-value">ABC-1234 • Diesel • 250L/day</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item" onclick="selectVehicle('QK888')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon" style="background: transparent; padding: 0;">
+                                <img src="hino logo.png" alt="Hino" style="width: 32px; height: 32px; object-fit: contain;">
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Hino 700 Series</div>
+                                <div class="settings-item-value">QK888 • Diesel • 250L/day</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- App Settings -->
+                <div class="settings-section">
+                    <div class="settings-section-title">App Settings</div>
+
+                    <div class="settings-item" onclick="changeSetting('language')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-language"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Language</div>
+                                <div class="settings-item-value">English</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item" onclick="changeSetting('notifications')">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Notifications</div>
+                                <div class="settings-item-value">Enabled</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- Support & Legal -->
+                <div class="settings-section">
+                    <div class="settings-section-title">Support & Legal</div>
+
+                    <div class="settings-item" onclick="openHelp()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-circle-question"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">Help & Support</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+
+                    <div class="settings-item" onclick="openAbout()">
+                        <div class="settings-item-left">
+                            <div class="settings-item-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="settings-item-text">
+                                <div class="settings-item-label">About DAE</div>
+                                <div class="settings-item-value">Version 1.0.0 (POC)</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right settings-item-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 10: Inbox -->
+        <div id="screen-inbox" class="screen inbox-screen">
+            <header class="screen-header">
+                <h1 class="screen-header-title">Messages</h1>
+            </header>
+
+            <div class="inbox-list" id="inboxList">
+                <!-- Messages will be populated here -->
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav hidden">
+            <button class="nav-item" onclick="startFueling()" id="nav-fuel">
+                <i class="fas fa-gas-pump nav-icon"></i>
+                <span class="nav-label">Fuel</span>
+            </button>
+
+            <button class="nav-item" onclick="goToHistory()" id="nav-history">
+                <i class="fas fa-clock-rotate-left nav-icon"></i>
+                <span class="nav-label">History</span>
+            </button>
+
+            <button class="nav-item center-action" onclick="goToHome()" id="nav-home">
+                <i class="fas fa-house-chimney nav-icon"></i>
+                <span class="nav-label">Home</span>
+            </button>
+
+            <button class="nav-item" onclick="goToInbox()" id="nav-inbox">
+                <i class="fas fa-envelope nav-icon"></i>
+                <span class="nav-label">Messages</span>
+                <div class="nav-badge" id="inbox-badge">2</div>
+            </button>
+
+            <button class="nav-item" onclick="goToSettings()" id="nav-settings">
+                <i class="fas fa-user-circle nav-icon"></i>
+                <span class="nav-label">Profile</span>
+            </button>
+        </nav>
+    </div>
+    </div> <!-- Close phone-frame -->
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        // ========== TAGLINE ROTATION ==========
+        const taglines = [
+            { en: "Tap. Fuel. Go.", bm: "Imbas. Isi. Jalan." },
+            { en: "One app. Any station.", bm: "Satu aplikasi. Semua stesen." },
+            { en: "Fuel without hassle.", bm: "Isi minyak tanpa masalah." },
+            { en: "Simple fuel for every trip.", bm: "Isi minyak mudah untuk setiap perjalanan." },
+            { en: "Every stop, made easy.", bm: "Setiap hentian jadi lebih mudah." }
+        ];
+
+        // Set random tagline on page load
+        function setRandomTagline() {
+            const randomIndex = Math.floor(Math.random() * taglines.length);
+            const tagline = taglines[randomIndex];
+            const taglineEn = document.getElementById('taglineEn');
+            const taglineBm = document.getElementById('taglineBm');
+            if (taglineEn && taglineBm) {
+                taglineEn.textContent = tagline.en;
+                taglineBm.textContent = tagline.bm;
+            }
+        }
+
+        // ========== ONBOARDING NAVIGATION ==========
+        function goToOnboarding1() {
+            navigateTo('screen-onboarding-1');
+        }
+
+        function goToOnboarding2() {
+            navigateTo('screen-onboarding-2');
+        }
+
+        function goToOnboarding3() {
+            navigateTo('screen-onboarding-3');
+        }
+
+        function goToFinalCTA() {
+            navigateTo('screen-cta');
+        }
+
+        function skipOnboarding() {
+            navigateTo('screen-cta');
+        }
+
+        // ========== STATION LOGO HELPER ==========
+        function getStationLogo(stationName) {
+            const name = stationName.toLowerCase();
+            if (name.includes('petronas')) return 'petronas.png';
+            if (name.includes('shell')) return 'shell.png';
+            if (name.includes('petron')) return 'Petron_Corporation-Logo.wine.svg';
+            if (name.includes('xcel')) return 'xcellogo.jpg';
+            return null;
+        }
+
+        // ========== VEHICLE BRAND LOGO HELPER ==========
+        function getVehicleBrandLogo(vehicleModel) {
+            const model = vehicleModel.toLowerCase();
+            if (model.includes('mercedes')) return 'png-clipart-mercedes-benz-sprinter-car-mercedes-benz-actros-mercedes-benz-vito-benz-logo-emblem-trademark-thumbnail.png';
+            if (model.includes('hino')) return 'hino logo.png';
+            return null;
+        }
+
+        function getVehicleModelByPlate(plate) {
+            const vehicles = {
+                'ABC-1234': 'Mercedes-Benz Actros',
+                'QK888': 'Hino 700 Series'
+            };
+            return vehicles[plate] || 'Mercedes-Benz Actros';
+        }
+
+        // ========== FUEL BAR COLOR HELPER ==========
+        function getFuelBarColor(percentage) {
+            if (percentage >= 80) return '#10B981'; // Green
+            if (percentage >= 50) return '#3B82F6'; // Blue
+            if (percentage >= 25) return '#F59E0B'; // Orange/Warning
+            return '#EF4444'; // Red
+        }
+
+        function updateFuelBar(percentage) {
+            const fuelBar = document.querySelector('.fuel-bar');
+            const fuelPercentage = document.querySelector('.fuel-percentage');
+            if (fuelBar && fuelPercentage) {
+                const color = getFuelBarColor(percentage);
+                fuelBar.style.background = color;
+                fuelBar.style.width = percentage + '%';
+                fuelPercentage.style.color = color;
+                fuelPercentage.textContent = percentage + '%';
+            }
+        }
+
+        // ========== GLOBAL MOTION & STATE ==========
+        const Motion = {
+            spring: "cubic-bezier(0.17, 0.67, 0.43, 1.1)",
+            smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
+
+            transition: function (fromId, toId) {
+                const from = document.getElementById(fromId);
+                const to = document.getElementById(toId);
+
+                if (!from || !to) return;
+
+                from.style.transition = `opacity 0.4s ${this.smooth}, transform 0.4s ${this.spring}`;
+                to.style.transition = `opacity 0.4s ${this.smooth}, transform 0.4s ${this.spring}`;
+
+                from.style.opacity = '0';
+                from.style.transform = 'scale(0.98)';
+
+                setTimeout(() => {
+                    from.classList.remove('active');
+                    to.classList.add('active');
+                    to.style.transform = 'scale(1.02)';
+                    to.style.opacity = '0';
+
+                    requestAnimationFrame(() => {
+                        to.style.transform = 'scale(1)';
+                        to.style.opacity = '1';
+                    });
+                }, 400);
+            }
+        };
+
+        let currentScreenId = 'screen-welcome';
+        let transactionHistory = [];
+        let inboxMessages = [];
+        let map = null;
+        let qrTimerInterval = null;
+        let transactionData = null;
+        let driverData = null;
+
+        // Motivational messages for loading screen
+        const motivationalMessages = [
+            "Safety first, efficiency always",
+            "Drive smart, fuel smart",
+            "Every journey begins with a single step",
+            "Your time matters, we make it count",
+            "Excellence in every mile",
+            "Powering your journey forward"
+        ];
+
+        // Generate sample inbox messages
+        function generateSampleInbox() {
+            const now = new Date();
+            inboxMessages = [
+                {
+                    id: 1,
+                    title: 'Welcome to DAE!',
+                    preview: 'Thank you for joining the Digital Assistant for Energy platform. Get started by completing your first fueling transaction.',
+                    time: '2 days ago',
+                    unread: true,
+                    category: 'system',
+                    fullMessage: 'Welcome to DAE - Digital Assistant for Energy!\n\nWe are excited to have you on board. This platform will help you manage your fuel transactions efficiently and safely.\n\nTo get started:\n1. Ensure your vehicle information is up to date\n2. Check nearby fuel stations on the home screen\n3. Tap "Start Fueling" when you\'re ready\n\nIf you need assistance, visit the Help & Support section in Settings.'
+                },
+                {
+                    id: 2,
+                    title: 'FREE Coffee at XCEL Stations!',
+                    preview: 'Show your DAE app after fueling and enjoy a FREE hot coffee at any XCEL station!',
+                    time: '1 day ago',
+                    unread: true,
+                    category: 'promotion',
+                    brand: 'xcel',
+                    brandLogo: 'xcellogo.jpg',
+                    promoDiscount: 'FREE COFFEE',
+                    fullMessage: 'Driver Appreciation Offer!\n\nEnjoy a FREE hot coffee (any size) at participating XCEL stations.\n\nHow to Redeem:\n1. Complete any fueling transaction via DAE\n2. Show your e-receipt to the cashier\n3. Collect your free coffee!\n\nValid: 13 Jan - 31 Jan 2026\n\nStay refreshed on your journey, driver!'
+                },
+                {
+                    id: 3,
+                    title: 'System Maintenance Notice',
+                    preview: 'Scheduled maintenance on 20 Jan 2026 from 2:00 AM to 4:00 AM. Service may be temporarily unavailable.',
+                    time: '3 hours ago',
+                    unread: false,
+                    category: 'alert',
+                    fullMessage: 'Scheduled System Maintenance\n\nDate: 20 January 2026\nTime: 2:00 AM - 4:00 AM (MYT)\n\nDuring this period:\n- Mobile app may be temporarily unavailable\n- Transaction history may not update in real-time\n- QR code generation may experience delays\n\nWe apologize for any inconvenience. Emergency fuel transactions can still be processed manually at station counters.\n\nThank you for your understanding.'
+                },
+                {
+                    id: 4,
+                    title: 'FREE Meal for 100L+ Fueling!',
+                    preview: 'Fuel over 100L at Shell Kuching and get a FREE nasi lemak meal set!',
+                    time: 'Yesterday',
+                    unread: false,
+                    category: 'promotion',
+                    brand: 'shell',
+                    brandLogo: 'shell.png',
+                    promoDiscount: 'FREE MEAL',
+                    fullMessage: 'Big Fill, Free Meal!\n\nFuel over 100L at Shell Kuching and receive a FREE nasi lemak meal set from the Shell Select store.\n\nWhat You Get:\n- Nasi Lemak Special\n- Iced Tea/Hot Coffee\n\nHow to Claim:\n1. Fuel 100L or more via DAE\n2. Show e-receipt at Shell Select counter\n3. Enjoy your free meal!\n\nValid: While stocks last\nLocation: Shell Kuching stations only\n\nFuel up and fill up, driver!'
+                },
+                {
+                    id: 5,
+                    title: 'Premium Rest Area at Petron MILE 7',
+                    preview: 'New air-conditioned rest lounge with shower facilities now open for DAE drivers!',
+                    time: '2 days ago',
+                    unread: false,
+                    category: 'promotion',
+                    brand: 'petron',
+                    brandLogo: 'petron.png',
+                    promoDiscount: 'REST AREA',
+                    fullMessage: 'Driver Rest Facilities Now Open!\n\nPetron MILE 7 now features a premium driver rest area exclusively for fleet drivers.\n\nFacilities Available:\n- Air-conditioned lounge\n- Hot shower facilities\n- Private napping rooms (2-hour slots)\n- Prayer room (Surau)\n- Free WiFi\n\nHow to Access:\n1. Fuel via DAE at Petron MILE 7\n2. Show e-receipt to attendant\n3. Enjoy up to 2 hours of rest!\n\nOpening Hours: 24/7\n\nRest well, drive safe!'
+                },
+                {
+                    id: 6,
+                    title: 'Monthly Usage Report Available',
+                    preview: 'Your December 2025 fuel consumption report is ready for review. Download it from the History section.',
+                    time: '5 days ago',
+                    unread: false,
+                    category: 'system',
+                    fullMessage: 'December 2025 Usage Report\n\nYour monthly fuel consumption report is now available.\n\nSummary:\n- Total Transactions: 24\n- Total Volume: 1,245L\n- Total Amount: MYR 4,357.50\n- Most Visited Station: Xcel Jln Mendu/Tabuan\n\nTo download the detailed report, visit the History tab and tap "Download Monthly Report".\n\nThank you for using DAE!'
+                }
+            ];
+        }
+
+        // Render inbox messages
+        function renderInbox() {
+            const inboxList = document.getElementById('inboxList');
+
+            if (inboxMessages.length === 0) {
+                inboxList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3 class="empty-state-title">No Messages</h3>
+                        <p class="empty-state-message">You're all caught up! New messages will appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            inboxList.innerHTML = inboxMessages.map(msg => {
+                if (msg.category === 'promotion') {
+                    return `
+                        <div class="inbox-item inbox-promo ${msg.unread ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
+                            <div class="promo-header">
+                                <div class="promo-brand-logo">
+                                    <img src="${msg.brandLogo}" alt="${msg.brand}" onerror="this.style.display='none'">
+                                </div>
+                                <div class="promo-discount-badge">${msg.promoDiscount}</div>
+                            </div>
+                            <div class="inbox-item-header">
+                                <div>
+                                    <div class="inbox-item-title">${msg.title}</div>
+                                </div>
+                                <div class="inbox-item-time">${msg.time}</div>
+                            </div>
+                            <div class="inbox-item-preview">${msg.preview}</div>
+                            <span class="inbox-category-badge inbox-category-promotion">
+                                <i class="fas fa-tag"></i> Promotion
+                            </span>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="inbox-item ${msg.unread ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
+                        ${msg.unread ? '<div class="inbox-item-badge"></div>' : ''}
+                        <div class="inbox-item-header">
+                            <div>
+                                <div class="inbox-item-title">${msg.title}</div>
+                            </div>
+                            <div class="inbox-item-time">${msg.time}</div>
+                        </div>
+                        <div class="inbox-item-preview">${msg.preview}</div>
+                        <span class="inbox-category-badge inbox-category-${msg.category}">
+                            ${msg.category.charAt(0).toUpperCase() + msg.category.slice(1)}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            // Update badge
+            updateInboxBadge();
+        }
+
+        function viewMessage(messageId) {
+            const message = inboxMessages.find(m => m.id === messageId);
+            if (!message) return;
+
+            // Mark as read
+            message.unread = false;
+
+            alert(`${message.title}\n\n${message.fullMessage}`);
+
+            // Re-render inbox and update badge
+            renderInbox();
+        }
+
+        // Generate sample transaction history
+        function generateSampleHistory() {
+            // Skip if we already have transactions (preserve real transactions)
+            if (transactionHistory.length > 0) return;
+
+            // Ensure all 4 fuel brands are represented
+            const stationsList = [
+                'Xcel Jln Mendu/Tabuan',
+                'Shell Petra Jaya',
+                'PETRONAS Green Height',
+                'Petron Jln Tun Abang Hj Openg',
+                'Shell Kuching Central',
+                'PETRONAS Matang',
+                'XCEL Kota Samarahan',
+                'Petron Tabuan Jaya'
+            ];
+
+            const vehicles = ['ABC-1234', 'QK888'];
+
+            const now = new Date();
+            transactionHistory = [];
+
+            for (let i = 0; i < 8; i++) {
+                const date = new Date(now - (i * 86400000 * Math.random() * 5));
+                const volume = (Math.random() * 50 + 20).toFixed(1);
+                const pricePerLiter = 3.50;
+                const total = (volume * pricePerLiter).toFixed(2);
+                // Alternate vehicles to ensure both are shown
+                const vehicle = vehicles[i % 2];
+
+                transactionHistory.push({
+                    id: `TXN-${10000 + i}`,
+                    receiptNo: `RCP-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}-${i}`,
+                    station: stationsList[i], // Use each station in order to ensure all brands appear
+                    date: date,
+                    dateString: `${date.getDate()} ${date.toLocaleString('en-US', { month: 'short' })} ${date.getFullYear()}`,
+                    timeString: `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`,
+                    volume: volume,
+                    amount: total,
+                    fuelType: 'Diesel',
+                    vehicle: vehicle,
+                    vehicleModel: getVehicleModelByPlate(vehicle)
+                });
+            }
+        }
+
+        // Render history list
+        function renderHistory(filter = 'all') {
+            const historyList = document.getElementById('historyList');
+
+            if (transactionHistory.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <h3 class="empty-state-title">No Transactions Yet</h3>
+                        <p class="empty-state-message">Your fueling history will appear here after your first transaction.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Filter transactions
+            let filtered = transactionHistory;
+            const now = new Date();
+
+            if (filter === 'today') {
+                filtered = transactionHistory.filter(t =>
+                    t.date.toDateString() === now.toDateString()
+                );
+            } else if (filter === 'week') {
+                const weekAgo = new Date(now - 7 * 86400000);
+                filtered = transactionHistory.filter(t => t.date >= weekAgo);
+            } else if (filter === 'month') {
+                const monthAgo = new Date(now - 30 * 86400000);
+                filtered = transactionHistory.filter(t => t.date >= monthAgo);
+            }
+
+            if (filtered.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-filter"></i>
+                        </div>
+                        <h3 class="empty-state-title">No Results</h3>
+                        <p class="empty-state-message">No transactions found for this time period.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = filtered.map(txn => {
+                const logo = getStationLogo(txn.station);
+                const logoHtml = logo ? `<div class="history-item-logo"><img src="${logo}" alt=""></div>` : '';
+                const vehicleModel = txn.vehicleModel || getVehicleModelByPlate(txn.vehicle);
+                const vehicleLogo = getVehicleBrandLogo(vehicleModel);
+                const vehicleLogoHtml = vehicleLogo ? `<img src="${vehicleLogo}" alt="" style="width: 16px; height: 16px; object-fit: contain; margin-right: 4px;">` : '';
+                return `
+                <div class="history-item" onclick="viewReceiptDetails('${txn.id}')">
+                    <div class="history-item-header">
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="history-item-station">${logoHtml}<span>${txn.station}</span></div>
+                            <div class="history-item-date">${txn.dateString} • ${txn.timeString}</div>
+                        </div>
+                        <div class="history-item-amount">MYR ${txn.amount}</div>
+                    </div>
+                    <div class="history-item-details">
+                        <div class="history-item-detail">
+                            <div class="history-item-detail-label">Volume</div>
+                            <div class="history-item-detail-value">${txn.volume}L</div>
+                        </div>
+                        <div class="history-item-detail">
+                            <div class="history-item-detail-label">Vehicle</div>
+                            <div class="history-item-detail-value" style="display: flex; align-items: center;">${vehicleLogoHtml}${txn.vehicle}</div>
+                        </div>
+                        <div class="history-item-detail">
+                            <div class="history-item-detail-label">Fuel Type</div>
+                            <div class="history-item-detail-value">${txn.fuelType}</div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // ========== UTILITY FUNCTIONS ==========
+        function navigateTo(screenId) {
+            if (currentScreenId === screenId) return;
+
+            const from = currentScreenId;
+            const to = screenId;
+
+            // Motion transition
+            Motion.transition(from, to);
+            currentScreenId = to;
+
+            // Update Navigation active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            const navMap = {
+                'screen-home': 'nav-home',
+                'screen-history': 'nav-history',
+                'screen-inbox': 'nav-inbox',
+                'screen-settings': 'nav-settings'
+            };
+
+            const activeNavId = navMap[screenId];
+            if (activeNavId) {
+                document.getElementById(activeNavId).classList.add('active');
+            }
+
+            // Special handling - initialize map after screen transition completes
+            if (screenId === 'screen-home') {
+                setTimeout(() => {
+                    if (!map) {
+                        initializeMap();
+                    } else {
+                        map.invalidateSize();
+                    }
+                }, 500);
+            }
+
+            // Auto-focus first OTP input when OTP screen is shown
+            if (screenId === 'screen-signup-otp') {
+                setTimeout(() => {
+                    const firstOtpInput = document.getElementById('otp1');
+                    if (firstOtpInput) firstOtpInput.focus();
+                }, 500);
+            }
+
+            // Auto-focus phone input when phone screen is shown
+            if (screenId === 'screen-signup-phone') {
+                setTimeout(() => {
+                    const phoneInput = document.getElementById('phoneInput');
+                    if (phoneInput) phoneInput.focus();
+                }, 500);
+            }
+        }
+
+        // Manual NFC tap simulation (triggered by button)
+        function simulateNFCTap() {
+            nfcTapped();
+        }
+
+        // ========== NAVIGATION FUNCTIONS ==========
+        function goToHome() { navigateTo('screen-home'); }
+        function startFueling() { navigateTo('screen-nfc'); }
+        function goToHistory() {
+            renderHistory('all');
+            navigateTo('screen-history');
+        }
+        function goToSettings() { navigateTo('screen-settings'); }
+        function goToInbox() {
+            renderInbox();
+            navigateTo('screen-inbox');
+        }
+
+        function selectVehicle(plateNumber) {
+            const vehicles = {
+                'ABC-1234': {
+                    model: 'Mercedes-Benz Actros',
+                    plate: 'ABC-1234',
+                    fuel: 'Diesel',
+                    limit: '250L/day'
+                },
+                'QK888': {
+                    model: 'Hino 700 Series',
+                    plate: 'QK888',
+                    fuel: 'Diesel',
+                    limit: '250L/day'
+                }
+            };
+
+            const vehicle = vehicles[plateNumber];
+            if (!vehicle) return;
+
+            alert(`Vehicle Selected\n\n${vehicle.model}\nPlate: ${vehicle.plate}\nFuel Type: ${vehicle.fuel}\nDaily Limit: ${vehicle.limit}\n\nIn production, this would:\n- Switch active vehicle for fueling\n- Update home screen display\n- Adjust fuel limits accordingly`);
+        }
+
+        function updateInboxBadge() {
+            const unreadCount = inboxMessages.filter(m => m.unread).length;
+            const badge = document.getElementById('inbox-badge');
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        function selectStation(stationName) {
+            alert(`Station selected: ${stationName}\n\nIn production, this would:\n- Show detailed station information\n- Display directions in map\n- Show available fuel types and prices\n- Allow navigation to this station`);
+        }
+
+        function viewAllStations() {
+            alert('View All Stations functionality would be implemented here.\n\nIn production, this would:\n- Show a full-screen map with all nearby stations\n- Allow filtering by fuel type, distance, price\n- Show real-time availability\n- Provide turn-by-turn navigation');
+        }
+
+        function filterHistory(filter) {
+            // Update active filter chip
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderHistory(filter);
+        }
+
+        function viewReceiptDetails(txnId) {
+            const transaction = transactionHistory.find(t => t.id === txnId);
+            if (!transaction) return;
+
+            // Populate receipt screen with transaction data
+            document.getElementById('receiptNo').textContent = transaction.receiptNo;
+            document.getElementById('receiptTxnId').textContent = transaction.id;
+            document.getElementById('receiptDateTime').textContent = `${transaction.dateString}, ${transaction.timeString}`;
+            document.getElementById('receiptVolume').textContent = `${transaction.volume}L`;
+            document.getElementById('receiptTotal').textContent = transaction.amount;
+
+            // Update station name and logo
+            document.getElementById('receiptStationName').textContent = transaction.station;
+            const logo = getStationLogo(transaction.station);
+            if (logo) {
+                document.getElementById('receiptStationLogo').src = logo;
+            }
+
+            // Update vehicle info with brand logo
+            const vehicleModel = transaction.vehicleModel || getVehicleModelByPlate(transaction.vehicle);
+            const vehicleLogo = getVehicleBrandLogo(vehicleModel);
+            const receiptVehicle = document.getElementById('receiptVehicle');
+            if (receiptVehicle && vehicleLogo) {
+                document.getElementById('receiptVehicleLogo').src = vehicleLogo;
+                receiptVehicle.lastChild.textContent = transaction.vehicle;
+            }
+
+            navigateTo('screen-receipt');
+        }
+
+        // ========== SETTINGS FUNCTIONS ==========
+        function changeProfilePicture() {
+            alert('Profile picture change functionality would be implemented here.\n\nIn production, this would open the device camera or photo gallery.');
+        }
+
+        function editDriverInfo(field) {
+            const fieldNames = {
+                name: 'Full Name',
+                phone: 'Phone Number',
+                license: 'License Number'
+            };
+            alert(`Edit ${fieldNames[field]} functionality would be implemented here.\n\nIn production, this would open an edit form.`);
+        }
+
+        function editVehicleInfo(field) {
+            const fieldNames = {
+                model: 'Vehicle Model',
+                plate: 'License Plate',
+                fuel: 'Fuel Type',
+                limit: 'Daily Fuel Limit'
+            };
+            alert(`Edit ${fieldNames[field]} functionality would be implemented here.\n\nIn production, this would open an edit form.`);
+        }
+
+        function changeSetting(setting) {
+            const settingNames = {
+                language: 'Language',
+                notifications: 'Notifications'
+            };
+            alert(`Change ${settingNames[setting]} functionality would be implemented here.\n\nIn production, this would open a settings modal.`);
+        }
+
+        function openHelp() {
+            alert('Help & Support functionality would be implemented here.\n\nIn production, this would open:\n- FAQ section\n- Contact support\n- Tutorial videos\n- Live chat');
+        }
+
+        function openAbout() {
+            alert('DAE - Digital Assistant for Energy\n\nVersion 1.0.0 (POC)\nBuild Date: January 2026\n\nDeveloped for Meta Sdn. Bhd.\n\n© 2026 DAE. All rights reserved.');
+        }
+
+        // ========== APP FLOW FUNCTIONS ==========
+        function startApp() {
+            navigateTo('screen-home');
+
+            // Populate sample data
+            generateSampleHistory();
+            generateSampleInbox();
+            renderHistory('all');
+            renderInbox();
+
+            // Set fuel bar color based on percentage (72%)
+            updateFuelBar(72);
+        }
+
+        function initializeMap() {
+            if (map) return; // Already initialized
+
+            try {
+                // Driver location - near Xcel Jln Mendu/Tabuan station (0.3 km south)
+                const driverLocation = [1.5396, 110.3553];
+                // Xcel Jln Mendu/Tabuan station (Jln Mendu / Jln Tabuan, Kuching)
+                const xcelStationLatLng = [1.5422613, 110.3552537];
+
+                map = L.map('map', {
+                    zoomControl: true,
+                    scrollWheelZoom: true,
+                    dragging: true,
+                    attributionControl: false
+                }).setView(driverLocation, 14);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 18
+                }).addTo(map);
+
+                // Add markers for gas stations near Jln Mendu/Tabuan area
+                const stations = [
+                    { lat: 1.5422613, lng: 110.3552537, name: 'Xcel Jln Mendu/Tabuan', distance: '0.3 km', logo: 'xcellogo.jpg', scale: 1.2 },
+                    { lat: 1.5280, lng: 110.3250, name: 'Shell Petra Jaya', distance: '1.5 km', logo: 'shell.png', scale: 1 },
+                    { lat: 1.5050, lng: 110.3000, name: 'PETRONAS Green Height', distance: '1.8 km', logo: 'petronas.png', scale: 1 },
+                    { lat: 1.5350, lng: 110.3350, name: 'Petron Jln Tun Abang Hj Openg', distance: '2.5 km', logo: 'Petron_Corporation-Logo.wine.svg', scale: 1.3 }
+                ];
+
+                stations.forEach(station => {
+                    // Custom marker icon with fuel brand logo
+                    const imgSize = 28 * station.scale;
+                    const stationIcon = L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="background: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid #35587A; overflow: hidden;"><img src="${station.logo}" style="width: ${imgSize}px; height: ${imgSize}px; object-fit: contain;"></div>`,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18]
+                    });
+                    L.marker([station.lat, station.lng], { icon: stationIcon })
+                        .addTo(map)
+                        .bindPopup(`<b>${station.name}</b><br>${station.distance} away`);
+                });
+
+                // Add current location marker (driver)
+                const currentLocationIcon = L.divIcon({
+                    className: 'current-location-marker',
+                    html: '<div style="background: #FF9500; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 8]
+                });
+
+                L.marker(driverLocation, { icon: currentLocationIcon })
+                    .addTo(map)
+                    .bindPopup('<b>Your Location</b>');
+
+                // Force map to resize after initialization and fit bounds
+                setTimeout(() => {
+                    map.invalidateSize();
+                    // Fit map to show driver and nearest station
+                    const bounds = L.latLngBounds([driverLocation, xcelStationLatLng]);
+                    map.fitBounds(bounds.pad(0.3));
+                }, 200);
+
+                // Also invalidate on window resize
+                window.addEventListener('resize', () => {
+                    if (map) map.invalidateSize();
+                });
+            } catch (error) {
+                console.error('Map initialization error:', error);
+            }
+        }
+
+        function nfcTapped() {
+            // Show loading screen
+            navigateTo('screen-loading');
+
+            // Rotate through motivational messages
+            let messageIndex = 0;
+            const messageInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % motivationalMessages.length;
+                document.getElementById('motivationalText').textContent = `"${motivationalMessages[messageIndex]}"`;
+            }, 2000);
+
+            // Simulate CMS processing
+            setTimeout(() => {
+                clearInterval(messageInterval);
+                generateQRCode();
+            }, 4000);
+        }
+
+        function generateQRCode() {
+            // Generate transaction data
+            const txnId = 'TXN-' + Math.floor(Math.random() * 100000);
+            transactionData = {
+                txnId: txnId,
+                driverId: 'DRV-001',
+                vehicleId: 'ABC-1234',
+                maxAmount: '250L',
+                fuelProduct: 'Diesel',
+                timestamp: new Date().toISOString()
+            };
+
+            document.getElementById('txnId').textContent = txnId.replace('TXN-', '');
+
+            // Clear previous QR code
+            const qrContainer = document.getElementById('qrCodeDisplay');
+            qrContainer.innerHTML = '';
+
+            // Generate QR code with proper size
+            new QRCode(qrContainer, {
+                text: JSON.stringify(transactionData),
+                width: 220,
+                height: 220,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Start QR timer (5 minutes)
+            startQRTimer(300);
+
+            // Show QR screen
+            navigateTo('screen-qr');
+
+            // User must press the Simulate button to proceed
+        }
+
+        function startQRTimer(seconds) {
+            if (qrTimerInterval) clearInterval(qrTimerInterval);
+
+            let remaining = seconds;
+            qrTimerInterval = setInterval(() => {
+                remaining--;
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                document.getElementById('qrTimer').textContent = `${mins}:${String(secs).padStart(2, '0')}`;
+
+                if (remaining <= 0) {
+                    clearInterval(qrTimerInterval);
+                    cancelTransaction();
+                }
+            }, 1000);
+        }
+
+        function qrScanned() {
+            // Stop QR timer
+            if (qrTimerInterval) clearInterval(qrTimerInterval);
+
+            // Show loading for CMS validation
+            navigateTo('screen-loading');
+            document.getElementById('motivationalText').textContent = '"Validating your authorization..."';
+
+            // Simulate CMS approval
+            setTimeout(() => {
+                navigateTo('screen-approval');
+            }, 2000);
+        }
+
+        function simulateFueling() {
+            // Show loading during fueling
+            navigateTo('screen-loading');
+            document.getElementById('motivationalText').textContent = '"Fueling in progress..."';
+
+            // Simulate fueling completion after 5 seconds
+            setTimeout(() => {
+                generateReceipt();
+            }, 5000);
+        }
+
+        function generateReceipt() {
+            // Generate random receipt data
+            const volume = (Math.random() * 50 + 20).toFixed(1);
+            const pricePerLiter = 3.50;
+            const total = (volume * pricePerLiter).toFixed(2);
+
+            const now = new Date();
+            const receiptNo = `RCP-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${Math.floor(Math.random() * 1000)}`;
+            const dateTime = `${now.getDate()} ${now.toLocaleString('en-US', { month: 'short' })} ${now.getFullYear()}, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            document.getElementById('receiptNo').textContent = receiptNo;
+            document.getElementById('receiptTxnId').textContent = transactionData.txnId || 'TXN-12345';
+            document.getElementById('receiptDateTime').textContent = dateTime;
+            document.getElementById('receiptVolume').textContent = `${volume}L`;
+            document.getElementById('receiptTotal').textContent = total;
+
+            // Add to history
+            transactionHistory.unshift({
+                id: transactionData.txnId || `TXN-${Date.now()}`,
+                receiptNo: receiptNo,
+                station: 'Xcel Jln Mendu/Tabuan',
+                date: now,
+                dateString: `${now.getDate()} ${now.toLocaleString('en-US', { month: 'short' })} ${now.getFullYear()}`,
+                timeString: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`,
+                volume: volume,
+                amount: total,
+                fuelType: 'Diesel',
+                vehicle: 'ABC-1234'
+            });
+
+            navigateTo('screen-receipt');
+        }
+
+        function cancelTransaction() {
+            if (qrTimerInterval) clearInterval(qrTimerInterval);
+            navigateTo('screen-home');
+        }
+
+        function downloadReceipt() {
+            alert('Receipt download functionality would be implemented here.\n\nIn production, this would:\n- Generate a PDF receipt\n- Save it to device storage\n- Offer sharing options (email, WhatsApp, etc.)');
+        }
+
+        // ========== S.O.S EMERGENCY HOTLINE ==========
+        function callEmergencyHotline() {
+            const emergencyNumber = '+60-3-1234-5678'; // Company emergency hotline
+
+            if (confirm(`Call company emergency hotline?\n\n${emergencyNumber}\n\nSITL Logistics Emergency Support`)) {
+                // In production, this would trigger: window.location.href = 'tel:' + emergencyNumber;
+                alert('Calling Emergency Hotline...\n\n' + emergencyNumber + '\n\nIn production, this would initiate a phone call to SITL Logistics 24/7 emergency support line.\n\nServices available:\n• Roadside assistance\n• Accident reporting\n• Vehicle breakdown support\n• Security concerns');
+            }
+        }
+
+        // ========== SUNMI P3 POS SIMULATION ==========
+        function simulateSunmiScan() {
+            // Show processing message
+            navigateTo('screen-loading');
+            document.querySelector('.loading-title').textContent = 'Processing...';
+            document.querySelector('.loading-message').textContent = 'Sunmi P3 POS scanning QR code';
+            document.getElementById('motivationalText').textContent = '"Verifying transaction details"';
+
+            // Simulate scanning delay then navigate to approval screen
+            setTimeout(() => {
+                document.querySelector('.loading-title').textContent = 'Approved!';
+                document.querySelector('.loading-message').textContent = 'Transaction verified by cashier';
+                document.getElementById('motivationalText').textContent = '"Proceed to the designated pump"';
+
+                setTimeout(() => {
+                    navigateTo('screen-approval');
+                }, 1000);
+            }, 2000);
+        }
+
+        // ========== SIGNUP FLOW FUNCTIONS ==========
+        let otpTimerInterval = null;
+        let otpCountdown = 60;
+        let enteredPhone = '';
+
+        function startSignup() {
+            navigateTo('screen-signup-phone');
+        }
+
+        function goBackToCTA() {
+            navigateTo('screen-cta');
+        }
+
+        function goBackToPhone() {
+            navigateTo('screen-signup-phone');
+        }
+
+        function validatePhoneNumber(phone) {
+            // Malaysian mobile numbers: 10-11 digits (excluding +60)
+            const cleaned = phone.replace(/\D/g, '');
+            return cleaned.length >= 9 && cleaned.length <= 11;
+        }
+
+        function sendOTP() {
+            const phoneInput = document.getElementById('phoneInput');
+            const phone = phoneInput.value.trim();
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            
+            if (!validatePhoneNumber(phone)) {
+                alert('Please enter a valid Malaysian mobile number (10-11 digits).');
+                return;
+            }
+            
+            if (!termsCheckbox.checked) {
+                alert('Please agree to the Terms of Service and Privacy Policy.');
+                return;
+            }
+            
+            enteredPhone = phone;
+            document.getElementById('phoneDisplay').textContent = phone.replace(/(\d{2})(\d{3})(\d{4})/, '$1 $2 $3');
+            
+            // Simulate sending OTP
+            console.log('OTP sent to +60' + phone);
+            
+            // Reset OTP inputs
+            for (let i = 1; i <= 6; i++) {
+                const input = document.getElementById('otp' + i);
+                input.value = '';
+                input.classList.remove('filled');
+            }
+            
+            // Start OTP timer
+            startOTPTimer();
+            
+            // Navigate to OTP screen
+            navigateTo('screen-signup-otp');
+        }
+
+        function startOTPTimer() {
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+            otpCountdown = 60;
+            
+            const timerElement = document.getElementById('timerCount');
+            const resendBtn = document.getElementById('resendBtn');
+            
+            timerElement.textContent = otpCountdown;
+            resendBtn.disabled = true;
+            
+            otpTimerInterval = setInterval(() => {
+                otpCountdown--;
+                timerElement.textContent = otpCountdown;
+                
+                if (otpCountdown <= 0) {
+                    clearInterval(otpTimerInterval);
+                    document.getElementById('otpTimer').style.display = 'none';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            // Simulate resending OTP
+            console.log('OTP resent to +60' + enteredPhone);
+            alert('A new verification code has been sent to your phone.');
+            
+            // Restart timer
+            startOTPTimer();
+            document.getElementById('otpTimer').style.display = 'block';
+        }
+
+        function setupOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    // Auto-focus next input
+                    if (value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // Update filled state
+                    if (value.length === 1) {
+                        input.classList.add('filled');
+                    } else {
+                        input.classList.remove('filled');
+                    }
+                    
+                    // Check if all inputs are filled
+                    checkOTPCompletion();
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    // Handle backspace to focus previous input
+                    if (e.key === 'Backspace' && !input.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        function checkOTPCompletion() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const verifyBtn = document.getElementById('verifyOTPBtn');
+            
+            let allFilled = true;
+            for (let i = 0; i < inputs.length; i++) {
+                if (!inputs[i].value) {
+                    allFilled = false;
+                    break;
+                }
+            }
+            
+            verifyBtn.disabled = !allFilled;
+        }
+
+        function verifyOTP() {
+            // Simulate OTP verification
+            const otp = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value)
+                .join('');
+            
+            // For demo, accept any 6-digit code
+            if (otp.length === 6 && /^\d+$/.test(otp)) {
+                console.log('OTP verified:', otp);
+                
+                // Simulate driver data from CMS
+                driverData = {
+                    name: 'Abdul Hamid Ahmad',
+                    company: 'SITL Logistics',
+                    vehicleModel: 'Mercedes-Benz Actros',
+                    vehiclePlate: 'ABC-1234'
+                };
+                
+                try {
+                    document.getElementById('driverName').textContent = driverData.name;
+                    document.getElementById('driverCompany').textContent = driverData.company;
+                    document.getElementById('vehicleModel').textContent = driverData.vehicleModel;
+                    document.getElementById('vehiclePlate').textContent = driverData.vehiclePlate;
+                    console.log('Driver data updated');
+                } catch (error) {
+                    console.error('Error updating driver data:', error);
+                }
+                
+                // Navigate to success screen
+                console.log('Navigating to success screen');
+                console.log('Motion object exists:', typeof Motion !== 'undefined');
+                console.log('navigateTo function exists:', typeof navigateTo !== 'undefined');
+                try {
+                    navigateTo('screen-signup-success');
+                    console.log('navigateTo called successfully');
+                } catch (error) {
+                    console.error('Error in navigateTo:', error);
+                }
+            } else {
+                alert('Please enter a valid 6-digit verification code.');
+            }
+        }
+
+        function completeSignup() {
+            // Clear OTP timer
+            if (otpTimerInterval) clearInterval(otpTimerInterval);
+            
+            // Update home screen with driver data
+            if (driverData) {
+                const driverNameElement = document.querySelector('.home-driver-name');
+                const driverGreetingElement = document.querySelector('.home-greeting');
+                const registrationElement = document.querySelector('.registration');
+                const vehicleModelElement = document.querySelector('.vehicle-model');
+                
+                if (driverNameElement) driverNameElement.textContent = driverData.name.split(' ')[0]; // First name only
+                if (driverGreetingElement) driverGreetingElement.textContent = driverData.company;
+                if (registrationElement) registrationElement.textContent = driverData.vehiclePlate;
+                if (vehicleModelElement) vehicleModelElement.textContent = driverData.vehicleModel;
+            }
+            
+            // Show bottom navigation and add padding to screens
+            const nav = document.querySelector('.bottom-nav');
+            if (nav) nav.classList.remove('hidden');
+            document.body.classList.add('nav-visible');
+            
+            // Navigate to home screen
+            navigateTo('screen-home');
+        }
+
+        function recoverAccount() {
+            alert('Account recovery functionality would be implemented here.\n\nIn production, this would:\n- Verify your identity\n- Send recovery instructions to your registered email\n- Allow resetting your account credentials');
+        }
+
+        function troubleshootOTP() {
+            alert('OTP Troubleshooting:\n\n1. Check that your phone number is correct\n2. Ensure you have mobile network reception\n3. Wait 60 seconds then tap "Resend Code"\n4. Contact support if issues persist');
+        }
+
+        function showTerms() {
+            alert('Terms of Service would be displayed here.\n\nIn production, this would open a modal with full terms and conditions.');
+        }
+
+        function showPrivacy() {
+            alert('Privacy Policy would be displayed here.\n\nIn production, this would open a modal with detailed privacy policy information.');
+        }
+
+        // Initialize OTP input handling when OTP screen is shown
+        document.addEventListener('DOMContentLoaded', function() {
+            setupOTPInputs();
+            
+            // Phone input validation
+            const phoneInput = document.getElementById('phoneInput');
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const sendOTPBtn = document.getElementById('sendOTPBtn');
+            
+            if (phoneInput && sendOTPBtn) {
+                phoneInput.addEventListener('input', () => {
+                    const phone = phoneInput.value.trim();
+                    const isValid = validatePhoneNumber(phone);
+                    
+                    sendOTPBtn.disabled = !isValid || !termsCheckbox.checked;
+                });
+            }
+            
+            if (termsCheckbox && sendOTPBtn) {
+                termsCheckbox.addEventListener('change', () => {
+                    const phone = phoneInput ? phoneInput.value.trim() : '';
+                    const isValid = validatePhoneNumber(phone);
+                    
+                    sendOTPBtn.disabled = !isValid || !termsCheckbox.checked;
+                });
+            }
+        });
+
+        // ========== INITIALIZATION ==========
+        window.onload = function () {
+            // Set random tagline on splash screen
+            setRandomTagline();
+
+            generateSampleHistory();
+            generateSampleInbox();
+            updateInboxBadge();
+            // Map will be initialized when home screen is shown
+        };
+    </script>
+</body>
+
+</html>
