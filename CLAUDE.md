@@ -99,8 +99,8 @@ Leaflet + OpenStreetMap, centred on Kuching (`1.5535, 110.3593`). Fuel station m
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Main mobile app prototype (PETROS / Kuching) |
-| `index copy.html` | Local backup of `index.html` — **not deployed, not for editing** |
+| `petros_index.html` | Main mobile app prototype (PETROS / Kuching). Deployed as `index.html` in `github.com/sma11dragon/digital-fleet-prototype` |
+| `index copy.html` | Local backup of the original `index.html` — **not deployed, not for editing** |
 | `xcel_index.html` | XCEL customer variant — base file for customer-specific forks |
 | `rapidkl_index.html` | RapidKL customer variant — bus fleet, Caltex stations, Cheras Selatan map, QR-less flow. Deployed as `index.html` in `github.com/sma11dragon/rapidkl-fleet-prototype` |
 | `journey_combined.html` | **POC stage** deliverable — two-column driver + cashier flow |
